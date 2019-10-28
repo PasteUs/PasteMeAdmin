@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  cn.pasteme.admin.configuration.PasteMeAdminAutoConfiguration,\
-  cn.pasteme.admin.configuration.PasteMeAdminDataSourceConfiguration
+  cn.pasteme.admin.configuration.PasteMeCommonMapperConfiguration,\
+  cn.pasteme.admin.configuration.PasteMeAdminDataSourceConfiguration,\
+  cn.pasteme.admin.configuration.PasteMeAdminAutoConfiguration
