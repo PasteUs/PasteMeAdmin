@@ -47,3 +47,9 @@ build/
 
 ## log file
 *.log
+
+# macOS
+.DS_Store
+
+# SQLite
+*.sqlite
