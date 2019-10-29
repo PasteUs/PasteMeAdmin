@@ -22,9 +22,10 @@ public class AdminApplicationTests {
     @Test
     public void mapperTest() {
         pasteAdminMapper.createTable();
-        Assert.assertTrue(pasteAdminMapper.set(100L, 200L, 0, 0));
-        PasteAdminDO pasteAdminDO = pasteAdminMapper.get(100L);
+        Assert.assertTrue(pasteAdminMapper.createDo(100L, 200L, 0, 0));
+        Assert.assertTrue(pasteAdminMapper.increaseCountByKey(100L));
+        PasteAdminDO pasteAdminDO = pasteAdminMapper.getDoByKey(100L);
         Assert.assertNotNull(pasteAdminDO);
-        Assert.assertEquals(Long.valueOf(200), pasteAdminDO.getCount());
+        Assert.assertEquals(Long.valueOf(201), pasteAdminDO.getCount());
     }
 }
