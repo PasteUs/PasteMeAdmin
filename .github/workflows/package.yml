@@ -29,12 +29,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+
       - name: Set up JDK ${{ matrix.jdk_version }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.jdk_version }}
+
       - name: Maven ${{ matrix.mvn_action }}
         run: |
           mvn --file pom.xml \
-              -Dspring.config.location=${PWD}/application.example.yml \
+              -Dspring.config.location=src/main/resources/application.example.yml \
               ${{ matrix.mvn_action }}

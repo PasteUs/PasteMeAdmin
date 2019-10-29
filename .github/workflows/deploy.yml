@@ -35,5 +35,5 @@ jobs:
         run: |
           mvn --settings .github/settings.xml \
               --file pom.xml \
-              -Dspring.config.location=${PWD}/application.example.yml \
+              -Dspring.config.location=src/main/resources/application.example.yml \
               deploy
