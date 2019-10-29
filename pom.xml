@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.pasteme</groupId>
         <artifactId>pasteme-root</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>pasteme-admin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -59,7 +59,7 @@
 
     <repositories>
         <repository>
-            <id>github-repo</id>
+            <id>pasteus-github-mvn-repo</id>
             <url>https://raw.githubusercontent.com/PasteUs/MavenRepository/master</url>
             <snapshots>
                 <enabled>true</enabled>

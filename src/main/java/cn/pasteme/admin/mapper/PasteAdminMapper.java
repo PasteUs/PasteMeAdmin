@@ -42,6 +42,6 @@ public interface PasteAdminMapper {
      * @param key 主键
      * @return DO
      */
-    @Select("SELECT `type`, `count`, `state`, `type` FROM `permanent` WHERE `key` = #{key}")
+    @Select("SELECT `type`, `count`, `state`, `type` FROM `permanents` WHERE `key` = #{key}")
     PasteAdminDO get(Long key);
 }

@@ -15,13 +15,13 @@ import javax.sql.DataSource;
 public class PasteMeAdminDataSourceConfiguration {
 
     @Bean(name = "mysql")
-    @ConfigurationProperties(prefix = "spring.database.mysql")
+    @ConfigurationProperties(prefix = "spring.datasource.mysql")
     public DataSource mysql() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean(name = "sqlite")
-    @ConfigurationProperties(prefix = "spring.database.sqlite")
+    @ConfigurationProperties(prefix = "spring.datasource.sqlite")
     public DataSource sqlite() {
         return DataSourceBuilder.create().build();
     }
