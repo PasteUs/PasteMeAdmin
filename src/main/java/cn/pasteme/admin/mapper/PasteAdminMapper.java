@@ -1,6 +1,7 @@
 package cn.pasteme.admin.mapper;
 
 import cn.pasteme.admin.entity.PasteAdminDO;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -16,7 +17,7 @@ public interface PasteAdminMapper {
     /**
      * 创建表
      */
-    @Update("CREATE TABLE IF NOT EXISTS `permanents` (" +
+    @Update("CREATE TABLE IF NOT EXISTS `pasteme_permanent` (" +
             "`key` BIGINT UNSIGNED PRIMARY KEY," +
             "`count` BIGINT UNSIGNED DEFAULT 0," +
             "`type` INT NOT NULL," +
@@ -32,7 +33,7 @@ public interface PasteAdminMapper {
      * @param state Paste 的状态，0 未覆盖、1 已检验、2 已忽略、3 需要人工复核、4 无需复核
      * @return boolean
      */
-    @Insert("INSERT INTO `permanents` (`key`, `count`, `type`, `state`)" +
+    @Insert("INSERT INTO `pasteme_permanent` (`key`, `count`, `type`, `state`)" +
             "VALUES (#{key}, #{count}, #{type}, #{state})")
     boolean createDo(Long key, Long count, Integer type, Integer state);
 
@@ -42,7 +43,7 @@ public interface PasteAdminMapper {
      * @param key 主键
      * @return DO
      */
-    @Select("SELECT `type`, `count`, `state`, `type` FROM `permanents` WHERE `key` = #{key}")
+    @Select("SELECT `type`, `count`, `state`, `type` FROM `pasteme_permanent` WHERE `key` = #{key}")
     PasteAdminDO getDoByKey(Long key);
 
     /**
@@ -51,6 +52,6 @@ public interface PasteAdminMapper {
      * @param key 主键
      * @return boolean
      */
-    @Update("UPDATE `permanents` SET `count` = `count` + 1 WHERE `key` = #{key}")
+    @Update("UPDATE `pasteme_permanent` SET `count` = `count` + 1 WHERE `key` = #{key}")
     boolean increaseCountByKey(Long key);
 }
