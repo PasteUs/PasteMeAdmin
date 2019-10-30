@@ -44,28 +44,40 @@ public class AdminApplicationTests {
         Assert.assertEquals(Long.valueOf(201), pasteAdminDO.getCount());
     }
 
-    @Test
+    private List<String> getLatestDictionary() {
+        RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary();
+        Assert.assertNotNull(riskDictionaryDO);
+        return riskDictionaryDO.getDictionary();
+    }
+
+    private void updateAndCheck(List<String> dictionary) {
+        Assert.assertTrue(riskDictionaryMapper.updateDictionary(dictionary));
+        Assert.assertEquals(dictionary, getLatestDictionary());
+    }
+
     public void riskDictionaryMapperTest() {
         riskDictionaryMapper.createTable();
         List<String> dictionary = new ArrayList<>();
         dictionary.add("你好");
+        updateAndCheck(dictionary);
         dictionary.add("Hello");
-        Assert.assertTrue(riskDictionaryMapper.updateDictionary(dictionary));
-        RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary();
-        Assert.assertNotNull(riskDictionaryDO);
-        Assert.assertEquals(dictionary, riskDictionaryDO.getDictionary());
+        updateAndCheck(dictionary);
     }
 
     @Test
     public void riskControllerTest() {
-        riskDictionaryMapper.createTable();
+        riskDictionaryMapperTest();
+
         List<String> dictionary = new ArrayList<>();
-        dictionary.add("Hello");
-        dictionary.add("你好");
+        dictionary.add("World!");
+        dictionary.add("世界！");
+
         Assert.assertTrue(riskController.rebuild(dictionary));
         Assert.assertFalse(riskController.isRisky("这段文本不会被匹配"));
-        Assert.assertFalse(riskController.isRisky("No hit in this text"));
+        Assert.assertFalse(riskController.isRisky("This text would not be hit"));
         Assert.assertTrue(riskController.isRisky("Hello World!"));
         Assert.assertTrue(riskController.isRisky("你好，世界！"));
+
+        Assert.assertEquals(dictionary, getLatestDictionary());
     }
 }
