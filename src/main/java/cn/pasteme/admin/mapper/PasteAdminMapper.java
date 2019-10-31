@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucien
- * @version 1.0.0
+ * @version 1.1.0
  */
 @Repository
 public interface PasteAdminMapper {
@@ -34,7 +34,7 @@ public interface PasteAdminMapper {
      */
     @Insert("INSERT INTO `permanents` (`key`, `count`, `type`, `state`)" +
             "VALUES (#{key}, #{count}, #{type}, #{state})")
-    boolean set(Long key, Long count, Integer type, Integer state);
+    boolean createDo(Long key, Long count, Integer type, Integer state);
 
     /**
      * 通过主键获取记录
@@ -43,5 +43,14 @@ public interface PasteAdminMapper {
      * @return DO
      */
     @Select("SELECT `type`, `count`, `state`, `type` FROM `permanents` WHERE `key` = #{key}")
-    PasteAdminDO get(Long key);
+    PasteAdminDO getDoByKey(Long key);
+
+    /**
+     * 让 count 字段自增
+     *
+     * @param key 主键
+     * @return boolean
+     */
+    @Update("UPDATE `permanents` SET `count` = `count` + 1 WHERE `key` = #{key}")
+    boolean increaseCountByKey(Long key);
 }
