@@ -2,7 +2,7 @@ package cn.pasteme.admin.manager;
 
 /**
  * @author Lucien
- * @version 1.0.0
+ * @version 1.1.0
  */
 public interface PasteAdminManager {
 
@@ -12,5 +12,13 @@ public interface PasteAdminManager {
      * @param key 主键
      * @return boolean
      */
-    boolean access(Long key);
+    boolean increaseCountByKey(Long key);
+
+    /**
+     * 新增一条记录
+     *
+     * @param key 主键
+     * @return boolean
+     */
+    boolean createRecord(Long key);
 }

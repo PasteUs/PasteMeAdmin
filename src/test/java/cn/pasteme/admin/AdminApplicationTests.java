@@ -2,6 +2,8 @@ package cn.pasteme.admin;
 
 import cn.pasteme.admin.entity.PasteAdminDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
+import cn.pasteme.admin.enumeration.PasteState;
+import cn.pasteme.admin.enumeration.PasteType;
 import cn.pasteme.admin.mapper.PasteAdminMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.risk.RiskController;
@@ -17,6 +19,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Lucien
+ * @version 1.1.0
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AdminApplicationTests {
@@ -37,11 +43,26 @@ public class AdminApplicationTests {
     public void mapperTest() {
         pasteAdminMapper.createTable();
         pasteAdminTestMapper.delete(100L);
-        Assert.assertTrue(pasteAdminMapper.createDo(100L, 200L, 0, 0));
+
+        Assert.assertEquals(0, pasteAdminMapper.countByKey(100L));
+        PasteAdminDO pasteAdminDO = new PasteAdminDO(100L);
+        Assert.assertTrue(pasteAdminMapper.insertDO(pasteAdminDO));
+        Assert.assertEquals(1, pasteAdminMapper.countByKey(100L));
+
         Assert.assertTrue(pasteAdminMapper.increaseCountByKey(100L));
-        PasteAdminDO pasteAdminDO = pasteAdminMapper.getDoByKey(100L);
+        pasteAdminDO = pasteAdminMapper.getDOByKey(100L);
         Assert.assertNotNull(pasteAdminDO);
-        Assert.assertEquals(Long.valueOf(201), pasteAdminDO.getCount());
+        Assert.assertEquals(Long.valueOf(1), pasteAdminDO.getCount());
+
+        pasteAdminDO.setState(PasteState.CHECKED);
+        pasteAdminDO.setType(PasteType.CODE);
+        pasteAdminDO.setCount(10086L);
+        Assert.assertTrue(pasteAdminMapper.updateDO(pasteAdminDO));
+        pasteAdminDO = pasteAdminMapper.getDOByKey(100L);
+        Assert.assertNotNull(pasteAdminDO);
+        Assert.assertEquals(Long.valueOf(10086), pasteAdminDO.getCount());
+        Assert.assertEquals(PasteState.CHECKED, pasteAdminDO.getState());
+        Assert.assertEquals(PasteType.CODE, pasteAdminDO.getType());
     }
 
     private List<String> getLatestDictionary() {

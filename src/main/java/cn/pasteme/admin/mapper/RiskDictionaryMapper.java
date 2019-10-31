@@ -29,7 +29,7 @@ public interface RiskDictionaryMapper {
     boolean updateDictionary(@Param("dictionary") List<String> dictionary);
 
     @Select("SELECT * FROM `pasteme_dictionary` ORDER BY `id` DESC LIMIT 0, 1")
-    @Results(id = "riskDictionary", value = {
+    @Results(id = "RiskDictionaryDO", value = {
             @Result(column = "id", property = "id"),
             @Result(column = "dictionary", property = "dictionary", javaType = List.class, typeHandler = cn.pasteme.common.mapper.handler.JsonTypeHandler.class)
     })
