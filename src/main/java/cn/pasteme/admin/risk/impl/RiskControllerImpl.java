@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.0.0
+ * @version 1.0.1
  */
 @Data
 @Slf4j
@@ -36,8 +36,6 @@ public class RiskControllerImpl implements RiskController {
         try {
             RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary();
             dictionary = riskDictionaryDO.getDictionary();
-        } catch (NullPointerException e) {
-            log.error("Empty db");
         } catch (Exception e) {
             log.error("Load from db error = ", e);
         }

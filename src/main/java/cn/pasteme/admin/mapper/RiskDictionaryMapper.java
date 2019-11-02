@@ -14,22 +14,27 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.0.0
+ * @version 1.0.1
  */
 @Repository
 public interface RiskDictionaryMapper {
 
-    @Update("CREATE TABLE IF NOT EXISTS `pasteme_dictionary` (" +
-            "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-            "`dictionary` JSON NOT NULL" +
-            ")")
-    void createTable();
-
-    @Insert("INSERT INTO `pasteme_dictionary` (`dictionary`) VALUES (#{dictionary, typeHandler=cn.pasteme.common.mapper.handler.JsonTypeHandler})")
+    /**
+     * 更新词典
+     *
+     * @param dictionary 词典
+     * @return boolean
+     */
+    @Insert("INSERT INTO `pasteme_admin_dictionary` (`dictionary`) VALUES (#{dictionary, typeHandler=cn.pasteme.common.mapper.handler.JsonTypeHandler})")
     boolean updateDictionary(@Param("dictionary") List<String> dictionary);
 
-    @Select("SELECT * FROM `pasteme_dictionary` ORDER BY `id` DESC LIMIT 0, 1")
-    @Results(id = "riskDictionary", value = {
+    /**
+     * 获取最新的字典
+     *
+     * @return RiskDictionaryDO
+     */
+    @Select("SELECT * FROM `pasteme_admin_dictionary` ORDER BY `id` DESC LIMIT 0, 1")
+    @Results(id = "RiskDictionaryDO", value = {
             @Result(column = "id", property = "id"),
             @Result(column = "dictionary", property = "dictionary", javaType = List.class, typeHandler = cn.pasteme.common.mapper.handler.JsonTypeHandler.class)
     })

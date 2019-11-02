@@ -9,6 +9,17 @@ spring:
       jdbc-url: jdbc:mysql://127.0.0.1:4399/pasteme
       username: username
       password: password
+
     sqlite:
       driver-class-name: org.sqlite.JDBC
       jdbc-url: jdbc:sqlite:db.sqlite
+
+  thymeleaf:
+    cache: false
+    prefix: classpath:templates/
+    check-template-location: true
+    suffix: .html
+    encoding: UTF-8
+    mode: HTML5
+    servlet:
+      content-type: text/html

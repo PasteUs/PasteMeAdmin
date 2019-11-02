@@ -1,0 +1,76 @@
+package cn.pasteme.admin.mapper;
+
+import cn.pasteme.admin.entity.RiskStateDO;
+
+import cn.pasteme.admin.enumeration.PasteState;
+import cn.pasteme.admin.enumeration.PasteType;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author Lucien
+ * @version 1.2.1
+ */
+@Repository
+public interface RiskStateMapper {
+
+    /**
+     * 将 DO 插入数据库
+     *
+     * @param riskStateDO DO
+     * @return boolean
+     */
+    @Insert({"INSERT INTO `pasteme_admin_risk_state` (`key`, `type`, `state`)",
+            "VALUES (#{key},",
+            "#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}, ",
+            "#{state, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler})"})
+    boolean insertDO(RiskStateDO riskStateDO);
+
+    /**
+     * 更新 Record
+     *
+     * @param riskStateDO DO
+     * @return boolean
+     */
+    @Update({"<script>",
+            "UPDATE `pasteme_admin_risk_state`",
+            "<set>",
+                "<if test='type != null'>",
+                    "`type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler},",
+                "</if>",
+                "<if test='state != null'>",
+                    "`state` = #{state, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler},",
+                "</if>",
+                "key = key",
+            "</set>",
+            "WHERE `key` = #{key}",
+    "</script>"})
+    boolean updateDO(RiskStateDO riskStateDO);
+
+    /**
+     * 通过主键获取记录
+     *
+     * @param key 主键
+     * @return DO
+     */
+    @Select("SELECT `key`, `state`, `type` FROM `pasteme_admin_risk_state` WHERE `key` = #{key}")
+    @Results(id = "RiskStateDO", value = {
+            @Result(column = "key", property = "key"),
+            @Result(column = "type", property = "type", javaType = PasteType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class),
+            @Result(column = "state", property = "state", javaType = PasteState.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class)
+    })
+    RiskStateDO getDoByKey(Long key);
+
+    /**
+     * 统计主键计数
+     *
+     * @param key 主键
+     * @return 主键的数量，一般来说只有 0/1 两种取值
+     */
+    @Select("SELECT COUNT(1) FROM `pasteme_admin_risk_state` WHERE `key` = #{key}")
+    int countByKey(Long key);
+}
