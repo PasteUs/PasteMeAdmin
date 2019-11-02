@@ -6,7 +6,7 @@ import cn.pasteme.admin.enumeration.PasteType;
 import lombok.Data;
 
 /**
- * Paste Admin 实体
+ * Risk Check 状态实体
  *
  * @author Lucien
  * @version 1.2.0
