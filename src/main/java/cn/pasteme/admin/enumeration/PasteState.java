@@ -1,17 +1,29 @@
 package cn.pasteme.admin.enumeration;
 
+import cn.pasteme.common.enumeration.ValueEnum;
+
 import lombok.Getter;
 
 /**
- * PasteAdminDO.type 值域
+ * RiskStateDO.type 值域
  * 可用于 supervise
  *
  * @author Lucien
- * @version 1.0.0
+ * @version 1.1.0
  */
-public enum PasteState implements PasteEnum {
+public enum PasteState implements ValueEnum {
 
-    CHECKED(0), UNCHECKED(1008611), NEED_CHECK(2);
+    // 已检查
+    CHECKED(0),
+
+    // 未检查
+    UNCHECKED(1),
+
+    // 已核查
+    REVIEWED(2),
+
+    // 需要核查
+    REQUEST_REVIEW(3);
 
     @Getter
     private int value;

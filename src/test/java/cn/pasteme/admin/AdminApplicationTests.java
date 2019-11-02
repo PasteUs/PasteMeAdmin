@@ -1,15 +1,18 @@
 package cn.pasteme.admin;
 
-import cn.pasteme.admin.entity.PasteAdminDO;
+import cn.pasteme.admin.entity.RiskStateDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.PasteState;
 import cn.pasteme.admin.enumeration.PasteType;
-import cn.pasteme.admin.mapper.PasteAdminMapper;
+import cn.pasteme.admin.mapper.AccessCountMapper;
+import cn.pasteme.admin.mapper.RiskStateMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
+import cn.pasteme.admin.mapper.TableMapper;
 import cn.pasteme.admin.risk.RiskController;
 import cn.pasteme.admin.mapper.PasteAdminTestMapper;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +24,20 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.1.0
+ * @version 1.2.0
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AdminApplicationTests {
 
     @Autowired
-    private PasteAdminMapper pasteAdminMapper;
+    private TableMapper tableMapper;
+
+    @Autowired
+    private AccessCountMapper accessCountMapper;
+
+    @Autowired
+    private RiskStateMapper riskStateMapper;
 
     @Autowired
     private PasteAdminTestMapper pasteAdminTestMapper;
@@ -39,30 +48,32 @@ public class AdminApplicationTests {
     @Autowired
     private RiskController riskController;
 
+    @Before
+    public void before() {
+        tableMapper.createPasteMeAdminRiskState();
+        tableMapper.createPasteMeAdminDictionary();
+        tableMapper.createPasteMeAdminAccessCount();
+    }
+
     @Test
     public void mapperTest() {
-        pasteAdminMapper.createTable();
-        pasteAdminTestMapper.delete(100L);
+        pasteAdminTestMapper.delete("pasteme_admin_risk_state", 100L);
 
-        Assert.assertEquals(0, pasteAdminMapper.countByKey(100L));
-        PasteAdminDO pasteAdminDO = new PasteAdminDO(100L);
-        Assert.assertTrue(pasteAdminMapper.insertDO(pasteAdminDO));
-        Assert.assertEquals(1, pasteAdminMapper.countByKey(100L));
+        Assert.assertEquals(0, riskStateMapper.countByKey(100L));
+        RiskStateDO riskStateDO = new RiskStateDO(100L);
+        Assert.assertTrue(riskStateMapper.insertDO(riskStateDO));
+        Assert.assertEquals(1, riskStateMapper.countByKey(100L));
 
-        Assert.assertTrue(pasteAdminMapper.increaseCountByKey(100L));
-        pasteAdminDO = pasteAdminMapper.getDOByKey(100L);
-        Assert.assertNotNull(pasteAdminDO);
-        Assert.assertEquals(Long.valueOf(1), pasteAdminDO.getCount());
+        riskStateDO = riskStateMapper.getDoByKey(100L);
+        Assert.assertNotNull(riskStateDO);
 
-        pasteAdminDO.setState(PasteState.CHECKED);
-        pasteAdminDO.setType(PasteType.CODE);
-        pasteAdminDO.setCount(10086L);
-        Assert.assertTrue(pasteAdminMapper.updateDO(pasteAdminDO));
-        pasteAdminDO = pasteAdminMapper.getDOByKey(100L);
-        Assert.assertNotNull(pasteAdminDO);
-        Assert.assertEquals(Long.valueOf(10086), pasteAdminDO.getCount());
-        Assert.assertEquals(PasteState.CHECKED, pasteAdminDO.getState());
-        Assert.assertEquals(PasteType.CODE, pasteAdminDO.getType());
+        riskStateDO.setState(PasteState.CHECKED);
+        riskStateDO.setType(PasteType.PORN);
+        Assert.assertTrue(riskStateMapper.updateDO(riskStateDO));
+        riskStateDO = riskStateMapper.getDoByKey(100L);
+        Assert.assertNotNull(riskStateDO);
+        Assert.assertEquals(PasteState.CHECKED, riskStateDO.getState());
+        Assert.assertEquals(PasteType.PORN, riskStateDO.getType());
     }
 
     private List<String> getLatestDictionary() {
@@ -77,7 +88,6 @@ public class AdminApplicationTests {
     }
 
     public void riskDictionaryMapperTest() {
-        riskDictionaryMapper.createTable();
         List<String> dictionary = new ArrayList<>();
         dictionary.add("你好");
         updateAndCheck(dictionary);
@@ -100,5 +110,13 @@ public class AdminApplicationTests {
         Assert.assertTrue(riskController.isRisky("你好，世界！"));
 
         Assert.assertEquals(dictionary, getLatestDictionary());
+    }
+
+    @Test
+    public void accessCountTest() {
+        pasteAdminTestMapper.delete("pasteme_admin_access_count", 100L);
+        Assert.assertTrue(accessCountMapper.createRecord(100L));
+        Assert.assertTrue(accessCountMapper.increaseCountByKey(100L));
+        Assert.assertEquals(1, accessCountMapper.getAccessCountByKey(100L));
     }
 }

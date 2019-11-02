@@ -9,20 +9,15 @@ import lombok.Data;
  * Paste Admin 实体
  *
  * @author Lucien
- * @version 1.1.0
+ * @version 1.2.0
  */
 @Data
-public class PasteAdminDO {
+public class RiskStateDO {
 
     /**
      * 主键
      */
     private Long key;
-
-    /**
-     * 访问计数，代表这个 Paste 被访问的次数
-     */
-    private Long count;
 
     /**
      * 这篇 Paste 的类型，同时也是 Classify label
@@ -34,9 +29,8 @@ public class PasteAdminDO {
      */
     private PasteState state;
 
-    public PasteAdminDO(Long key) {
+    public RiskStateDO(Long key) {
         this.key = key;
-        this.count = 0L;
         this.type = PasteType.NORMAL;
         this.state = PasteState.UNCHECKED;
     }

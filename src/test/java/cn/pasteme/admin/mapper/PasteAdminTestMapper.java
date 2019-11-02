@@ -6,11 +6,11 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucien
- * @version 1.0.0
+ * @version 1.1.0
  */
 @Repository
 public interface PasteAdminTestMapper {
 
-    @Delete("DELETE FROM `pasteme_permanent` WHERE `key` = #{key}")
-    boolean delete(@Param("key") Long key);
+    @Delete("DELETE FROM `${tableName}` WHERE `key` = #{key}")
+    void delete(@Param("tableName") String tableName, @Param("key") Long key);
 }
