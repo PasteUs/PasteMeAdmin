@@ -1,8 +1,8 @@
-package cn.pasteme.admin.risk.impl;
+package cn.pasteme.admin.manager.risk.impl;
 
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
-import cn.pasteme.admin.risk.RiskController;
+import cn.pasteme.admin.manager.risk.RiskControlManager;
 import cn.pasteme.algorithm.ac.AhoCorasick;
 import cn.pasteme.algorithm.ac.impl.NormalAhoCorasick;
 
@@ -21,13 +21,13 @@ import java.util.List;
 @Data
 @Slf4j
 @Service
-public class RiskControllerImpl implements RiskController {
+public class RiskControlManagerImpl implements RiskControlManager {
 
     private AhoCorasick ahoCorasick;
 
     private RiskDictionaryMapper riskDictionaryMapper;
 
-    public RiskControllerImpl(RiskDictionaryMapper riskDictionaryMapper) {
+    public RiskControlManagerImpl(RiskDictionaryMapper riskDictionaryMapper) {
         this.ahoCorasick = new NormalAhoCorasick();
         this.riskDictionaryMapper = riskDictionaryMapper;
 

@@ -1,4 +1,4 @@
-package cn.pasteme.admin.risk;
+package cn.pasteme.admin.manager.risk;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * @author Lucien
  * @version 1.0.0
  */
-public interface RiskController {
+public interface RiskControlManager {
 
     /**
      * 判断文本是否有风险

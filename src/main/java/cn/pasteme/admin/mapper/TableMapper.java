@@ -13,7 +13,17 @@ import org.springframework.stereotype.Repository;
 public interface TableMapper {
 
     /**
-     * 创建表
+     * 创建 pasteme_admin_risk_check_result
+     */
+    @Update({"CREATE TABLE IF NOT EXISTS `pasteme_admin_risk_check_result` (",
+            "`key` BIGINT UNSIGNED NOT NULL PRIMARY KEY,",
+            "`type` INT NOT NULL,",
+            "`result` JSON NOT NULL",
+            ")"})
+    void createPasteMeAdminRiskCheckResult();
+
+    /**
+     * 创建 pasteme_admin_risk_state
      */
     @Update({"CREATE TABLE IF NOT EXISTS `pasteme_admin_risk_state` (",
             "`key` BIGINT UNSIGNED NOT NULL PRIMARY KEY,",
@@ -23,7 +33,7 @@ public interface TableMapper {
     void createPasteMeAdminRiskState();
 
     /**
-     * 创建表
+     * 创建 pasteme_admin_access_count
      */
     @Update({"CREATE TABLE IF NOT EXISTS `pasteme_admin_access_count` (",
             "`key`  BIGINT UNSIGNED NOT NULL PRIMARY KEY,",
@@ -32,7 +42,7 @@ public interface TableMapper {
     void createPasteMeAdminAccessCount();
 
     /**
-     * 创建表
+     * 创建 pasteme_admin_dictionary
      */
     @Update({"CREATE TABLE IF NOT EXISTS `pasteme_admin_dictionary` (",
             "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,",
