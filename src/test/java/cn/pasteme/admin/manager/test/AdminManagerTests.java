@@ -7,20 +7,20 @@ import cn.pasteme.admin.manager.risk.RiskControlManager;
 
 import static org.junit.Assert.*;
 
+import cn.pasteme.admin.test.TableInitializer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.0.0
+ * @version 1.0.1
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,10 +37,7 @@ public class AdminManagerTests {
 
     @Before
     public void before() {
-        tableMapper.createPasteMeAdminRiskState();
-        tableMapper.createPasteMeAdminDictionary();
-        tableMapper.createPasteMeAdminAccessCount();
-        tableMapper.createPasteMeAdminRiskCheckResult();
+        TableInitializer.init(tableMapper);
     }
 
     private List<String> getLatestDictionary() {

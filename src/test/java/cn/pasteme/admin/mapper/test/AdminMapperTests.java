@@ -12,6 +12,7 @@ import cn.pasteme.admin.mapper.RiskStateMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.mapper.TableMapper;
 import cn.pasteme.admin.mapper.PasteAdminTestMapper;
+import cn.pasteme.admin.test.TableInitializer;
 import cn.pasteme.algorithm.pair.Pair;
 
 import static org.junit.Assert.*;
@@ -31,7 +32,7 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.2.1
+ * @version 1.2.2
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -58,10 +59,7 @@ public class AdminMapperTests {
 
     @Before
     public void before() {
-        tableMapper.createPasteMeAdminRiskState();
-        tableMapper.createPasteMeAdminDictionary();
-        tableMapper.createPasteMeAdminAccessCount();
-        tableMapper.createPasteMeAdminRiskCheckResult();
+        TableInitializer.init(tableMapper);
     }
 
     private List<String> getLatestDictionary() {
@@ -73,19 +71,6 @@ public class AdminMapperTests {
     private void updateAndCheck(List<String> dictionary) {
         assertTrue(riskDictionaryMapper.updateDictionary(dictionary));
         assertEquals(dictionary, getLatestDictionary());
-    }
-
-    private void assertPairListEquals(@NotNull List<Pair<String, Long>> expect,
-                                      @NotNull List<Pair<String, Long>> actually) {
-        if (expect.size() != actually.size()) {
-            assertEquals(expect, actually);
-        } else {
-            for (int i = 0; i < expect.size(); i++) {
-                Pair<String, Long> expectPair = expect.get(i);
-                Pair<String, Long> actuallyPair = actually.get(i);
-                assertEquals(expectPair, actuallyPair);
-            }
-        }
     }
 
     @Test
