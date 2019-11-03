@@ -4,6 +4,7 @@ import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.algorithm.pair.Pair;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -15,7 +16,7 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.0.0
+ * @version 1.0.1
  */
 @Repository
 public interface RiskCheckResultMapper {
@@ -56,14 +57,14 @@ public interface RiskCheckResultMapper {
      * @param type 类型
      * @return DO
      */
-    @Select({"SELECT `result` FROM `pasteme_admin_risk_check_result`",
+    @Select({"SELECT * FROM `pasteme_admin_risk_check_result`",
             "WHERE `key` = #{key}",
             "AND `type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}"
     })
     @Results(id = "RiskCheckResultDO", value = {
             @Result(column = "key", property = "key"),
             @Result(column = "type", property = "type", javaType = RiskCheckResultType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class),
-            @Result(column = "result", property = "result", javaType = List.class, typeHandler = cn.pasteme.common.mapper.handler.JsonTypeHandler.class)
+            @Result(column = "result", property = "result", javaType = JSON.class, typeHandler = cn.pasteme.common.mapper.handler.JsonTypeHandler.class)
     })
     RiskCheckResultDO getResultByKeyAndType(Long key, RiskCheckResultType type);
 }

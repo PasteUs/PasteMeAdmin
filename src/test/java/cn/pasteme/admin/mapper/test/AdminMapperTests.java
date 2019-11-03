@@ -15,24 +15,27 @@ import cn.pasteme.admin.mapper.PasteAdminTestMapper;
 import cn.pasteme.algorithm.pair.Pair;
 
 import static org.junit.Assert.*;
+
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.2.0
+ * @version 1.2.1
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class AdminMapperTests {
 
     @Autowired
@@ -127,13 +130,16 @@ public class AdminMapperTests {
         riskCheckResultDO.setType(RiskCheckResultType.KEYWORDS_COUNT);
 
         List<Pair<String, Long>> expect, actually;
-        expect = Arrays.asList(new Pair<>("English Test", 1L), new Pair<>("中文测试", 2L));
+        expect = new ArrayList<>();
+        expect.add(new Pair<>("English Test", 1L));
+        expect.add(new Pair<>("中文测试", 2L));
         riskCheckResultDO.setResult(expect);
+
         assertTrue(riskCheckResultMapper.createDO(riskCheckResultDO));
         riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORDS_COUNT);
         assertNotNull(riskCheckResultDO);
         actually = riskCheckResultDO.getResult();
-        assertPairListEquals(expect, actually);
+        assertEquals(expect, actually);
 
         expect.add(new Pair<>("Hello World!", 10086L));
         expect.add(new Pair<>("你好，世界！", 10010L));
@@ -141,6 +147,6 @@ public class AdminMapperTests {
         riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORDS_COUNT);
         assertNotNull(riskCheckResultDO);
         actually = riskCheckResultDO.getResult();
-        assertPairListEquals(expect, actually);
+        assertEquals(expect, actually);
     }
 }

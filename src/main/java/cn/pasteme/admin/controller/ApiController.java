@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
  * API 请求
  *
  * @author Lucien
- * @version 1.1.0
+ * @version 1.1.1
  */
 @Slf4j
 @RestController
 @RequestMapping(path = "/api")
-public class APIController {
+public class ApiController {
 
     private PasteAdminManager pasteAdminManager;
 
-    public APIController(PasteAdminManager pasteAdminManager) {
+    public ApiController(PasteAdminManager pasteAdminManager) {
         this.pasteAdminManager = pasteAdminManager;
     }
 
