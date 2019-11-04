@@ -1,10 +1,10 @@
 package cn.pasteme.admin.manager.risk.impl;
-
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.manager.risk.RiskControlManager;
 import cn.pasteme.algorithm.ac.AhoCorasick;
 import cn.pasteme.algorithm.ac.impl.NormalAhoCorasick;
+import cn.pasteme.algorithm.pair.Pair;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.0.1
+ * @version 1.1.0
  */
 @Data
 @Slf4j
@@ -55,11 +55,5 @@ public class RiskControlManagerImpl implements RiskControlManager {
             log.error("error = ", e);
             return false;
         }
-    }
-
-    @Override
-    public boolean isRisky(String text) {
-        List<String> result = this.ahoCorasick.match(text);
-        return !result.isEmpty();
     }
 }
