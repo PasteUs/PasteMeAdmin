@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.0.1
+ * @version 1.2.0
  */
 @Repository
 public interface RiskCheckResultMapper {
@@ -67,4 +67,35 @@ public interface RiskCheckResultMapper {
             @Result(column = "result", property = "result", javaType = JSON.class, typeHandler = cn.pasteme.common.mapper.handler.JsonTypeHandler.class)
     })
     RiskCheckResultDO getResultByKeyAndType(Long key, RiskCheckResultType type);
+
+    /**
+     * 分页查询某类结果集
+     *
+     * @param type 类型
+     * @param limit 一页的大小
+     * @param offset 偏移
+     * @return DO List
+     */
+    @Select({"SELECT * FROM `pasteme_admin_risk_check_result`",
+            "WHERE `type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
+            "LIMIT #{limit}",
+            "OFFSET #{offset}"
+    })
+    @Results(id = "RiskCheckResultDO", value = {
+            @Result(column = "key", property = "key"),
+            @Result(column = "type", property = "type", javaType = RiskCheckResultType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class),
+            @Result(column = "result", property = "result", javaType = JSON.class, typeHandler = cn.pasteme.common.mapper.handler.JsonTypeHandler.class)
+    })
+    List<RiskCheckResultDO> getResultsByType(RiskCheckResultType type, Long limit, Long offset);
+
+    /**
+     * 获取某类结果的数量
+     *
+     * @param type 类型
+     * @return 数量
+     */
+    @Select({"SELECT COUNT(1) FROM `pasteme_admin_risk_check_result`",
+            "WHERE `type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}"
+    })
+    Long getTypeCount(RiskCheckResultType type);
 }
