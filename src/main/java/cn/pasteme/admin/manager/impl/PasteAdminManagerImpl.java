@@ -1,8 +1,8 @@
 package cn.pasteme.admin.manager.impl;
 
-import cn.pasteme.admin.entity.RiskStateDO;
-import cn.pasteme.admin.enumeration.PasteState;
-import cn.pasteme.admin.enumeration.PasteType;
+import cn.pasteme.admin.entity.RiskCheckDO;
+import cn.pasteme.admin.enumeration.RiskStateType;
+import cn.pasteme.admin.enumeration.RiskStateState;
 import cn.pasteme.admin.manager.PasteAdminManager;
 import cn.pasteme.admin.mapper.AccessCountMapper;
 import cn.pasteme.admin.mapper.RiskStateMapper;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author Lucien
- * @version 1.2.0
+ * @version 1.2.1
  */
 @Slf4j
 @Service
@@ -39,8 +39,8 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
     @Override
     public boolean createRecord(Long key) {
         try {
-            RiskStateDO riskStateDO = new RiskStateDO(key);
-            return riskStateMapper.insertDO(riskStateDO);
+            RiskCheckDO riskCheckDO = new RiskCheckDO(key);
+            return riskStateMapper.insertDO(riskCheckDO);
         } catch (Exception e) {
             log.error("{} key = {}, error = ", key, e);
             return false;
@@ -48,13 +48,13 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
     }
 
     @Override
-    public boolean changeTypeAndStateByKey(Long key, PasteType type, PasteState state) {
+    public boolean changeTypeAndStateByKey(Long key, RiskStateState type, RiskStateType state) {
         try {
-            RiskStateDO riskStateDO = riskStateMapper.getDoByKey(key);
-            log.warn("riskStateDO = {}", riskStateDO);
-            riskStateDO.setType(type);
-            riskStateDO.setState(state);
-            riskStateMapper.updateDO(riskStateDO);
+            RiskCheckDO riskCheckDO = riskStateMapper.getDoByKey(key);
+            log.warn("riskCheckDO = {}", riskCheckDO);
+            riskCheckDO.setType(type);
+            riskCheckDO.setState(state);
+            riskStateMapper.updateDO(riskCheckDO);
             return true;
         } catch (Exception e) {
             log.error("error = ", e);

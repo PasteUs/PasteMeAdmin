@@ -1,4 +1,5 @@
 package cn.pasteme.admin.manager.risk.impl;
+
 import cn.pasteme.admin.dto.RiskCheckResultDTO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
@@ -19,15 +20,15 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 import javax.validation.constraints.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * @author Lucien
- * @version 1.2.0
+ * @version 1.2.1
  */
 @Data
 @Slf4j
@@ -70,7 +71,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
     @Override
     public Response<List<Pair<String, Long>>> riskCheck(@NotNull String text) {
-        return Response.error(ResponseCode.CONTENT_EMPTY);
+        return Response.error(ResponseCode.METHOD_NOT_ALLOWED);
     }
 
     @Override
@@ -85,7 +86,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
             riskCheckResultDO.setType(RiskCheckResultType.KEYWORDS_COUNT);
             riskCheckResultDO.setResult(result);
             riskCheckResultMapper.createDO(riskCheckResultDO);
-            return Response.success(null);
+            return Response.success();
         } catch (Exception e) {
             log.error("key = {}, error = ", key, e);
             return Response.error(ResponseCode.SERVER_ERROR);
@@ -99,7 +100,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
             AhoCorasick ahoCorasick = new NormalAhoCorasick();
             ahoCorasick.build(dictionary);
             this.ahoCorasick = ahoCorasick;
-            return Response.success(null);
+            return Response.success();
         } catch (Exception e) {
             log.error("dictionary = {}, error = ", dictionary, e);
             return Response.error(ResponseCode.SERVER_ERROR);
@@ -108,7 +109,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
     @Override
     public Response<List<Pair<String, Long>>> tokenCount(@NotNull String text) {
-        return Response.error(ResponseCode.CONTENT_EMPTY);
+        return Response.error(ResponseCode.METHOD_NOT_ALLOWED);
     }
 
     @Override
@@ -123,7 +124,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
             riskCheckResultDO.setResult(result);
 
             riskCheckResultMapper.createDO(riskCheckResultDO);
-            return Response.success(null);
+            return Response.success();
         } catch (Exception e) {
             log.error("key = {}, error = ", key, e);
             return Response.error(ResponseCode.SERVER_ERROR);

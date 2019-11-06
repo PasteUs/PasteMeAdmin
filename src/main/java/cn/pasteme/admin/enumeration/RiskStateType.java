@@ -5,13 +5,13 @@ import cn.pasteme.common.enumeration.ValueEnum;
 import lombok.Getter;
 
 /**
- * RiskStateDO.type 值域
+ * RiskCheckDO.type 值域
  * 可用于 supervise
  *
  * @author Lucien
- * @version 1.1.0
+ * @version 1.1.1
  */
-public enum PasteState implements ValueEnum {
+public enum RiskStateType implements ValueEnum {
 
     // 已检查
     CHECKED(0),
@@ -28,7 +28,7 @@ public enum PasteState implements ValueEnum {
     @Getter
     private int value;
 
-    PasteState(int value) {
+    RiskStateType(int value) {
         this.value = value;
     }
 }

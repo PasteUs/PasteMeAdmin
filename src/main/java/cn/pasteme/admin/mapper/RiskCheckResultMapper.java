@@ -7,6 +7,7 @@ import cn.pasteme.algorithm.pair.Pair;
 import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -16,7 +17,7 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.2.0
+ * @version 1.2.1
  */
 @Repository
 public interface RiskCheckResultMapper {
@@ -81,11 +82,7 @@ public interface RiskCheckResultMapper {
             "LIMIT #{limit}",
             "OFFSET #{offset}"
     })
-    @Results(id = "RiskCheckResultDO", value = {
-            @Result(column = "key", property = "key"),
-            @Result(column = "type", property = "type", javaType = RiskCheckResultType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class),
-            @Result(column = "result", property = "result", javaType = JSON.class, typeHandler = cn.pasteme.common.mapper.handler.JsonTypeHandler.class)
-    })
+    @ResultMap(value = "RiskCheckResultDO")
     List<RiskCheckResultDO> getResultsByType(RiskCheckResultType type, Long limit, Long offset);
 
     /**
