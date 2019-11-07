@@ -46,6 +46,7 @@ public interface TableMapper {
      */
     @Update({"CREATE TABLE IF NOT EXISTS `pasteme_admin_dictionary` (",
             "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,",
+            "`type` INT NOT NULL,",
             "`dictionary` JSON NOT NULL",
             ")"})
     void createPasteMeAdminDictionary();

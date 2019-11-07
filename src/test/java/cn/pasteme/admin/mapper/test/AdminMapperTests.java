@@ -3,6 +3,7 @@ package cn.pasteme.admin.mapper.test;
 import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
+import cn.pasteme.admin.enumeration.RiskDictionaryType;
 import cn.pasteme.admin.enumeration.RiskStateType;
 import cn.pasteme.admin.enumeration.RiskStateState;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
@@ -31,10 +32,10 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.2.3
+ * @version 1.2.4
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Slf4j
 public class AdminMapperTests {
 
@@ -62,13 +63,13 @@ public class AdminMapperTests {
     }
 
     private List<String> getLatestDictionary() {
-        RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary();
+        RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.RISK_WORD);
         assertNotNull(riskDictionaryDO);
         return riskDictionaryDO.getDictionary();
     }
 
     private void updateAndCheck(List<String> dictionary) {
-        assertTrue(riskDictionaryMapper.updateDictionary(dictionary));
+        assertTrue(riskDictionaryMapper.updateDictionary(RiskDictionaryType.RISK_WORD, dictionary));
         assertEquals(dictionary, getLatestDictionary());
     }
 

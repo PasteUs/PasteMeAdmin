@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @version 1.1.0
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class AdminManagerTests {
 
     @Autowired

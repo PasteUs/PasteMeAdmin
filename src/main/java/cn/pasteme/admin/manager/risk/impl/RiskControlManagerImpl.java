@@ -4,6 +4,7 @@ import cn.pasteme.admin.dto.RiskCheckResultDTO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
+import cn.pasteme.admin.enumeration.RiskDictionaryType;
 import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.manager.risk.RiskControlManager;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Lucien
- * @version 1.2.1
+ * @version 1.2.2
  */
 @Data
 @Slf4j
@@ -60,18 +61,30 @@ public class RiskControlManagerImpl implements RiskControlManager {
         List<String> dictionary = new ArrayList<>();
 
         try {
-            RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary();
+            RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.RISK_WORD);
             dictionary = riskDictionaryDO.getDictionary();
         } catch (Exception e) {
-            log.error("Load from db error = ", e);
+            log.error("Load risk dictionary from db error = ", e);
         }
 
         ahoCorasick.build(dictionary);
+
+        try {
+            RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.STOP_WORD);
+            dictionary = riskDictionaryDO.getDictionary();
+        } catch (Exception e) {
+            log.error("Load stopWords from db error = ", e);
+        }
     }
 
     @Override
     public Response<List<Pair<String, Long>>> riskCheck(@NotNull String text) {
-        return Response.error(ResponseCode.METHOD_NOT_ALLOWED);
+        try {
+            return Response.success(ahoCorasick.countMatch(text));
+        } catch (Exception e) {
+            log.error("error = ", e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
     }
 
     @Override
@@ -96,7 +109,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
     @Override
     public Response rebuild(@NotNull List<String> dictionary) {
         try {
-            riskDictionaryMapper.updateDictionary(dictionary);
+            riskDictionaryMapper.updateDictionary(RiskDictionaryType.RISK_WORD, dictionary);
             AhoCorasick ahoCorasick = new NormalAhoCorasick();
             ahoCorasick.build(dictionary);
             this.ahoCorasick = ahoCorasick;
@@ -109,7 +122,12 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
     @Override
     public Response<List<Pair<String, Long>>> tokenCount(@NotNull String text) {
-        return Response.error(ResponseCode.METHOD_NOT_ALLOWED);
+        try {
+            return Response.success(nlp.countToken(text));
+        } catch (Exception e) {
+            log.error("error = ", e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
     }
 
     @Override
@@ -147,7 +165,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
     }
 
     @Override
-    public Response<Long> count(RiskCheckResultType riskCheckResultType) {
+    public Response<Long> count(@NotNull RiskCheckResultType riskCheckResultType) {
         try {
             return Response.success(riskCheckResultMapper.getTypeCount(riskCheckResultType));
         } catch (Exception e) {
