@@ -1,4 +1,4 @@
-package cn.pasteme.admin.mapper.test;
+package cn.pasteme.admin.mapper;
 
 import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
@@ -7,19 +7,11 @@ import cn.pasteme.admin.enumeration.RiskDictionaryType;
 import cn.pasteme.admin.enumeration.RiskStateType;
 import cn.pasteme.admin.enumeration.RiskStateState;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
-import cn.pasteme.admin.mapper.AccessCountMapper;
-import cn.pasteme.admin.mapper.RiskCheckResultMapper;
-import cn.pasteme.admin.mapper.RiskStateMapper;
-import cn.pasteme.admin.mapper.RiskDictionaryMapper;
-import cn.pasteme.admin.mapper.TableMapper;
-import cn.pasteme.admin.mapper.PasteAdminTestMapper;
-import cn.pasteme.admin.test.TableInitializer;
 import cn.pasteme.algorithm.pair.Pair;
 
 import static org.junit.Assert.*;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +32,6 @@ import java.util.List;
 public class AdminMapperTests {
 
     @Autowired
-    private TableMapper tableMapper;
-
-    @Autowired
     private AccessCountMapper accessCountMapper;
 
     @Autowired
@@ -56,11 +45,6 @@ public class AdminMapperTests {
 
     @Autowired
     private RiskCheckResultMapper riskCheckResultMapper;
-
-    @Before
-    public void before() {
-        TableInitializer.init(tableMapper);
-    }
 
     private List<String> getLatestDictionary() {
         RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.RISK_WORD);

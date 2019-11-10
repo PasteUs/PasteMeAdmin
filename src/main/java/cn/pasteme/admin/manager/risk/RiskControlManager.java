@@ -38,7 +38,7 @@ public interface RiskControlManager {
      * @param dictionary 字典
      * @return boolean
      */
-    Response rebuild(@NotNull List<String> dictionary);
+    Response setRiskDictionary(@NotNull List<String> dictionary);
 
     /**
      * 文本分词计数
@@ -55,6 +55,14 @@ public interface RiskControlManager {
      * @return boolean
      */
     Response tokenCount(@NotNull Long key);
+
+    /**
+     * 设置 nlp stop words
+     *
+     * @param stopWords stop words
+     * @return boolean
+     */
+    Response setStopWords(@NotNull List<String> stopWords);
 
     /**
      * 分页获取 Check 结果

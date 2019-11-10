@@ -10,10 +10,14 @@ import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.manager.risk.RiskControlManager;
 import cn.pasteme.algorithm.ac.AhoCorasick;
 import cn.pasteme.algorithm.ac.impl.NormalAhoCorasick;
+import cn.pasteme.algorithm.dictionary.Dictionary;
 import cn.pasteme.algorithm.nlp.NLP;
+import cn.pasteme.algorithm.nlp.impl.NormalNLP;
 import cn.pasteme.algorithm.pair.Pair;
-import cn.pasteme.common.entity.PermanentDO;
-import cn.pasteme.common.mapper.PermanentMapper;
+import cn.pasteme.algorithm.trie.Trie;
+import cn.pasteme.algorithm.trie.impl.NormalTrie;
+import cn.pasteme.common.dto.PasteResponseDTO;
+import cn.pasteme.common.manager.PermanentManager;
 import cn.pasteme.common.utils.result.Response;
 import cn.pasteme.common.utils.result.ResponseCode;
 
@@ -29,7 +33,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Lucien
- * @version 1.2.2
+ * @version 1.3.0
  */
 @Data
 @Slf4j
@@ -40,7 +44,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
     private RiskDictionaryMapper riskDictionaryMapper;
 
-    private PermanentMapper permanentMapper;
+    private PermanentManager permanentManager;
 
     private RiskCheckResultMapper riskCheckResultMapper;
 
@@ -49,12 +53,12 @@ public class RiskControlManagerImpl implements RiskControlManager {
     public RiskControlManagerImpl(
             AhoCorasick ahoCorasick,
             RiskDictionaryMapper riskDictionaryMapper,
-            PermanentMapper permanentMapper,
+            PermanentManager permanentManager,
             RiskCheckResultMapper riskCheckResultMapper,
             NLP nlp) {
         this.ahoCorasick = ahoCorasick;
         this.riskDictionaryMapper = riskDictionaryMapper;
-        this.permanentMapper = permanentMapper;
+        this.permanentManager = permanentManager;
         this.riskCheckResultMapper = riskCheckResultMapper;
         this.nlp = nlp;
 
@@ -75,6 +79,8 @@ public class RiskControlManagerImpl implements RiskControlManager {
         } catch (Exception e) {
             log.error("Load stopWords from db error = ", e);
         }
+
+        nlp.addStopWords(dictionary);
     }
 
     @Override
@@ -90,8 +96,11 @@ public class RiskControlManagerImpl implements RiskControlManager {
     @Override
     public Response riskCheck(@NotNull Long key) {
         try {
-            PermanentDO permanentDO = permanentMapper.getByKey(key);
-            List<Pair<String, Long>> result = ahoCorasick.countMatch(permanentDO.getContent());
+            Response<PasteResponseDTO> response = permanentManager.get(key.toString());
+            if (!response.isSuccess()) {
+                return response;
+            }
+            List<Pair<String, Long>> result = ahoCorasick.countMatch(response.getData().getContent());
             log.info("key = {}, result = {}", key, result);
 
             RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
@@ -107,7 +116,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
     }
 
     @Override
-    public Response rebuild(@NotNull List<String> dictionary) {
+    public Response setRiskDictionary(@NotNull List<String> dictionary) {
         try {
             riskDictionaryMapper.updateDictionary(RiskDictionaryType.RISK_WORD, dictionary);
             AhoCorasick ahoCorasick = new NormalAhoCorasick();
@@ -116,6 +125,20 @@ public class RiskControlManagerImpl implements RiskControlManager {
             return Response.success();
         } catch (Exception e) {
             log.error("dictionary = {}, error = ", dictionary, e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response setStopWords(@NotNull List<String> stopWords) {
+        try {
+            riskDictionaryMapper.updateDictionary(RiskDictionaryType.STOP_WORD, stopWords);
+            Trie trie = new NormalTrie();
+            trie.addAll(stopWords);
+            nlp = new NormalNLP(new Dictionary(trie));
+            return Response.success();
+        } catch (Exception e) {
+            log.error("stopWords = {}, error = ", stopWords, e);
             return Response.error(ResponseCode.SERVER_ERROR);
         }
     }
@@ -133,8 +156,11 @@ public class RiskControlManagerImpl implements RiskControlManager {
     @Override
     public Response tokenCount(@NotNull Long key) {
         try {
-            PermanentDO permanentDO = permanentMapper.getByKey(key);
-            List<Pair<String, Long>> result = nlp.countToken(permanentDO.getContent());
+            Response<PasteResponseDTO> response = permanentManager.get(key.toString());
+            if (!response.isSuccess()) {
+                return response;
+            }
+            List<Pair<String, Long>> result = nlp.countToken(response.getData().getContent());
 
             RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
             riskCheckResultDO.setKey(key);

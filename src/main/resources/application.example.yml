@@ -6,7 +6,7 @@ spring:
   datasource:
     mysql:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://127.0.0.1:4399/pasteme
+      jdbc-url: jdbc:mysql://localhost:4399/pasteme
       username: username
       password: password
 
