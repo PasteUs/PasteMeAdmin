@@ -1,46 +1,35 @@
-package cn.pasteme.admin.mapper.test;
+package cn.pasteme.admin.mapper;
 
+import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
-import cn.pasteme.admin.entity.RiskStateDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
-import cn.pasteme.admin.enumeration.PasteState;
-import cn.pasteme.admin.enumeration.PasteType;
+import cn.pasteme.admin.enumeration.RiskDictionaryType;
+import cn.pasteme.admin.enumeration.RiskStateType;
+import cn.pasteme.admin.enumeration.RiskStateState;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
-import cn.pasteme.admin.mapper.AccessCountMapper;
-import cn.pasteme.admin.mapper.RiskCheckResultMapper;
-import cn.pasteme.admin.mapper.RiskStateMapper;
-import cn.pasteme.admin.mapper.RiskDictionaryMapper;
-import cn.pasteme.admin.mapper.TableMapper;
-import cn.pasteme.admin.mapper.PasteAdminTestMapper;
-import cn.pasteme.admin.test.TableInitializer;
 import cn.pasteme.algorithm.pair.Pair;
 
 import static org.junit.Assert.*;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.2.2
+ * @version 1.2.4
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Slf4j
 public class AdminMapperTests {
-
-    @Autowired
-    private TableMapper tableMapper;
 
     @Autowired
     private AccessCountMapper accessCountMapper;
@@ -57,19 +46,14 @@ public class AdminMapperTests {
     @Autowired
     private RiskCheckResultMapper riskCheckResultMapper;
 
-    @Before
-    public void before() {
-        TableInitializer.init(tableMapper);
-    }
-
     private List<String> getLatestDictionary() {
-        RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary();
+        RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.RISK_WORD);
         assertNotNull(riskDictionaryDO);
         return riskDictionaryDO.getDictionary();
     }
 
     private void updateAndCheck(List<String> dictionary) {
-        assertTrue(riskDictionaryMapper.updateDictionary(dictionary));
+        assertTrue(riskDictionaryMapper.updateDictionary(RiskDictionaryType.RISK_WORD, dictionary));
         assertEquals(dictionary, getLatestDictionary());
     }
 
@@ -78,20 +62,20 @@ public class AdminMapperTests {
         pasteAdminTestMapper.delete("pasteme_admin_risk_state", 100L);
 
         assertEquals(0, riskStateMapper.countByKey(100L));
-        RiskStateDO riskStateDO = new RiskStateDO(100L);
-        assertTrue(riskStateMapper.insertDO(riskStateDO));
+        RiskCheckDO riskCheckDO = new RiskCheckDO(100L);
+        assertTrue(riskStateMapper.insertDO(riskCheckDO));
         assertEquals(1, riskStateMapper.countByKey(100L));
 
-        riskStateDO = riskStateMapper.getDoByKey(100L);
-        assertNotNull(riskStateDO);
+        riskCheckDO = riskStateMapper.getDoByKey(100L);
+        assertNotNull(riskCheckDO);
 
-        riskStateDO.setState(PasteState.CHECKED);
-        riskStateDO.setType(PasteType.PORN);
-        assertTrue(riskStateMapper.updateDO(riskStateDO));
-        riskStateDO = riskStateMapper.getDoByKey(100L);
-        assertNotNull(riskStateDO);
-        assertEquals(PasteState.CHECKED, riskStateDO.getState());
-        assertEquals(PasteType.PORN, riskStateDO.getType());
+        riskCheckDO.setState(RiskStateType.CHECKED);
+        riskCheckDO.setType(RiskStateState.PORN);
+        assertTrue(riskStateMapper.updateDO(riskCheckDO));
+        riskCheckDO = riskStateMapper.getDoByKey(100L);
+        assertNotNull(riskCheckDO);
+        assertEquals(RiskStateType.CHECKED, riskCheckDO.getState());
+        assertEquals(RiskStateState.PORN, riskCheckDO.getType());
     }
 
     @Test

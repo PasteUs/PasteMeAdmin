@@ -1,22 +1,39 @@
 package cn.pasteme.admin.manager.risk.impl;
 
+import cn.pasteme.admin.dto.RiskCheckResultDTO;
+import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
+import cn.pasteme.admin.enumeration.RiskCheckResultType;
+import cn.pasteme.admin.enumeration.RiskDictionaryType;
+import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.manager.risk.RiskControlManager;
 import cn.pasteme.algorithm.ac.AhoCorasick;
 import cn.pasteme.algorithm.ac.impl.NormalAhoCorasick;
+import cn.pasteme.algorithm.dictionary.Dictionary;
+import cn.pasteme.algorithm.nlp.NLP;
+import cn.pasteme.algorithm.nlp.impl.NormalNLP;
+import cn.pasteme.algorithm.pair.Pair;
+import cn.pasteme.algorithm.trie.Trie;
+import cn.pasteme.algorithm.trie.impl.NormalTrie;
+import cn.pasteme.common.dto.PasteResponseDTO;
+import cn.pasteme.common.manager.PermanentManager;
+import cn.pasteme.common.utils.result.Response;
+import cn.pasteme.common.utils.result.ResponseCode;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 import javax.validation.constraints.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Lucien
- * @version 1.0.1
+ * @version 1.3.0
  */
 @Data
 @Slf4j
@@ -27,39 +44,159 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
     private RiskDictionaryMapper riskDictionaryMapper;
 
-    public RiskControlManagerImpl(RiskDictionaryMapper riskDictionaryMapper) {
-        this.ahoCorasick = new NormalAhoCorasick();
+    private PermanentManager permanentManager;
+
+    private RiskCheckResultMapper riskCheckResultMapper;
+
+    private NLP nlp;
+
+    public RiskControlManagerImpl(
+            AhoCorasick ahoCorasick,
+            RiskDictionaryMapper riskDictionaryMapper,
+            PermanentManager permanentManager,
+            RiskCheckResultMapper riskCheckResultMapper,
+            NLP nlp) {
+        this.ahoCorasick = ahoCorasick;
         this.riskDictionaryMapper = riskDictionaryMapper;
+        this.permanentManager = permanentManager;
+        this.riskCheckResultMapper = riskCheckResultMapper;
+        this.nlp = nlp;
 
         List<String> dictionary = new ArrayList<>();
 
         try {
-            RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary();
+            RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.RISK_WORD);
             dictionary = riskDictionaryDO.getDictionary();
         } catch (Exception e) {
-            log.error("Load from db error = ", e);
+            log.error("Load risk dictionary from db error = ", e);
         }
 
         ahoCorasick.build(dictionary);
+
+        try {
+            RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.STOP_WORD);
+            dictionary = riskDictionaryDO.getDictionary();
+        } catch (Exception e) {
+            log.error("Load stopWords from db error = ", e);
+        }
+
+        nlp.addStopWords(dictionary);
     }
 
     @Override
-    public boolean rebuild(@NotNull List<String> dictionary) {
+    public Response<List<Pair<String, Long>>> riskCheck(@NotNull String text) {
         try {
-            riskDictionaryMapper.updateDictionary(dictionary);
-            AhoCorasick ahoCorasick = new NormalAhoCorasick();
-            ahoCorasick.build(dictionary);
-            this.ahoCorasick = ahoCorasick;
-            return true;
+            return Response.success(ahoCorasick.countMatch(text));
         } catch (Exception e) {
             log.error("error = ", e);
-            return false;
+            return Response.error(ResponseCode.SERVER_ERROR);
         }
     }
 
     @Override
-    public boolean isRisky(String text) {
-        List<String> result = this.ahoCorasick.match(text);
-        return !result.isEmpty();
+    public Response riskCheck(@NotNull Long key) {
+        try {
+            Response<PasteResponseDTO> response = permanentManager.get(key.toString());
+            if (!response.isSuccess()) {
+                return response;
+            }
+            List<Pair<String, Long>> result = ahoCorasick.countMatch(response.getData().getContent());
+            log.info("key = {}, result = {}", key, result);
+
+            RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
+            riskCheckResultDO.setKey(key);
+            riskCheckResultDO.setType(RiskCheckResultType.KEYWORDS_COUNT);
+            riskCheckResultDO.setResult(result);
+            riskCheckResultMapper.createDO(riskCheckResultDO);
+            return Response.success();
+        } catch (Exception e) {
+            log.error("key = {}, error = ", key, e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response setRiskDictionary(@NotNull List<String> dictionary) {
+        try {
+            riskDictionaryMapper.updateDictionary(RiskDictionaryType.RISK_WORD, dictionary);
+            AhoCorasick ahoCorasick = new NormalAhoCorasick();
+            ahoCorasick.build(dictionary);
+            this.ahoCorasick = ahoCorasick;
+            return Response.success();
+        } catch (Exception e) {
+            log.error("dictionary = {}, error = ", dictionary, e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response setStopWords(@NotNull List<String> stopWords) {
+        try {
+            riskDictionaryMapper.updateDictionary(RiskDictionaryType.STOP_WORD, stopWords);
+            Trie trie = new NormalTrie();
+            trie.addAll(stopWords);
+            nlp = new NormalNLP(new Dictionary(trie));
+            return Response.success();
+        } catch (Exception e) {
+            log.error("stopWords = {}, error = ", stopWords, e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response<List<Pair<String, Long>>> tokenCount(@NotNull String text) {
+        try {
+            return Response.success(nlp.countToken(text));
+        } catch (Exception e) {
+            log.error("error = ", e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response tokenCount(@NotNull Long key) {
+        try {
+            Response<PasteResponseDTO> response = permanentManager.get(key.toString());
+            if (!response.isSuccess()) {
+                return response;
+            }
+            List<Pair<String, Long>> result = nlp.countToken(response.getData().getContent());
+
+            RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
+            riskCheckResultDO.setKey(key);
+            riskCheckResultDO.setType(RiskCheckResultType.TOKENS_COUNT);
+            riskCheckResultDO.setResult(result);
+
+            riskCheckResultMapper.createDO(riskCheckResultDO);
+            return Response.success();
+        } catch (Exception e) {
+            log.error("key = {}, error = ", key, e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response<List<RiskCheckResultDTO>> getCheckResult(@NotNull Long page, @NotNull Long pageSize, @NotNull RiskCheckResultType type) {
+        try {
+            List<RiskCheckResultDO> riskCheckResultDoList = riskCheckResultMapper.getResultsByType(type, pageSize, (page - 1) * pageSize);
+            RiskCheckResultDTO buffer = new RiskCheckResultDTO();
+            return Response.success(riskCheckResultDoList.stream().map(each -> {
+                BeanUtils.copyProperties(each, buffer);
+                return buffer;
+            }).collect(Collectors.toList()));
+        } catch (Exception e) {
+            log.error("pageIndex = {}, pageSize = {}, type = {}, error = ", page, pageSize, type, e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response<Long> count(@NotNull RiskCheckResultType riskCheckResultType) {
+        try {
+            return Response.success(riskCheckResultMapper.getTypeCount(riskCheckResultType));
+        } catch (Exception e) {
+            log.error("riskCheckResultType = {}, error = ", riskCheckResultType, e);
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
     }
 }
