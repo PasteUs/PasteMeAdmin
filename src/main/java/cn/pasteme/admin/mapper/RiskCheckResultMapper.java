@@ -40,16 +40,14 @@ public interface RiskCheckResultMapper {
     /**
      * 更细 DO
      *
-     * @param key 主键
-     * @param type 类型
-     * @param result result
+     * @param riskCheckResultDO DO
      * @return boolean
      */
     @Update({"UPDATE `pasteme_admin_risk_check_result` SET",
             "`result` = #{result, typeHandler=cn.pasteme.common.mapper.handler.JsonTypeHandler}",
             "WHERE `key` = #{key}",
             "AND `type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}"})
-    boolean updateResult(Long key, RiskCheckResultType type, List<Pair<String, Long>> result);
+    boolean updateResult(RiskCheckResultDO riskCheckResultDO);
 
     /**
      * 查询 DO

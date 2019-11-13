@@ -1,6 +1,7 @@
 package cn.pasteme.admin.manager.risk.impl;
 
 import cn.pasteme.admin.dto.RiskCheckResultDTO;
+import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
@@ -8,6 +9,7 @@ import cn.pasteme.admin.enumeration.RiskDictionaryType;
 import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.manager.risk.RiskControlManager;
+import cn.pasteme.admin.mapper.RiskStateMapper;
 import cn.pasteme.algorithm.ac.AhoCorasick;
 import cn.pasteme.algorithm.ac.impl.NormalAhoCorasick;
 import cn.pasteme.algorithm.dictionary.Dictionary;
@@ -48,6 +50,8 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
     private RiskCheckResultMapper riskCheckResultMapper;
 
+    private RiskStateMapper riskStateMapper;
+
     private NLP nlp;
 
     public RiskControlManagerImpl(
@@ -55,11 +59,13 @@ public class RiskControlManagerImpl implements RiskControlManager {
             RiskDictionaryMapper riskDictionaryMapper,
             PermanentManager permanentManager,
             RiskCheckResultMapper riskCheckResultMapper,
+            RiskStateMapper riskStateMapper,
             NLP nlp) {
         this.ahoCorasick = ahoCorasick;
         this.riskDictionaryMapper = riskDictionaryMapper;
         this.permanentManager = permanentManager;
         this.riskCheckResultMapper = riskCheckResultMapper;
+        this.riskStateMapper = riskStateMapper;
         this.nlp = nlp;
 
         List<String> dictionary = new ArrayList<>();
@@ -103,11 +109,35 @@ public class RiskControlManagerImpl implements RiskControlManager {
             List<Pair<String, Long>> result = ahoCorasick.countMatch(response.getData().getContent());
             log.info("key = {}, result = {}", key, result);
 
+            RiskCheckDO riskCheckDO = new RiskCheckDO(key);
+
             RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
             riskCheckResultDO.setKey(key);
             riskCheckResultDO.setType(RiskCheckResultType.KEYWORDS_COUNT);
             riskCheckResultDO.setResult(result);
-            riskCheckResultMapper.createDO(riskCheckResultDO);
+
+            if (riskStateMapper.countByKey(key) > 0) {
+                if (!riskStateMapper.updateDO(riskCheckDO)) {
+                    log.error("error = 'riskStateMapper.updateDO() failed'");
+                    return Response.error(ResponseCode.SERVER_ERROR);
+                }
+
+                if (!riskCheckResultMapper.updateResult(riskCheckResultDO)) {
+                    log.error("error = 'riskCheckResultMapper.updateResult() failed'");
+                    return Response.error(ResponseCode.SERVER_ERROR);
+                }
+            } else {
+                if (!riskStateMapper.insertDO(riskCheckDO)) {
+                    log.error("error = 'riskStateMapper.insertDO() failed'");
+                    return Response.error(ResponseCode.SERVER_ERROR);
+                }
+
+                if (!riskCheckResultMapper.createDO(riskCheckResultDO)) {
+                    log.error("error = 'riskCheckResultMapper.createDO() failed'");
+                    return Response.error(ResponseCode.SERVER_ERROR);
+                }
+            }
+
             return Response.success();
         } catch (Exception e) {
             log.error("key = {}, error = ", key, e);
