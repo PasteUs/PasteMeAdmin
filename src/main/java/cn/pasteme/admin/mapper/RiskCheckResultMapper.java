@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.2.1
+ * @version 1.2.2
  */
 @Repository
 public interface RiskCheckResultMapper {
@@ -38,7 +38,7 @@ public interface RiskCheckResultMapper {
     boolean createDO(RiskCheckResultDO riskCheckResultDO);
 
     /**
-     * 更细 DO
+     * 更新 DO
      *
      * @param riskCheckResultDO DO
      * @return boolean

@@ -72,21 +72,29 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
         try {
             RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.RISK_WORD);
-            dictionary = riskDictionaryDO.getDictionary();
+            if (null != riskDictionaryDO) {
+                log.warn("Empty risk dictionary");
+                dictionary = riskDictionaryDO.getDictionary();
+            }
         } catch (Exception e) {
             log.error("Load risk dictionary from db error = ", e);
         }
 
         ahoCorasick.build(dictionary);
 
+        List<String> stopWords = new ArrayList<>();
+
         try {
             RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.STOP_WORD);
-            dictionary = riskDictionaryDO.getDictionary();
+            if (null != riskDictionaryDO) {
+                log.warn("Empty stop words");
+                stopWords = riskDictionaryDO.getDictionary();
+            }
         } catch (Exception e) {
             log.error("Load stopWords from db error = ", e);
         }
 
-        nlp.addStopWords(dictionary);
+        nlp.addStopWords(stopWords);
     }
 
     @Override

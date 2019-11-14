@@ -31,7 +31,7 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
         try {
             return accessCountMapper.increaseCountByKey(key);
         } catch (Exception e) {
-            log.error("{} key = {}, error = ", key, e);
+            log.error("key = {}, error = ", key, e);
             return false;
         }
     }
@@ -39,10 +39,9 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
     @Override
     public boolean createRecord(Long key) {
         try {
-            RiskCheckDO riskCheckDO = new RiskCheckDO(key);
-            return riskStateMapper.insertDO(riskCheckDO);
+            return accessCountMapper.createRecord(key);
         } catch (Exception e) {
-            log.error("{} key = {}, error = ", key, e);
+            log.error("key = {}, error = ", key, e);
             return false;
         }
     }

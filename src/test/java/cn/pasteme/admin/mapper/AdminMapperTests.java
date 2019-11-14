@@ -112,7 +112,10 @@ public class AdminMapperTests {
 
         expect.add(new Pair<>("Hello World!", 10086L));
         expect.add(new Pair<>("你好，世界！", 10010L));
-        assertTrue(riskCheckResultMapper.updateResult(100L, RiskCheckResultType.KEYWORDS_COUNT, expect));
+
+        riskCheckResultDO.setResult(expect);
+
+        assertTrue(riskCheckResultMapper.updateResult(riskCheckResultDO));
         riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORDS_COUNT);
         assertNotNull(riskCheckResultDO);
         actually = riskCheckResultDO.getResult();

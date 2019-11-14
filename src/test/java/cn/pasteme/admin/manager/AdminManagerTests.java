@@ -8,6 +8,7 @@ import cn.pasteme.admin.manager.risk.impl.RiskControlManagerImpl;
 import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.manager.risk.RiskControlManager;
+import cn.pasteme.admin.mapper.RiskStateMapper;
 import cn.pasteme.algorithm.ac.AhoCorasick;
 import cn.pasteme.algorithm.nlp.NLP;
 import cn.pasteme.algorithm.pair.Pair;
@@ -55,6 +56,9 @@ public class AdminManagerTests {
     @Mock
     private RiskCheckResultMapper riskCheckResultMapper;
 
+    @Mock
+    private RiskStateMapper riskStateMapper;
+
     @Autowired
     private NLP nlp;
 
@@ -85,15 +89,6 @@ public class AdminManagerTests {
             }
         }
 
-        // riskCheckResultMapper
-        {
-            when(riskCheckResultMapper.createDO(any())).thenReturn(true);
-
-            when(riskCheckResultMapper.getResultsByType(any(), any(), any())).thenReturn(new ArrayList<>());
-
-            when(riskCheckResultMapper.getTypeCount(any())).thenReturn(0L);
-        }
-
         // permanentManager
         {
             PasteResponseDTO pasteResponseDTO = mock(PasteResponseDTO.class);
@@ -103,11 +98,29 @@ public class AdminManagerTests {
             when(permanentManager.get("100")).thenReturn(Response.success(pasteResponseDTO));
         }
 
+        // riskCheckResultMapper
+        {
+            when(riskCheckResultMapper.createDO(any())).thenReturn(true);
+            when(riskCheckResultMapper.getResultsByType(any(), any(), any())).thenReturn(new ArrayList<>());
+            when(riskCheckResultMapper.getTypeCount(any())).thenReturn(0L);
+            when(riskCheckResultMapper.updateResult(any())).thenReturn(true);
+        }
+
+        // riskStateMapper
+        {
+            when(riskStateMapper.countByKey(any())).thenReturn(0);
+            when(riskStateMapper.countByKey(100L)).thenReturn(1);
+
+            when(riskStateMapper.updateDO(any())).thenReturn(true);
+            when(riskStateMapper.insertDO(any())).thenReturn(true);
+        }
+
         riskControlManager = new RiskControlManagerImpl(
                 ahoCorasick,
                 riskDictionaryMapper,
                 permanentManager,
                 riskCheckResultMapper,
+                riskStateMapper,
                 nlp);
     }
 
