@@ -1,7 +1,7 @@
 package cn.pasteme.admin.entity;
 
-import cn.pasteme.admin.enumeration.RiskStateType;
-import cn.pasteme.admin.enumeration.RiskStateState;
+import cn.pasteme.admin.enumeration.RiskStateDoState;
+import cn.pasteme.admin.enumeration.RiskStateDoType;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import lombok.Data;
  * Risk Check 状态实体
  *
  * @author Lucien
- * @version 1.2.1
+ * @version 1.2.2
  */
 @Data
 public class RiskCheckDO {
@@ -22,16 +22,16 @@ public class RiskCheckDO {
     /**
      * 这篇 Paste 的类型，同时也是 Classify label
      */
-    private RiskStateState type;
+    private RiskStateDoType type;
 
     /**
      * 这篇的状态
      */
-    private RiskStateType state;
+    private RiskStateDoState state;
 
     public RiskCheckDO(Long key) {
         this.key = key;
-        this.type = RiskStateState.NORMAL;
-        this.state = RiskStateType.UNCHECKED;
+        this.type = RiskStateDoType.NORMAL;
+        this.state = RiskStateDoState.UNCHECKED;
     }
 }

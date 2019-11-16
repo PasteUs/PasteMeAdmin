@@ -4,8 +4,8 @@ import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
-import cn.pasteme.admin.enumeration.RiskStateType;
-import cn.pasteme.admin.enumeration.RiskStateState;
+import cn.pasteme.admin.enumeration.RiskStateDoState;
+import cn.pasteme.admin.enumeration.RiskStateDoType;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.algorithm.pair.Pair;
 
@@ -20,11 +20,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.2.4
+ * @version 1.2.5
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -69,13 +70,13 @@ public class AdminMapperTests {
         riskCheckDO = riskStateMapper.getDoByKey(100L);
         assertNotNull(riskCheckDO);
 
-        riskCheckDO.setState(RiskStateType.CHECKED);
-        riskCheckDO.setType(RiskStateState.PORN);
+        riskCheckDO.setState(RiskStateDoState.CHECKED);
+        riskCheckDO.setType(RiskStateDoType.PORN);
         assertTrue(riskStateMapper.updateDO(riskCheckDO));
         riskCheckDO = riskStateMapper.getDoByKey(100L);
         assertNotNull(riskCheckDO);
-        assertEquals(RiskStateType.CHECKED, riskCheckDO.getState());
-        assertEquals(RiskStateState.PORN, riskCheckDO.getType());
+        assertEquals(RiskStateDoState.CHECKED, riskCheckDO.getState());
+        assertEquals(RiskStateDoType.PORN, riskCheckDO.getType());
     }
 
     @Test
@@ -86,9 +87,7 @@ public class AdminMapperTests {
     @Test
     public void accessCountMapperTest() {
         pasteAdminTestMapper.delete("pasteme_admin_access_count", 100L);
-        assertTrue(accessCountMapper.createRecord(100L));
-        assertTrue(accessCountMapper.increaseCountByKey(100L));
-        assertEquals(1, accessCountMapper.getAccessCountByKey(100L));
+        assertTrue(accessCountMapper.createRecord(100L, new Date(), "0.0.0.0"));
     }
 
     @Test

@@ -8,13 +8,6 @@ spring:
     username: username
     password: password
     url: jdbc:mysql://localhost:4399/pasteme
-
-  thymeleaf:
-    cache: false
-    prefix: classpath:templates/
-    check-template-location: true
-    suffix: .html
-    encoding: UTF-8
-    mode: HTML5
-    servlet:
-      content-type: text/html
+    schema:
+      - classpath:sql/init/*.sql
+    initialization-mode: always

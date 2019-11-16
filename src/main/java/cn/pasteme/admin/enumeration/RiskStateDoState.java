@@ -9,9 +9,9 @@ import lombok.Getter;
  * 可用于 supervise
  *
  * @author Lucien
- * @version 1.1.1
+ * @version 1.1.2
  */
-public enum RiskStateType implements ValueEnum {
+public enum RiskStateDoState implements ValueEnum {
 
     // 已检查
     CHECKED(0),
@@ -28,7 +28,7 @@ public enum RiskStateType implements ValueEnum {
     @Getter
     private int value;
 
-    RiskStateType(int value) {
+    RiskStateDoState(int value) {
         this.value = value;
     }
 }

@@ -9,9 +9,9 @@ import lombok.Getter;
  * 同时也是 label
  *
  * @author Lucien
- * @version 1.1.1
+ * @version 1.1.2
  */
-public enum RiskStateState implements ValueEnum {
+public enum RiskStateDoType implements ValueEnum {
 
     // 普通
     NORMAL(0),
@@ -22,7 +22,7 @@ public enum RiskStateState implements ValueEnum {
     @Getter
     private int value;
 
-    RiskStateState(int value) {
+    RiskStateDoType(int value) {
         this.value = value;
     }
 }

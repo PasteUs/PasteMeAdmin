@@ -42,10 +42,7 @@ public class AdminControllerTests {
     public void main() throws Exception {
         pasteAdminTestMapper.delete("pasteme_admin_access_count", 101L);
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/api/paste/101")).andReturn();
-        Assert.assertEquals("{\"code\":0,\"message\":\"success\",\"data\":null,\"success\":true}", mvcResult.getResponse().getContentAsString());
-
-        mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch("/api/paste/101")).andReturn();
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/paste/101")).andReturn();
         Assert.assertEquals("{\"code\":0,\"message\":\"success\",\"data\":null,\"success\":true}", mvcResult.getResponse().getContentAsString());
     }
 }

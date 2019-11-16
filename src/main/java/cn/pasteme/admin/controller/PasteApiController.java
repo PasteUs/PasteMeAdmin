@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Paste 相关的 API 请求
  *
  * @author Lucien
- * @version 1.1.2
+ * @version 1.2.0
  */
 @Slf4j
 @RestController
@@ -27,13 +29,9 @@ public class PasteApiController {
         this.pasteAdminManager = pasteAdminManager;
     }
 
-    @RequestMapping(path = "/{key}", method = RequestMethod.PATCH)
-    public Response increase(@PathVariable Long key) {
-        return pasteAdminManager.increaseCountByKey(key) ? Response.success() : Response.error(ResponseCode.SERVER_ERROR);
-    }
-
-    @RequestMapping(path = "/{key}", method = RequestMethod.PUT)
-    public Response create(@PathVariable Long key) {
-        return pasteAdminManager.createRecord(key) ? Response.success() : Response.error(ResponseCode.SERVER_ERROR);
+    @RequestMapping(path = "/{key}", method = RequestMethod.GET)
+    public Response increase(@PathVariable Long key, HttpServletRequest httpServletRequest) {
+        String ip = httpServletRequest.getRemoteAddr();
+        return pasteAdminManager.accessKey(key, ip) ? Response.success() : Response.error(ResponseCode.SERVER_ERROR);
     }
 }
