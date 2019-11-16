@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Lucien
- * @version 1.3.0
+ * @version 1.3.1
  */
 @Data
 @Slf4j
@@ -121,7 +121,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
             RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
             riskCheckResultDO.setKey(key);
-            riskCheckResultDO.setType(RiskCheckResultType.KEYWORDS_COUNT);
+            riskCheckResultDO.setType(RiskCheckResultType.KEYWORD_COUNT);
             riskCheckResultDO.setResult(result);
 
             if (riskStateMapper.countByKey(key) > 0) {
@@ -202,7 +202,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
             RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
             riskCheckResultDO.setKey(key);
-            riskCheckResultDO.setType(RiskCheckResultType.TOKENS_COUNT);
+            riskCheckResultDO.setType(RiskCheckResultType.TOKEN_COUNT);
             riskCheckResultDO.setResult(result);
 
             riskCheckResultMapper.createDO(riskCheckResultDO);
@@ -214,16 +214,29 @@ public class RiskControlManagerImpl implements RiskControlManager {
     }
 
     @Override
-    public Response<List<RiskCheckResultDTO>> getCheckResult(@NotNull Long page, @NotNull Long pageSize, @NotNull RiskCheckResultType type) {
+    public Response<List<RiskCheckResultDTO>> getCheckResult(@NotNull Long pageIndex,
+                                                             @NotNull Long pageSize,
+                                                             @NotNull RiskCheckResultType type) {
         try {
-            List<RiskCheckResultDO> riskCheckResultDoList = riskCheckResultMapper.getResultsByType(type, pageSize, (page - 1) * pageSize);
+            Long count = riskCheckResultMapper.getCountByType(type);
+
+            if (count < 1) {
+                return Response.success(new ArrayList<>());
+            }
+
+            if (pageIndex < 1 || (count + pageSize - 1) / pageSize < pageSize) {
+                return Response.error(ResponseCode.PARAM_ERROR);
+            }
+
+            List<RiskCheckResultDO> riskCheckResultDoList = riskCheckResultMapper.getResultsByType(type,
+                    pageSize, (pageIndex - 1) * pageSize);
             RiskCheckResultDTO buffer = new RiskCheckResultDTO();
             return Response.success(riskCheckResultDoList.stream().map(each -> {
                 BeanUtils.copyProperties(each, buffer);
                 return buffer;
             }).collect(Collectors.toList()));
         } catch (Exception e) {
-            log.error("pageIndex = {}, pageSize = {}, type = {}, error = ", page, pageSize, type, e);
+            log.error("pageIndex = {}, pageSize = {}, type = {}, error = ", pageIndex, pageSize, type, e);
             return Response.error(ResponseCode.SERVER_ERROR);
         }
     }
@@ -231,7 +244,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
     @Override
     public Response<Long> count(@NotNull RiskCheckResultType riskCheckResultType) {
         try {
-            return Response.success(riskCheckResultMapper.getTypeCount(riskCheckResultType));
+            return Response.success(riskCheckResultMapper.getCountByType(riskCheckResultType));
         } catch (Exception e) {
             log.error("riskCheckResultType = {}, error = ", riskCheckResultType, e);
             return Response.error(ResponseCode.SERVER_ERROR);

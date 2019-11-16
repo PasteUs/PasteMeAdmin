@@ -8,6 +8,9 @@ spring:
     username: username
     password: password
     url: jdbc:mysql://localhost:4399/pasteme
+    schema:
+      - classpath:sql/init/*.sql
+    initialization-mode: always
 
   thymeleaf:
     cache: false

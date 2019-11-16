@@ -102,7 +102,7 @@ public class AdminManagerTests {
         {
             when(riskCheckResultMapper.createDO(any())).thenReturn(true);
             when(riskCheckResultMapper.getResultsByType(any(), any(), any())).thenReturn(new ArrayList<>());
-            when(riskCheckResultMapper.getTypeCount(any())).thenReturn(0L);
+            when(riskCheckResultMapper.getCountByType(any())).thenReturn(0L);
             when(riskCheckResultMapper.updateResult(any())).thenReturn(true);
         }
 
@@ -193,14 +193,14 @@ public class AdminManagerTests {
 
         // getCheckResult
         {
-            Response<List<RiskCheckResultDTO>> response = riskControlManager.getCheckResult(0L, 1L, RiskCheckResultType.KEYWORDS_COUNT);
+            Response<List<RiskCheckResultDTO>> response = riskControlManager.getCheckResult(0L, 1L, RiskCheckResultType.KEYWORD_COUNT);
 
             assertTrue(response.isSuccess());
             assertEquals(new ArrayList<>(), response.getData());
         }
 
         {
-            Response<Long> response = riskControlManager.count(RiskCheckResultType.KEYWORDS_COUNT);
+            Response<Long> response = riskControlManager.count(RiskCheckResultType.KEYWORD_COUNT);
 
             assertTrue(response.isSuccess());
             assertEquals(Long.valueOf(0), response.getData());

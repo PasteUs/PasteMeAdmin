@@ -95,7 +95,7 @@ public class AdminMapperTests {
         pasteAdminTestMapper.delete("pasteme_admin_risk_check_result", 100L);
         RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
         riskCheckResultDO.setKey(100L);
-        riskCheckResultDO.setType(RiskCheckResultType.KEYWORDS_COUNT);
+        riskCheckResultDO.setType(RiskCheckResultType.KEYWORD_COUNT);
 
         List<Pair<String, Long>> expect, actually;
         expect = new ArrayList<>();
@@ -104,7 +104,7 @@ public class AdminMapperTests {
         riskCheckResultDO.setResult(expect);
 
         assertTrue(riskCheckResultMapper.createDO(riskCheckResultDO));
-        riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORDS_COUNT);
+        riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORD_COUNT);
         assertNotNull(riskCheckResultDO);
         actually = riskCheckResultDO.getResult();
         assertEquals(expect, actually);
@@ -115,7 +115,7 @@ public class AdminMapperTests {
         riskCheckResultDO.setResult(expect);
 
         assertTrue(riskCheckResultMapper.updateResult(riskCheckResultDO));
-        riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORDS_COUNT);
+        riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORD_COUNT);
         assertNotNull(riskCheckResultDO);
         actually = riskCheckResultDO.getResult();
         assertEquals(expect, actually);
