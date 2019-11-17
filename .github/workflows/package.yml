@@ -38,5 +38,5 @@ jobs:
       - name: Maven ${{ matrix.mvn_action }}
         run: |
           mvn --file pom.xml \
-              -Dspring.config.location=src/main/resources/application.example.yml \
+              -Dspring.config.location=docker/config/application.yml \
               ${{ matrix.mvn_action }}

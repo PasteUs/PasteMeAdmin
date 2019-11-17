@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>pasteme-admin</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>PasteMe Admin</name>
     <description>PasteMe Admin</description>
 
@@ -18,18 +18,13 @@
         <dependency>
             <groupId>cn.pasteme</groupId>
             <artifactId>pasteme-common</artifactId>
-            <version>1.0.5-SNAPSHOT</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>cn.pasteme</groupId>
             <artifactId>pasteme-algorithm</artifactId>
             <version>1.0.3-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
         </dependency>
 
         <dependency>

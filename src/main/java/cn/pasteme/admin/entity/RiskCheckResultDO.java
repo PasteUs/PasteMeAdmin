@@ -26,7 +26,7 @@ public class RiskCheckResultDO {
 
     /**
      * 实际上是 List<Pair<String, Long>> 格式
-     * 向数据库妥协，使用 JSON 格式
+     * 向 Java 编译器妥协，使用 JSON 格式
      */
     private JSON result;
 

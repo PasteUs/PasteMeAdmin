@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  pasteme-admin:
+    image: registry.cn-hangzhou.aliyuncs.com/pasteus/pasteme-admin:latest
+    container_name: pasteme-admin
+    network_mode: host
+    volumes:
+      - ./log:/app/log
+      - ./config:/app/config

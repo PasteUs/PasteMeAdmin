@@ -1,29 +1,22 @@
 package cn.pasteme.admin.manager;
 
-import cn.pasteme.admin.enumeration.RiskStateType;
-import cn.pasteme.admin.enumeration.RiskStateState;
+import cn.pasteme.admin.enumeration.RiskStateDoState;
+import cn.pasteme.admin.enumeration.RiskStateDoType;
 
 /**
  * @author Lucien
- * @version 1.2.1
+ * @version 1.2.2
  */
 public interface PasteAdminManager {
 
     /**
-     * 代表被访问过
+     * 用户访问了 Paste
      *
      * @param key 主键
+     * @param ip IP
      * @return boolean
      */
-    boolean increaseCountByKey(Long key);
-
-    /**
-     * 新增一条记录
-     *
-     * @param key 主键
-     * @return boolean
-     */
-    boolean createRecord(Long key);
+    boolean accessKey(Long key, String ip);
 
     /**
      * 改变 Paste 的类型和状态
@@ -33,5 +26,5 @@ public interface PasteAdminManager {
      * @param state 状态
      * @return boolean
      */
-    boolean changeTypeAndStateByKey(Long key, RiskStateState type, RiskStateType state);
+    boolean changeTypeAndStateByKey(Long key, RiskStateDoType type, RiskStateDoState state);
 }

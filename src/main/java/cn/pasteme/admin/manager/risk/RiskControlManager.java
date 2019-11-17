@@ -12,7 +12,7 @@ import java.util.List;
  * 风控接口
  *
  * @author Lucien
- * @version 1.2.1
+ * @version 1.2.2
  */
 public interface RiskControlManager {
 
@@ -67,12 +67,14 @@ public interface RiskControlManager {
     /**
      * 分页获取 Check 结果
      *
-     * @param page 页下标
+     * @param pageIndex 页下标
      * @param pageSize 一页的大小
      * @param type 结果类型
      * @return List
      */
-    Response<List<RiskCheckResultDTO>> getCheckResult(@NotNull Long page, @NotNull Long pageSize, @NotNull RiskCheckResultType type);
+    Response<List<RiskCheckResultDTO>> getCheckResult(@NotNull Long pageIndex,
+                                                      @NotNull Long pageSize,
+                                                      @NotNull RiskCheckResultType type);
 
     /**
      * 获取某类结果的数量

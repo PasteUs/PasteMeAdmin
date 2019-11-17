@@ -1,13 +1,15 @@
 package cn.pasteme.admin.manager.impl;
 
 import cn.pasteme.admin.entity.RiskCheckDO;
-import cn.pasteme.admin.enumeration.RiskStateType;
-import cn.pasteme.admin.enumeration.RiskStateState;
+import cn.pasteme.admin.enumeration.RiskStateDoState;
+import cn.pasteme.admin.enumeration.RiskStateDoType;
 import cn.pasteme.admin.manager.PasteAdminManager;
 import cn.pasteme.admin.mapper.AccessCountMapper;
 import cn.pasteme.admin.mapper.RiskStateMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /**
  * @author Lucien
@@ -27,28 +29,17 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
     }
 
     @Override
-    public boolean increaseCountByKey(Long key) {
+    public boolean accessKey(Long key, String ip) {
         try {
-            return accessCountMapper.increaseCountByKey(key);
+            return accessCountMapper.createRecord(key, new Date(), ip);
         } catch (Exception e) {
-            log.error("{} key = {}, error = ", key, e);
+            log.error("key = {}, error = ", key, e);
             return false;
         }
     }
 
     @Override
-    public boolean createRecord(Long key) {
-        try {
-            RiskCheckDO riskCheckDO = new RiskCheckDO(key);
-            return riskStateMapper.insertDO(riskCheckDO);
-        } catch (Exception e) {
-            log.error("{} key = {}, error = ", key, e);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean changeTypeAndStateByKey(Long key, RiskStateState type, RiskStateType state) {
+    public boolean changeTypeAndStateByKey(Long key, RiskStateDoType type, RiskStateDoState state) {
         try {
             RiskCheckDO riskCheckDO = riskStateMapper.getDoByKey(key);
             log.warn("riskCheckDO = {}", riskCheckDO);

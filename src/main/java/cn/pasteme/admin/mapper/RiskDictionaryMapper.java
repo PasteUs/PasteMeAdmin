@@ -22,6 +22,7 @@ public interface RiskDictionaryMapper {
     /**
      * 更新词典
      *
+     * @param type 类型
      * @param dictionary 词典
      * @return boolean
      */
@@ -35,6 +36,7 @@ public interface RiskDictionaryMapper {
     /**
      * 获取最新的字典
      *
+     * @param type 类型
      * @return RiskDictionaryDO
      */
     @Select({"SELECT * FROM `pasteme_admin_dictionary`",

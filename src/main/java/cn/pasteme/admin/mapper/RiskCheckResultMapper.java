@@ -2,7 +2,6 @@ package cn.pasteme.admin.mapper;
 
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
-import cn.pasteme.algorithm.pair.Pair;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.annotations.Insert;
@@ -17,7 +16,7 @@ import java.util.List;
 
 /**
  * @author Lucien
- * @version 1.2.1
+ * @version 1.2.3
  */
 @Repository
 public interface RiskCheckResultMapper {
@@ -38,18 +37,16 @@ public interface RiskCheckResultMapper {
     boolean createDO(RiskCheckResultDO riskCheckResultDO);
 
     /**
-     * 更细 DO
+     * 更新 DO
      *
-     * @param key 主键
-     * @param type 类型
-     * @param result result
+     * @param riskCheckResultDO DO
      * @return boolean
      */
     @Update({"UPDATE `pasteme_admin_risk_check_result` SET",
             "`result` = #{result, typeHandler=cn.pasteme.common.mapper.handler.JsonTypeHandler}",
             "WHERE `key` = #{key}",
             "AND `type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}"})
-    boolean updateResult(Long key, RiskCheckResultType type, List<Pair<String, Long>> result);
+    boolean updateResult(RiskCheckResultDO riskCheckResultDO);
 
     /**
      * 查询 DO
@@ -80,7 +77,8 @@ public interface RiskCheckResultMapper {
     @Select({"SELECT * FROM `pasteme_admin_risk_check_result`",
             "WHERE `type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
             "LIMIT #{limit}",
-            "OFFSET #{offset}"
+            "OFFSET #{offset}",
+            "ORDER BY `key` DESC"
     })
     @ResultMap(value = "RiskCheckResultDO")
     List<RiskCheckResultDO> getResultsByType(RiskCheckResultType type, Long limit, Long offset);
@@ -94,5 +92,5 @@ public interface RiskCheckResultMapper {
     @Select({"SELECT COUNT(1) FROM `pasteme_admin_risk_check_result`",
             "WHERE `type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}"
     })
-    Long getTypeCount(RiskCheckResultType type);
+    Long getCountByType(RiskCheckResultType type);
 }

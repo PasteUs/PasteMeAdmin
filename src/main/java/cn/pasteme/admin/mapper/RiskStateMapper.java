@@ -1,9 +1,9 @@
 package cn.pasteme.admin.mapper;
 
 import cn.pasteme.admin.entity.RiskCheckDO;
+import cn.pasteme.admin.enumeration.RiskStateDoState;
+import cn.pasteme.admin.enumeration.RiskStateDoType;
 
-import cn.pasteme.admin.enumeration.RiskStateType;
-import cn.pasteme.admin.enumeration.RiskStateState;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucien
- * @version 1.2.2
+ * @version 1.2.3
  */
 @Repository
 public interface RiskStateMapper {
@@ -40,12 +40,11 @@ public interface RiskStateMapper {
             "UPDATE `pasteme_admin_risk_state`",
             "<set>",
                 "<if test='type != null'>",
-                    "`type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler},",
+                    "`type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
                 "</if>",
                 "<if test='state != null'>",
-                    "`state` = #{state, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler},",
+                    ", `state` = #{state, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
                 "</if>",
-                "key = key",
             "</set>",
             "WHERE `key` = #{key}",
     "</script>"})
@@ -60,8 +59,8 @@ public interface RiskStateMapper {
     @Select("SELECT `key`, `state`, `type` FROM `pasteme_admin_risk_state` WHERE `key` = #{key}")
     @Results(id = "RiskCheckDO", value = {
             @Result(column = "key", property = "key"),
-            @Result(column = "type", property = "type", javaType = RiskStateState.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class),
-            @Result(column = "state", property = "state", javaType = RiskStateType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class)
+            @Result(column = "type", property = "type", javaType = RiskStateDoType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class),
+            @Result(column = "state", property = "state", javaType = RiskStateDoState.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class)
     })
     RiskCheckDO getDoByKey(Long key);
 
