@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Lucien
- * @version 1.0.0
+ * @version 1.0.1
  */
 @Configuration
-@MapperScan(value = {"cn.pasteme.admin.mapper", "cn.pasteme.common.mapper"})
+@MapperScan(value = {"cn.pasteme.admin.mapper"})
 public class PasteMeAdminMapperConfiguration {
 }

@@ -1,7 +1,3 @@
-server:
-  address: 0.0.0.0
-  port: 8000
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -21,3 +17,16 @@ spring:
     mode: HTML5
     servlet:
       content-type: text/html
+
+logging:
+  file: log/app.log
+  file.max-history: 30
+
+  level:
+    root: WARN
+    org.springfromwork.web: INFO
+    cn.pasteme:
+      admin: TRACE
+      backend: TRACE
+      common: TRACE
+      algorithm: TRACE

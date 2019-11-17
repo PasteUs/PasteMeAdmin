@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  pasteme-admin:
+    image: pasteme-admin:latest
+    container_name: pasteme-admin
+    ports:
+      - 8080:8080
+    volumes:
+      - ./log:/app/log
+      - ./config:/app/config
+    network_mode: host
+    networks:
+      - pasteme-net
+
+networks:
+  pasteme-net:
+    external: true
