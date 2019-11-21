@@ -16,4 +16,10 @@ public class AccessCountDO {
     private Date date;
 
     private String ip;
+
+    public AccessCountDO(Long key, Date date, String ip) {
+        this.key = key;
+        this.date = date;
+        this.ip = ip;
+    }
 }
