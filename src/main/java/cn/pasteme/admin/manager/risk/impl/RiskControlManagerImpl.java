@@ -27,6 +27,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.validation.constraints.NotNull;
 
 import java.util.ArrayList;
@@ -108,6 +110,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Response riskCheck(@NotNull Long key) {
         try {
             Response<PasteResponseDTO> response = permanentManager.get(key.toString());
