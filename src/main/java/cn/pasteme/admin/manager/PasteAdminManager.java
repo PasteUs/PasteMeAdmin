@@ -8,7 +8,7 @@ import java.util.Date;
 
 /**
  * @author Lucien, Moyu
- * @version 1.2.2
+ * @version 1.3.2
  */
 public interface PasteAdminManager {
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * @author Lucien, Moyu
- * @version 1.2.0
+ * @version 1.3.0
  */
 @Repository
 public interface AccessCountMapper {
