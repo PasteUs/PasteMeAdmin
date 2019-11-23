@@ -58,6 +58,7 @@ public interface AccessCountMapper {
     @Select({"<script>",
                 "SELECT `key`, COUNT(*) AS `count` FROM `pasteme_admin_access_count`",
                 "WHERE 1 = 1",
+                "AND `key` != 0",
                 "<when test = 'start != null'>",
                     "AND `date` BETWEEN #{start} AND #{end}",
                 "</when>",

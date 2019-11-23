@@ -53,4 +53,24 @@ public class PasteApiController {
     public Response countPasteTotal(@PathVariable Long key) {
         return pasteAdminManager.countPasteTotal(key);
     }
+
+    @GetMapping(path = "/count/period")
+    public Response countSitePeriod(@Valid AccessCountRequestDTO accessCountRequestDTO) {
+        return pasteAdminManager.countSitePeriod(accessCountRequestDTO.getDate(), accessCountRequestDTO.getType());
+    }
+
+    @GetMapping(path = "/count/total")
+    public Response countSiteTotal() {
+        return pasteAdminManager.countSiteTotal();
+    }
+
+    @GetMapping(path = "/rank/period")
+    public Response rankPastePeriod(@Valid AccessCountRequestDTO accessCountRequestDTO) {
+        return pasteAdminManager.rankPastePeriod(accessCountRequestDTO.getDate(), accessCountRequestDTO.getType());
+    }
+
+    @GetMapping(path = "/rank/total")
+    public Response rankPasteTotal() {
+        return pasteAdminManager.rankPasteTotal();
+    }
 }

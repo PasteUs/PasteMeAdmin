@@ -1,5 +1,6 @@
 package cn.pasteme.admin.manager.impl;
 
+import cn.pasteme.admin.bo.PasteAccessCountBO;
 import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.enumeration.RiskStateDoState;
 import cn.pasteme.admin.enumeration.RiskStateDoType;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Lucien, Moyu
@@ -63,21 +65,7 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
     @Override
     @RequestLogging
     public Response countPastePeriod(Long key, Date date, String type) {
-        DateConverter dateConverter;
-        switch (type) {
-            case "year":
-                dateConverter = new DateConverter(new ConverterYearStart());
-                break;
-            case "month":
-                dateConverter = new DateConverter(new ConverterMonthStart());
-                break;
-            case "day":
-                dateConverter = new DateConverter(new ConverterDayStart());
-                break;
-            default:
-                log.error("this type is an illegal parameter: {}", type);
-                return Response.error(ResponseCode.PARAM_ERROR);
-        }
+        DateConverter dateConverter = DateConverter.getPeriodConverter(type);
         Date startDate = dateConverter.getStartDate(date);
         Date endDate = dateConverter.getEndDate(date);
         int visitTimes = accessCountMapper.countRecord(key, startDate, endDate);
@@ -94,21 +82,28 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
 
     @Override
     public Response countSitePeriod(Date date, String type) {
-        return null;
+        return this.countPastePeriod(0L, date, type);
     }
 
     @Override
     public Response countSiteTotal() {
-        return null;
+        return this.countPasteTotal(0L);
     }
 
     @Override
     public Response rankPastePeriod(Date date, String type) {
-        return null;
+        DateConverter dateConverter = DateConverter.getPeriodConverter(type);
+        Date startDate = dateConverter.getStartDate(date);
+        Date endDate = dateConverter.getEndDate(date);
+        List<PasteAccessCountBO> pasteAccessCountBOList = accessCountMapper.rankPasteQuantity(startDate, endDate);
+        log.warn("pasteAccessCountBOList = {}", pasteAccessCountBOList);
+        return Response.success(pasteAccessCountBOList);
     }
 
     @Override
     public Response rankPasteTotal() {
-        return null;
+        List<PasteAccessCountBO> pasteAccessCountBOList = accessCountMapper.rankPasteQuantity(null, null);
+        log.warn("pasteAccessCountBOList = {}", pasteAccessCountBOList);
+        return Response.success(pasteAccessCountBOList);
     }
 }
