@@ -1,23 +1,21 @@
 package cn.pasteme.admin.controller;
 
+import cn.pasteme.admin.dto.AccessCountRequestDTO;
 import cn.pasteme.admin.manager.PasteAdminManager;
 import cn.pasteme.common.manager.PermanentManager;
 import cn.pasteme.common.utils.result.Response;
 import cn.pasteme.common.utils.result.ResponseCode;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * Paste 相关的 API 请求
  *
- * @author Lucien
- * @version 1.3.0
+ * @author Lucien, Moyu
+ * @version 1.4.0
  */
 @Slf4j
 @RestController
@@ -43,5 +41,10 @@ public class PasteApiController {
     @RequestMapping(path = "/current", method = RequestMethod.GET)
     public Response<Long> current() {
         return permanentManager.getCurrentMaximumKey();
+    }
+
+    @GetMapping(path = "/count/{key}")
+    public Response countPaste(@PathVariable Long key, AccessCountRequestDTO accessCountRequestDTO) {
+        return pasteAdminManager.countPastePeriod(key, accessCountRequestDTO.getDate(), accessCountRequestDTO.getType());
     }
 }

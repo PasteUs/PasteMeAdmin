@@ -6,7 +6,13 @@ import cn.pasteme.admin.enumeration.RiskStateDoType;
 import cn.pasteme.admin.manager.PasteAdminManager;
 import cn.pasteme.admin.mapper.AccessCountMapper;
 import cn.pasteme.admin.mapper.RiskStateMapper;
+import cn.pasteme.admin.util.DateConverter;
+import cn.pasteme.admin.util.strategy.date.ConverterDayStart;
+import cn.pasteme.admin.util.strategy.date.ConverterMonthStart;
+import cn.pasteme.admin.util.strategy.date.ConverterYearStart;
+import cn.pasteme.common.annotation.RequestLogging;
 import cn.pasteme.common.utils.result.Response;
+import cn.pasteme.common.utils.result.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +61,28 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
     }
 
     @Override
+    @RequestLogging
     public Response countPastePeriod(Long key, Date date, String type) {
-        return null;
+        DateConverter dateConverter;
+        switch (type) {
+            case "year":
+                dateConverter = new DateConverter(new ConverterYearStart());
+                break;
+            case "month":
+                dateConverter = new DateConverter(new ConverterMonthStart());
+                break;
+            case "day":
+                dateConverter = new DateConverter(new ConverterDayStart());
+                break;
+            default:
+                log.error("this type is an illegal parameter: {}", type);
+                return Response.error(ResponseCode.PARAM_ERROR);
+        }
+        Date startDate = dateConverter.getStartDate(date);
+        Date endDate = dateConverter.getEndDate(date);
+        int visitTimes = accessCountMapper.countRecord(key, startDate, endDate);
+        log.warn("visitTimes = {}", visitTimes);
+        return Response.success(visitTimes);
     }
 
     @Override
