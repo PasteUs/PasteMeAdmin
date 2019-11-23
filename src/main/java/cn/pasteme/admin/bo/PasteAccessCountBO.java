@@ -4,7 +4,7 @@ import lombok.Data;
 
 /**
  * @author Moyu
- * @version 1.0.0
+ * @version 1.0.1
  */
 @Data
 public class PasteAccessCountBO implements Comparable {
@@ -17,7 +17,6 @@ public class PasteAccessCountBO implements Comparable {
         this.key = key;
         this.count = count;
     }
-
 
     @Override
     public int compareTo(Object o) {

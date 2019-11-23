@@ -1,14 +1,16 @@
 package cn.pasteme.admin.manager;
 
+import cn.pasteme.admin.bo.PasteAccessCountBO;
 import cn.pasteme.admin.enumeration.RiskStateDoState;
 import cn.pasteme.admin.enumeration.RiskStateDoType;
 import cn.pasteme.common.utils.result.Response;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Lucien, Moyu
- * @version 1.3.2
+ * @version 1.3.3
  */
 public interface PasteAdminManager {
 
@@ -40,7 +42,7 @@ public interface PasteAdminManager {
      * @param type 日期类型 年/月/日
      * @return int 单条 Paste 访问次数
      */
-    Response countPastePeriod(Long key, Date date, String type);
+    Response<Integer> countPastePeriod(Long key, Date date, String type);
 
     /**
      * 计数单条 Paste 的总访问次数
@@ -48,7 +50,7 @@ public interface PasteAdminManager {
      * @param key 主键
      * @return int 单条 Paste 总访问次数
      */
-    Response countPasteTotal(Long key);
+    Response<Integer> countPasteTotal(Long key);
 
     /**
      * 计数站点的周期（年/月/日）访问次数
@@ -58,14 +60,14 @@ public interface PasteAdminManager {
      * @param type 日期类型 年/月/日
      * @return int Site 访问次数
      */
-    Response countSitePeriod(Date date, String type);
+    Response<Integer> countSitePeriod(Date date, String type);
 
     /**
      * 计数站点的总访问次数
      *
      * @return int Site 总访问次数
      */
-    Response countSiteTotal();
+    Response<Integer> countSiteTotal();
 
     /**
      * 按周期（年/月/日）访问次数排名
@@ -75,12 +77,12 @@ public interface PasteAdminManager {
      * @param type 日期类型 年/月/日
      * @return Paste 及访问数量列表 List<PasteAccessCountBO>
      */
-    Response rankPastePeriod(Date date, String type);
+    Response<List<PasteAccessCountBO>> rankPastePeriod(Date date, String type);
 
     /**
      * 按总访问次数排名
      *
      * @return Paste 及访问数量列表 List<PasteAccessCountBo>
      */
-    Response rankPasteTotal();
+    Response<List<PasteAccessCountBO>> rankPasteTotal();
 }

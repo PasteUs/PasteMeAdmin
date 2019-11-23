@@ -1,7 +1,12 @@
 package cn.pasteme.admin.mapper;
 
 import cn.pasteme.admin.bo.PasteAccessCountBO;
-import org.apache.ibatis.annotations.*;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Result;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -9,7 +14,7 @@ import java.util.List;
 
 /**
  * @author Lucien, Moyu
- * @version 1.3.0
+ * @version 1.3.1
  */
 @Repository
 public interface AccessCountMapper {
