@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * Paste 相关的 API 请求
@@ -43,8 +44,13 @@ public class PasteApiController {
         return permanentManager.getCurrentMaximumKey();
     }
 
-    @GetMapping(path = "/count/{key}")
-    public Response countPaste(@PathVariable Long key, AccessCountRequestDTO accessCountRequestDTO) {
+    @GetMapping(path = "/count/period/{key}")
+    public Response countPastePeriod(@PathVariable Long key, @Valid AccessCountRequestDTO accessCountRequestDTO) {
         return pasteAdminManager.countPastePeriod(key, accessCountRequestDTO.getDate(), accessCountRequestDTO.getType());
+    }
+
+    @GetMapping(path = "/count/total/{key}")
+    public Response countPasteTotal(@PathVariable Long key) {
+        return pasteAdminManager.countPasteTotal(key);
     }
 }

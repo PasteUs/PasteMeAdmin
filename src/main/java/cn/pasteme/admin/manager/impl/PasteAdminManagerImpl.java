@@ -87,7 +87,9 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
 
     @Override
     public Response countPasteTotal(Long key) {
-        return null;
+        int visitTimes = accessCountMapper.countRecord(key, null, null);
+        log.warn("visitTimes = {}", visitTimes);
+        return Response.success(visitTimes);
     }
 
     @Override
