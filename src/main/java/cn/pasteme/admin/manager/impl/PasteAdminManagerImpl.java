@@ -6,6 +6,7 @@ import cn.pasteme.admin.enumeration.RiskStateDoType;
 import cn.pasteme.admin.manager.PasteAdminManager;
 import cn.pasteme.admin.mapper.AccessCountMapper;
 import cn.pasteme.admin.mapper.RiskStateMapper;
+import cn.pasteme.common.utils.result.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,35 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
             log.error("error = ", e);
             return false;
         }
+    }
+
+    @Override
+    public Response countPastePeriod(Long key, Date date, String type) {
+        return null;
+    }
+
+    @Override
+    public Response countPasteTotal(Long key) {
+        return null;
+    }
+
+    @Override
+    public Response countSitePeriod(Date date, String type) {
+        return null;
+    }
+
+    @Override
+    public Response countSiteTotal() {
+        return null;
+    }
+
+    @Override
+    public Response rankPastePeriod(Date date, String type) {
+        return null;
+    }
+
+    @Override
+    public Response rankPasteTotal() {
+        return null;
     }
 }

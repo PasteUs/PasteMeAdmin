@@ -2,6 +2,7 @@ package cn.pasteme.admin.manager;
 
 import cn.pasteme.admin.enumeration.RiskStateDoState;
 import cn.pasteme.admin.enumeration.RiskStateDoType;
+import cn.pasteme.common.utils.result.Response;
 
 import java.util.Date;
 
@@ -32,37 +33,54 @@ public interface PasteAdminManager {
 
     /**
      * 计数单条 Paste 的周期（年/月/日）访问次数
-     * 用 dateConverterUtil 将日期根据 type 转换为起始时间
+     * 用 DateConverter 将日期根据 type 转换为起始时间
      *
      * @param key 主键
      * @param date 日期
      * @param type 日期类型 年/月/日
-     * @return 单条 Paste 访问次数
+     * @return int 单条 Paste 访问次数
      */
-    int countPastePeriod(Long key, Date date, String type);
+    Response countPastePeriod(Long key, Date date, String type);
 
     /**
      * 计数单条 Paste 的总访问次数
      *
      * @param key 主键
-     * @return 单条 Paste 总访问次数
+     * @return int 单条 Paste 总访问次数
      */
-    int countPasteTotal(Long key);
+    Response countPasteTotal(Long key);
 
     /**
      * 计数站点的周期（年/月/日）访问次数
-     * 用 dateConverterUtil 将日期根据 type 转换为起始时间
+     * 用 DateConverter 将日期根据 type 转换为起始时间
      *
      * @param date 日期
      * @param type 日期类型 年/月/日
-     * @return Site 访问次数
+     * @return int Site 访问次数
      */
-    int countSitePeriod(Date date, String type);
+    Response countSitePeriod(Date date, String type);
 
     /**
      * 计数站点的总访问次数
      *
-     * @return Site 总访问次数
+     * @return int Site 总访问次数
      */
-    int countSiteTotal();
+    Response countSiteTotal();
+
+    /**
+     * 按周期（年/月/日）访问次数排名
+     * 用 DateConverter 将日期根据 type 转换为起始时间
+     *
+     * @param date 日期
+     * @param type 日期类型 年/月/日
+     * @return Paste 及访问数量列表 List<PasteAccessCountBO>
+     */
+    Response rankPastePeriod(Date date, String type);
+
+    /**
+     * 按总访问次数排名
+     *
+     * @return Paste 及访问数量列表 List<PasteAccessCountBo>
+     */
+    Response rankPasteTotal();
 }
