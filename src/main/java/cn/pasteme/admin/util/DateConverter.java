@@ -8,7 +8,6 @@ import java.util.Date;
 /**
  * @author Moyu
  * @version 1.0.0
- * @date 2019/11/23 12:06
  */
 public class DateConverter {
 
