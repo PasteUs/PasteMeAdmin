@@ -13,10 +13,11 @@ import lombok.extern.slf4j.Slf4j;
  * 访问日期类型
  *
  * @author Moyu
- * @version 1.0.0
+ * @version 1.0.1
  */
 @Slf4j
 public enum AccessDateType {
+
     // 年
     DATE_YEAR("year", new DateConverter(new ConverterYearStart())),
 
@@ -28,6 +29,7 @@ public enum AccessDateType {
 
     @Getter
     String name;
+
     @Getter
     DateConverter converter;
 
