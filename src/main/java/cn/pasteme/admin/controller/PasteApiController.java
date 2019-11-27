@@ -3,6 +3,8 @@ package cn.pasteme.admin.controller;
 import cn.pasteme.admin.bo.PasteAccessCountBO;
 import cn.pasteme.admin.dto.AccessCountRequestDTO;
 import cn.pasteme.admin.manager.PasteAdminManager;
+import cn.pasteme.common.annotation.ErrorLogging;
+import cn.pasteme.common.annotation.RequestLogging;
 import cn.pasteme.common.manager.PermanentManager;
 import cn.pasteme.common.utils.result.Response;
 import cn.pasteme.common.utils.result.ResponseCode;
@@ -23,7 +25,7 @@ import java.util.List;
  * Paste 相关的 API 请求
  *
  * @author Lucien, Moyu
- * @version 1.4.1
+ * @version 1.4.2
  */
 @Slf4j
 @RestController
@@ -52,31 +54,43 @@ public class PasteApiController {
     }
 
     @GetMapping(path = "/count/period/{key}")
+    @RequestLogging(withResponse = true)
+    @ErrorLogging
     public Response<Integer> countPastePeriod(@PathVariable Long key, @Valid AccessCountRequestDTO accessCountRequestDTO) {
         return pasteAdminManager.countPastePeriod(key, accessCountRequestDTO.getDate(), accessCountRequestDTO.getType());
     }
 
     @GetMapping(path = "/count/total/{key}")
+    @RequestLogging(withResponse = true)
+    @ErrorLogging
     public Response<Integer> countPasteTotal(@PathVariable Long key) {
         return pasteAdminManager.countPasteTotal(key);
     }
 
     @GetMapping(path = "/count/period")
+    @RequestLogging(withResponse = true)
+    @ErrorLogging
     public Response<Integer> countSitePeriod(@Valid AccessCountRequestDTO accessCountRequestDTO) {
         return pasteAdminManager.countSitePeriod(accessCountRequestDTO.getDate(), accessCountRequestDTO.getType());
     }
 
     @GetMapping(path = "/count/total")
+    @RequestLogging(withResponse = true)
+    @ErrorLogging
     public Response<Integer> countSiteTotal() {
         return pasteAdminManager.countSiteTotal();
     }
 
     @GetMapping(path = "/rank/period")
+    @RequestLogging(withResponse = true)
+    @ErrorLogging
     public Response<List<PasteAccessCountBO>> rankPastePeriod(@Valid AccessCountRequestDTO accessCountRequestDTO) {
         return pasteAdminManager.rankPastePeriod(accessCountRequestDTO.getDate(), accessCountRequestDTO.getType());
     }
 
     @GetMapping(path = "/rank/total")
+    @RequestLogging(withResponse = true)
+    @ErrorLogging
     public Response<List<PasteAccessCountBO>> rankPasteTotal() {
         return pasteAdminManager.rankPasteTotal();
     }
