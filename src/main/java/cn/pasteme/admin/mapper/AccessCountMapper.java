@@ -1,13 +1,20 @@
 package cn.pasteme.admin.mapper;
 
+import cn.pasteme.admin.bo.PasteAccessCountBO;
+
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Result;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
- * @author Lucien
- * @version 1.1.0
+ * @author Lucien, Moyu
+ * @version 1.3.1
  */
 @Repository
 public interface AccessCountMapper {
@@ -24,5 +31,49 @@ public interface AccessCountMapper {
             "(`key`, `date`, `ip`)",
             "VALUES",
             "(#{key}, #{date}, #{ip})"})
-    boolean createRecord(Long key, Date date, String ip);
+    boolean createRecord(@Param("key") Long key, @Param("date") Date date, @Param("ip") String ip);
+
+    /**
+     * 查询指定时间范围的指定访问 record 条数
+     *
+     * @param key 主键
+     * @param startDate 开始日期
+     * @param endDate 结束日期
+     * @return record 数
+     */
+    @Select({"<script>",
+                "SELECT COUNT(*) FROM `pasteme_admin_access_count`",
+                "WHERE 1 = 1",
+                "<when test = 'start != null'>",
+                    "AND `date` BETWEEN #{start} AND #{end}",
+                "</when>",
+                "<when test = 'key != 0'>",
+                    "AND `key` = #{key}",
+                "</when>",
+            "</script>"})
+    int countRecord(@Param("key") Long key, @Param("start") Date startDate, @Param("end") Date endDate);
+
+    /**
+     *  Paste 访问次数排序
+     *
+     * @param startDate 开始日期
+     * @param endDate 结束日期
+     * @return Paste 访问次数排序
+     */
+    @Select({"<script>",
+                "SELECT `key`, COUNT(*) AS `count` FROM `pasteme_admin_access_count`",
+                "WHERE 1 = 1",
+                "AND `key` != 0",
+                "<when test = 'start != null'>",
+                    "AND `date` BETWEEN #{start} AND #{end}",
+                "</when>",
+                "GROUP BY `key`",
+                "ORDER BY `count` DESC",
+            "</script>"})
+    @Results(id = "PasteAccessCountBO", value = {
+            @Result(column = "key", property = "key"),
+            @Result(column = "count", property = "count", javaType = Integer.class)
+    })
+    List<PasteAccessCountBO> rankPasteQuantity(@Param("start") Date startDate, @Param("end") Date endDate);
+
 }
