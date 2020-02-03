@@ -24,4 +24,5 @@ public class AnnounceDO {
     private String link;
 
     private int type;
+
 }

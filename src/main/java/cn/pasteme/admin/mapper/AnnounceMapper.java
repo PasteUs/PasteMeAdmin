@@ -78,4 +78,5 @@ public interface AnnounceMapper {
             "where `id`=#{id}"})
     boolean putAnnouncement(@Param("id") Long id, @Param("title") String title, @Param("content") String content,
                             @Param("link") String link, @Param("type") int type, @Param("date") Date date);
+
 }

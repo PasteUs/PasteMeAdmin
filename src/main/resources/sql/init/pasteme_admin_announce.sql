@@ -9,4 +9,7 @@ CREATE TABLE IF NOT EXISTS `pasteme_admin_announce`
 
     KEY `idx_date` (`date`)
 )
-
+    COMMENT '存储通知'
+    COLLATE = utf8mb4_general_ci
+    ENGINE = Innodb
+    DEFAULT CHARSET = utf8mb4;

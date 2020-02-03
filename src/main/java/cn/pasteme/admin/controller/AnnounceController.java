@@ -17,6 +17,7 @@ import java.util.List;
  * @author Acerkoo
  * @version 1.0.0
  */
+
 @Slf4j
 @RestController
 @RequestMapping("/api/announcement")
@@ -56,4 +57,5 @@ public class AnnounceController {
     boolean putAnnouncement(Long id, String title, String content, String link, int type) {
         return announceManager.putAnnouncement(id, title, content, link, type);
     }
+
 }

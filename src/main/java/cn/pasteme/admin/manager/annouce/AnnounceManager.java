@@ -22,4 +22,5 @@ public interface AnnounceManager {
     List<AnnounceDO> getAll();
 
     List<AnnounceDO> getAnnouncement(int left, int right);
+
 }

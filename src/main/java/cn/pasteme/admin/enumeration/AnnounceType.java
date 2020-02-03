@@ -24,4 +24,5 @@ public enum  AnnounceType implements ValueEnum {
     public int getValue() {
         return 0;
     }
+
 }

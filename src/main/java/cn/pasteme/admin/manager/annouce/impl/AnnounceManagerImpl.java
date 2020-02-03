@@ -68,4 +68,5 @@ public class AnnounceManagerImpl implements AnnounceManager {
         }
         return new ArrayList<>();
     }
+
 }
