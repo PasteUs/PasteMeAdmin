@@ -7,6 +7,13 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.List;
 
+
+/**
+ *
+ * @author Acerkoo
+ * @version 1.0.0
+ */
+
 @Repository
 public interface AnnounceMapper {
 

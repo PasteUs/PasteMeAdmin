@@ -4,6 +4,12 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ *
+ * @author Acerkoo
+ * @version 1.0.0
+ */
+
 @Data
 public class AnnounceDO {
 

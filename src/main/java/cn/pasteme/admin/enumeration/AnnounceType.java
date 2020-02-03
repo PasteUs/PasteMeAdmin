@@ -2,6 +2,12 @@ package cn.pasteme.admin.enumeration;
 
 import cn.pasteme.common.enumeration.ValueEnum;
 
+/**
+ *
+ * @author Acerkoo
+ * @version 1.0.0
+ */
+
 public enum  AnnounceType implements ValueEnum {
 
     UPDATE_LOG(0),

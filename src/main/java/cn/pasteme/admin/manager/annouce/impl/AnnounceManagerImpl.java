@@ -11,6 +11,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+/**
+ *
+ * @author Acerkoo
+ * @version 1.0.0
+ */
+
 @Slf4j
 @Service
 public class AnnounceManagerImpl implements AnnounceManager {

@@ -4,6 +4,13 @@ import cn.pasteme.admin.entity.AnnounceDO;
 
 import java.util.List;
 
+
+/**
+ *
+ * @author Acerkoo
+ * @version 1.0.0
+ */
+
 public interface AnnounceManager {
 
     boolean postAnnouncement(String title, String content, String link, int type);
