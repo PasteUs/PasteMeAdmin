@@ -20,50 +20,39 @@ public interface AnnounceMapper {
     /**
      * 新增一条 Announcement
      *
-     * @param title
-     * @param content
-     * @param link
-     * @param type
-     * @param date
      */
 
     @Insert({"INSERT INTO `pasteme_admin_announce`",
             "(`title`, `content`, `link`, `type`, `date`)",
-            "values",
-            "(#{title}, #{content}, #{link}, #{type}, #{date})", })
-    boolean postAnnouncement(@Param("title") String title, @Param("content") String content,
-                          @Param("link") String link, @Param("type") int type, @Param("date") Date date);
+            "VALUES",
+            "(#{title}, #{content}, #{link}, #{type}, #{time})", })
+    boolean createAnnouncement(AnnounceDO announceDO);
 
-    @Select("SELECT * From `pasteme_admin_announce`")
-    @Results(value = {
-            @Result(property = "id", column = "id"),
-            @Result(property = "title", column = "title"),
-            @Result(property = "content", column = "content"),
-            @Result(property = "link", column = "link"),
-            @Result(property = "type", column = "type"),
-            @Result(property = "time", column = "date")
-    })
-    List<AnnounceDO> getAll();
+    @Select("SELECT COUNT(*) FROM `pasteme_admin_announce`")
+    int countAnnouncement();
 
     /**
+     * 查询第 page 页的内容
      *
-     * @param left
-     * @param right
+     * @param begin
+     * @param pageSize
      * @return
      */
-    @Select({"select * from `pasteme_admin_announce`",
-            "where `id` between #{left} and #{right}" })
-    List<AnnounceDO> getAnnouncementByLR(@Param("left") int left, @Param("right") int right);
+    @Select({"SELECT * FROM `pasteme_admin_announce`",
+            "LIMIT #{begin}, #{pageSize}" })
+    List<AnnounceDO> getAnnouncementByPage(@Param("begin") int begin, @Param("pageSize") int pageSize);
 
     /**
+     * 删除指定通知
      *
      * @param id
      * @return
      */
-    @Update({"delete from `pasteme_admin_announce` where `id`=#{id}"})
-    boolean deleteAnnouncement(@Param("id") int id);
+    @Update({"DELETE FROM `pasteme_admin_announce` WHERE `id`=#{id}"})
+    boolean deleteAnnouncement(@Param("id") Long id);
 
     /**
+     * 更新信息
      *
      * @param id
      * @param title
@@ -73,10 +62,10 @@ public interface AnnounceMapper {
      * @param date
      * @return
      */
-    @Update({"update `pasteme_admin_announce` set",
+    @Update({"UPDATE `pasteme_admin_announce` set",
             "`title`=#{title}, `content`=#{content}, `link`=#{link}, `type`=#{type}, `date`=#{date}",
-            "where `id`=#{id}"})
-    boolean putAnnouncement(@Param("id") Long id, @Param("title") String title, @Param("content") String content,
-                            @Param("link") String link, @Param("type") int type, @Param("date") Date date);
+            "WHERE `id`=#{id}"})
+    boolean updateAnnouncement(@Param("id") Long id, @Param("title") String title, @Param("content") String content,
+                               @Param("link") String link, @Param("type") int type, @Param("date") Date date);
 
 }

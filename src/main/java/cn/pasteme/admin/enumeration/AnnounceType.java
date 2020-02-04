@@ -21,8 +21,10 @@ public enum  AnnounceType implements ValueEnum {
     AnnounceType(int value) { this.value = value; }
 
     @Override
-    public int getValue() {
-        return 0;
+    public int getValue() { return value; }
+
+    public void setValue(int val) {
+        this.value = val;
     }
 
 }

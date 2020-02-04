@@ -13,14 +13,14 @@ import java.util.List;
 
 public interface AnnounceManager {
 
-    boolean postAnnouncement(String title, String content, String link, int type);
+    boolean createAnnouncement(String title, String content, String link, int type);
 
-    boolean deleteAnnouncement(int id);
+    boolean deleteAnnouncement(Long id);
 
-    boolean putAnnouncement(Long id, String title, String content, String link, int type);
+    boolean updateAnnouncement(Long id, String title, String content, String link, int type);
 
-    int getAll();
+    int countPage();
 
-    List<AnnounceDO> getAnnouncement(int left, int right);
+    List<AnnounceDO> getAnnouncement(int page);
 
 }
