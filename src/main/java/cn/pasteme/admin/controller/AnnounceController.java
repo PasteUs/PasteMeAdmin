@@ -19,23 +19,23 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/announcement")
+@RequestMapping("/api")
 public class AnnounceController {
 
     @Autowired
     private AnnounceManager announceManager;
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    boolean postAnnounce(String title, String content, String link, int type) {
+    @RequestMapping(value = "/announcement", method = RequestMethod.POST)
+    boolean createAnnouncement(String title, String content, String link, int type) {
         return announceManager.createAnnouncement(title, content, link, type);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/announcement", method = RequestMethod.DELETE)
     boolean deleteAnnouncement(Long id) {
         return announceManager.deleteAnnouncement(id);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/announcement", method = RequestMethod.PATCH)
     boolean updateAnnouncement(Long id, String title, String content, String link, int type) {
         return announceManager.updateAnnouncement(id, title, content, link, type);
     }
@@ -45,7 +45,7 @@ public class AnnounceController {
         return announceManager.countPage();
     }
 
-    @RequestMapping(path = "/get", method = RequestMethod.GET)
+    @RequestMapping(path = "/announcement", method = RequestMethod.GET)
     List<AnnounceDO> getAnnouncement(int page) {
         return announceManager.getAnnouncement(page);
     }
