@@ -25,6 +25,8 @@ public class AnnounceManagerImpl implements AnnounceManager {
     @Autowired
     private AnnounceMapper announceMapper;
 
+    private List<AnnounceDO> list;
+
     @Override
     public boolean postAnnouncement(String title, String content, String link, int type) {
         Date date = new Date();
@@ -45,13 +47,14 @@ public class AnnounceManagerImpl implements AnnounceManager {
     }
 
     @Override
-    public List<AnnounceDO> getAll() {
+    public int getAll() {
         try {
-            return announceMapper.getAll();
+            list = announceMapper.getAll();
+            return list.size();
         } catch (Exception e) {
             log.error("Announce All error = ", e);
         }
-        return new ArrayList<>();
+        return 0;
     }
 
     @Override
@@ -61,7 +64,8 @@ public class AnnounceManagerImpl implements AnnounceManager {
             log.error("When left >= right");
         } else {
             try {
-                return announceMapper.getAnnouncementByLR(left, right - 1);
+                if (list.isEmpty()) getAll();
+                return list.subList(left-1, right);
             } catch (Exception e) {
                 log.error("Get Announcement [left, right), error = ", e);
             }

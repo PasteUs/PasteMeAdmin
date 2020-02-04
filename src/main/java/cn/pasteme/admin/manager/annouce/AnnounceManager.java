@@ -19,7 +19,7 @@ public interface AnnounceManager {
 
     boolean putAnnouncement(Long id, String title, String content, String link, int type);
 
-    List<AnnounceDO> getAll();
+    int getAll();
 
     List<AnnounceDO> getAnnouncement(int left, int right);
 

@@ -44,7 +44,7 @@ public class AnnounceController {
     }
 
     @RequestMapping(path = "/all", method = RequestMethod.GET)
-    List<AnnounceDO> getAll() {
+    int getAll() {
         return announceManager.getAll();
     }
 
