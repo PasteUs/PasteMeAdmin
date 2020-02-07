@@ -43,7 +43,7 @@ jobs:
       - name: publish docker
         uses: LucienShui/Publish-Docker-Github-Action@2.7.1
         with:
-          name: registry.cn-hangzhou.aliyuncs.com/pasteus/github-mvn-repo:latest
+          name: registry.cn-hangzhou.aliyuncs.com/pasteus/pasteme-admin:latest
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: registry.cn-hangzhou.aliyuncs.com
