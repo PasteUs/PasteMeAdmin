@@ -1,6 +1,8 @@
 package cn.pasteme.admin.entity;
 
 import cn.pasteme.admin.enumeration.AnnounceType;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,7 +11,7 @@ import java.util.Date;
  * Announcement 的实体
  *
  * @author Acerkoo
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 @Data
@@ -29,16 +31,17 @@ public class AnnounceDO {
 
     private String content;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date time;
 
     private String link;
 
-    private int type;
+    private AnnounceType type;
 
-//    public void setType(int value) {
-//        if (value == 0) type = AnnounceType.UPDATE_LOG;
-//        else if (value == 1) type = AnnounceType.EMERGENCY;
-//        else type = AnnounceType.DAILY_ANNOUNCEMENT;
-//    }
+    public void setType(int value) {
+        if (value == 0) type = AnnounceType.UPDATE_LOG;
+        else if (value == 1) type = AnnounceType.EMERGENCY;
+        else type = AnnounceType.DAILY_ANNOUNCEMENT;
+    }
 
 }

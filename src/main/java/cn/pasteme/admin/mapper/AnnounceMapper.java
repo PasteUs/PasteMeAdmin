@@ -11,7 +11,7 @@ import java.util.List;
 /**
  *
  * @author Acerkoo
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 @Repository
@@ -38,8 +38,19 @@ public interface AnnounceMapper {
      * @param pageSize
      * @return
      */
-    @Select({"SELECT * FROM `pasteme_admin_announce`",
-            "LIMIT #{begin}, #{pageSize}" })
+    @Select({"SELECT *",
+            "FROM `pasteme_admin_announce`",
+            "ORDER BY `date` DESC",
+            "LIMIT #{begin}, #{pageSize}",
+    })
+    @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "title", column = "title"),
+            @Result(property = "content", column = "content"),
+            @Result(property = "link", column = "link"),
+            @Result(property = "time", column = "date"),
+            @Result(property = "type", column = "type")
+    })
     List<AnnounceDO> getAnnouncementByPage(@Param("begin") int begin, @Param("pageSize") int pageSize);
 
     /**

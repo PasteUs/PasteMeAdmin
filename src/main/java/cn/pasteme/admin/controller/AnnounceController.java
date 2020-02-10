@@ -1,5 +1,6 @@
 package cn.pasteme.admin.controller;
 
+import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.manager.annouce.AnnounceManager;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +27,8 @@ public class AnnounceController {
     private AnnounceManager announceManager;
 
     @RequestMapping(value = "/announcement", method = RequestMethod.POST)
-    boolean createAnnouncement(String title, String content, String link, int type) {
-        return announceManager.createAnnouncement(title, content, link, type);
+    boolean createAnnouncement(AnnounceRequestDTO ardto) {
+        return announceManager.createAnnouncement(ardto.getTitle(), ardto.getContent(), ardto.getLink(), ardto.getType());
     }
 
     @RequestMapping(value = "/announcement", method = RequestMethod.DELETE)
@@ -36,11 +37,11 @@ public class AnnounceController {
     }
 
     @RequestMapping(value = "/announcement", method = RequestMethod.PATCH)
-    boolean updateAnnouncement(Long id, String title, String content, String link, int type) {
-        return announceManager.updateAnnouncement(id, title, content, link, type);
+    boolean updateAnnouncement(Long id, AnnounceRequestDTO ardto) {
+        return announceManager.updateAnnouncement(id, ardto.getTitle(), ardto.getContent(), ardto.getLink(), ardto.getType());
     }
 
-    @RequestMapping(path = "/count/page", method = RequestMethod.GET)
+    @RequestMapping(path = "/announcement/page", method = RequestMethod.GET)
     int countPage() {
         return announceManager.countPage();
     }
