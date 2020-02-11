@@ -1,5 +1,6 @@
 package cn.pasteme.admin.manager.annouce;
 
+import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 
 import java.util.List;
@@ -13,14 +14,14 @@ import java.util.List;
 
 public interface AnnounceManager {
 
-    boolean createAnnouncement(String title, String content, String link, int type);
+    boolean createAnnouncement(AnnounceRequestDTO node);
 
     boolean deleteAnnouncement(Long id);
 
-    boolean updateAnnouncement(Long id, String title, String content, String link, int type);
+    boolean updateAnnouncement(Long id, AnnounceRequestDTO node);
 
-    int countPage();
+    int countPage(int pageSize);
 
-    List<AnnounceDO> getAnnouncement(int page);
+    List<AnnounceDO> getAnnouncement(int page, int pageSize);
 
 }

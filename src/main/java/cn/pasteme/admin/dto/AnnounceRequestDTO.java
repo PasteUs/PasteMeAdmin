@@ -3,7 +3,7 @@ package cn.pasteme.admin.dto;
 import lombok.Data;
 
 /**
- * Announcement 的实体
+ * Announcement 的参数封装
  *
  * @author Acerkoo
  * @version 1.0.0

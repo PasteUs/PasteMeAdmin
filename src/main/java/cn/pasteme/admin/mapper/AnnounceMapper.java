@@ -25,8 +25,8 @@ public interface AnnounceMapper {
     @Insert({"INSERT INTO `pasteme_admin_announce`",
             "(`title`, `content`, `link`, `type`, `date`)",
             "VALUES",
-            "(#{title}, #{content}, #{link}, #{type}, #{time})", })
-    boolean createAnnouncement(AnnounceDO announceDO);
+            "(#{announceDO.title}, #{announceDO.content}, #{announceDO.link}, #{type}, #{announceDO.time})", })
+    boolean createAnnouncement(AnnounceDO announceDO, @Param("type") int type);
 
     @Select("SELECT COUNT(*) FROM `pasteme_admin_announce`")
     int countAnnouncement();
@@ -65,18 +65,10 @@ public interface AnnounceMapper {
     /**
      * 更新信息
      *
-     * @param id
-     * @param title
-     * @param content
-     * @param link
-     * @param type
-     * @param date
-     * @return
      */
     @Update({"UPDATE `pasteme_admin_announce` set",
-            "`title`=#{title}, `content`=#{content}, `link`=#{link}, `type`=#{type}, `date`=#{date}",
-            "WHERE `id`=#{id}"})
-    boolean updateAnnouncement(@Param("id") Long id, @Param("title") String title, @Param("content") String content,
-                               @Param("link") String link, @Param("type") int type, @Param("date") Date date);
+            "`title`=#{announceDO.title}, `content`=#{announceDO.content}, `link`=#{announceDO.link}, `type`=#{type}, `date`=#{announceDO.time}",
+            "WHERE `id`=#{announceDO.id}"})
+    boolean updateAnnouncement(AnnounceDO announceDO, @Param("type") int type);
 
 }

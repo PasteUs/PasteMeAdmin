@@ -23,8 +23,4 @@ public enum  AnnounceType implements ValueEnum {
     @Override
     public int getValue() { return value; }
 
-    public void setValue(int val) {
-        this.value = val;
-    }
-
 }

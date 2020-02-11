@@ -1,5 +1,6 @@
 package cn.pasteme.admin.manager.annouce.impl;
 
+import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.enumeration.AnnounceType;
 import cn.pasteme.admin.manager.annouce.AnnounceManager;
@@ -24,17 +25,23 @@ public class AnnounceManagerImpl implements AnnounceManager {
     @Autowired
     private AnnounceMapper announceMapper;
 
-    private int pageSize = 3;
-
     @Override
-    public boolean createAnnouncement(String title, String content, String link, int type) {
-        AnnounceDO announceDO = new AnnounceDO();
-        announceDO.setTitle(title);
-        announceDO.setContent(content);
-        announceDO.setTime(new Date());
-        announceDO.setLink(link);
-        announceDO.setType(type);
-        return announceMapper.createAnnouncement(announceDO);
+    public boolean createAnnouncement(AnnounceRequestDTO node) {
+        if (node.getType() > 2 || node.getType() < 0) {
+            log.error("Cannot identify the type of this Announcement");
+            return false;
+        }
+        try {
+            AnnounceDO announceDO = new AnnounceDO();
+            announceDO.setTitle(node.getTitle());
+            announceDO.setContent(node.getContent());
+            announceDO.setTime(new Date());
+            announceDO.setLink(node.getLink());
+            return announceMapper.createAnnouncement(announceDO, node.getType());
+        } catch (Exception e) {
+            log.error("create Announcement error=", e);
+        }
+        return false;
     }
 
     @Override
@@ -49,12 +56,27 @@ public class AnnounceManagerImpl implements AnnounceManager {
     }
 
     @Override
-    public boolean updateAnnouncement(Long id, String title, String content, String link, int type) {
-        return announceMapper.updateAnnouncement(id, title, content, link, type, new Date());
+    public boolean updateAnnouncement(Long id, AnnounceRequestDTO node) {
+        if (node.getType() > 2 || node.getType() < 0) {
+            log.error("Cannot identify the type of this Announcement");
+            return false;
+        }
+        try {
+            AnnounceDO announceDO = new AnnounceDO();
+            announceDO.setId(id);
+            announceDO.setTitle(node.getTitle());
+            announceDO.setContent(node.getContent());
+            announceDO.setLink(node.getLink());
+            announceDO.setTime(new Date());
+            return announceMapper.updateAnnouncement(announceDO, node.getType());
+        } catch (Exception e) {
+            log.error("updateAnnouncement error=", e);
+        }
+        return false;
     }
 
     @Override
-    public int countPage() {
+    public int countPage(int pageSize) {
         try {
             //Take up the whole
             return (announceMapper.countAnnouncement() + pageSize - 1) / pageSize;
@@ -65,8 +87,9 @@ public class AnnounceManagerImpl implements AnnounceManager {
     }
 
     @Override
-    public List<AnnounceDO> getAnnouncement(int page) {
+    public List<AnnounceDO> getAnnouncement(int page, int pageSize) {
         try {
+//            log.warn();
             return announceMapper.getAnnouncementByPage((page-1) * pageSize, pageSize);
         } catch (Exception e) {
             log.error(", error = ", e);
