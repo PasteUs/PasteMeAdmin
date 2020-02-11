@@ -28,7 +28,7 @@ public class AnnounceController {
     @Autowired
     private AnnounceManager announceManager;
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     boolean createAnnouncement(AnnounceRequestDTO ardto) {
         return announceManager.createAnnouncement(ardto);
     }

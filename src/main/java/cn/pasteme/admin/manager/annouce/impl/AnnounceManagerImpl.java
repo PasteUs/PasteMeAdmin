@@ -5,6 +5,7 @@ import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.enumeration.AnnounceType;
 import cn.pasteme.admin.manager.annouce.AnnounceManager;
 import cn.pasteme.admin.mapper.AnnounceMapper;
+import cn.pasteme.admin.util.AnnounceConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,17 +28,15 @@ public class AnnounceManagerImpl implements AnnounceManager {
 
     @Override
     public boolean createAnnouncement(AnnounceRequestDTO node) {
-        if (node.getType() > 2 || node.getType() < 0) {
-            log.error("Cannot identify the type of this Announcement");
-            return false;
-        }
         try {
             AnnounceDO announceDO = new AnnounceDO();
+            AnnounceConverter converter = new AnnounceConverter();
             announceDO.setTitle(node.getTitle());
             announceDO.setContent(node.getContent());
             announceDO.setTime(new Date());
             announceDO.setLink(node.getLink());
-            return announceMapper.createAnnouncement(announceDO, node.getType());
+            announceDO.setType(converter.getAnnouncementType(node.getType()));
+            return announceMapper.createAnnouncement(announceDO);
         } catch (Exception e) {
             log.error("create Announcement error=", e);
         }
@@ -57,18 +56,16 @@ public class AnnounceManagerImpl implements AnnounceManager {
 
     @Override
     public boolean updateAnnouncement(Long id, AnnounceRequestDTO node) {
-        if (node.getType() > 2 || node.getType() < 0) {
-            log.error("Cannot identify the type of this Announcement");
-            return false;
-        }
         try {
             AnnounceDO announceDO = new AnnounceDO();
+            AnnounceConverter converter = new AnnounceConverter();
             announceDO.setId(id);
             announceDO.setTitle(node.getTitle());
             announceDO.setContent(node.getContent());
             announceDO.setLink(node.getLink());
             announceDO.setTime(new Date());
-            return announceMapper.updateAnnouncement(announceDO, node.getType());
+            announceDO.setType(converter.getAnnouncementType(node.getType()));
+            return announceMapper.updateAnnouncement(announceDO);
         } catch (Exception e) {
             log.error("updateAnnouncement error=", e);
         }

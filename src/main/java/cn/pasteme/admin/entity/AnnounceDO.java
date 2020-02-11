@@ -38,10 +38,4 @@ public class AnnounceDO {
 
     private AnnounceType type;
 
-    public void setType(int value) {
-        if (value == 0) type = AnnounceType.UPDATE_LOG;
-        else if (value == 1) type = AnnounceType.EMERGENCY;
-        else type = AnnounceType.DAILY_ANNOUNCEMENT;
-    }
-
 }

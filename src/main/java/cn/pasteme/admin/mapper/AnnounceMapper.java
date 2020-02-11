@@ -1,6 +1,7 @@
 package cn.pasteme.admin.mapper;
 
 import cn.pasteme.admin.entity.AnnounceDO;
+import cn.pasteme.admin.enumeration.AnnounceType;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -25,8 +26,10 @@ public interface AnnounceMapper {
     @Insert({"INSERT INTO `pasteme_admin_announce`",
             "(`title`, `content`, `link`, `type`, `date`)",
             "VALUES",
-            "(#{announceDO.title}, #{announceDO.content}, #{announceDO.link}, #{type}, #{announceDO.time})", })
-    boolean createAnnouncement(AnnounceDO announceDO, @Param("type") int type);
+            "(#{title}, #{content}, #{link},",
+            "#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler},",
+            "#{time})", })
+    boolean createAnnouncement(AnnounceDO announceDO);
 
     @Select("SELECT COUNT(*) FROM `pasteme_admin_announce`")
     int countAnnouncement();
@@ -48,8 +51,8 @@ public interface AnnounceMapper {
             @Result(property = "title", column = "title"),
             @Result(property = "content", column = "content"),
             @Result(property = "link", column = "link"),
-            @Result(property = "time", column = "date"),
-            @Result(property = "type", column = "type")
+            @Result(property = "type", column = "type", javaType = AnnounceType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class ),
+            @Result(property = "time", column = "date" )
     })
     List<AnnounceDO> getAnnouncementByPage(@Param("begin") int begin, @Param("pageSize") int pageSize);
 
@@ -67,8 +70,9 @@ public interface AnnounceMapper {
      *
      */
     @Update({"UPDATE `pasteme_admin_announce` set",
-            "`title`=#{announceDO.title}, `content`=#{announceDO.content}, `link`=#{announceDO.link}, `type`=#{type}, `date`=#{announceDO.time}",
-            "WHERE `id`=#{announceDO.id}"})
-    boolean updateAnnouncement(AnnounceDO announceDO, @Param("type") int type);
+            "`title`=#{title}, `content`=#{content}, `link`=#{link}, `date`=#{time},",
+            "`type`=#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
+            "WHERE `id`=#{id}"})
+    boolean updateAnnouncement(AnnounceDO announceDO);
 
 }
