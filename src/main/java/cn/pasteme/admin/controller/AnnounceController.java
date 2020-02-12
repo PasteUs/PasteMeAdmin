@@ -28,19 +28,19 @@ public class AnnounceController {
     @Autowired
     private AnnounceManager announceManager;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     boolean createAnnouncement(AnnounceRequestDTO ardto) {
         return announceManager.createAnnouncement(ardto);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
     @RequestLogging(withResponse = true)
     @ErrorLogging
     boolean deleteAnnouncement(Long id) {
         return announceManager.deleteAnnouncement(id);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "", method = RequestMethod.PUT)
     @RequestLogging(withResponse = true)
     @ErrorLogging
     boolean updateAnnouncement(Long id, AnnounceRequestDTO ardto) {
@@ -54,7 +54,7 @@ public class AnnounceController {
         return announceManager.countPage(pageSize);
     }
 
-    @RequestMapping(path = "/get", method = RequestMethod.GET)
+    @RequestMapping(path = "", method = RequestMethod.GET)
     List<AnnounceDO> getAnnouncement(int page, int pageSize) {
         return announceManager.getAnnouncement(page, pageSize);
     }
