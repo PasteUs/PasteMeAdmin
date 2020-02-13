@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * @author Lucien, Acerkoo
- * @version 1.2.6
+ * @version 1.3.0
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -121,22 +121,22 @@ public class AdminMapperTests {
         actually = riskCheckResultDO.getResult();
         assertEquals(expect, actually);
     }
-
     @Test
     public void announceMapperTest() {
-
         AnnounceDO announceDO = new AnnounceDO();
 
         announceDO.setTitle("UnitTest");
+        announceDO.setContent("test");
+        announceDO.setLink("pasteme.cn");
         announceDO.setType(AnnounceType.value2Type(0));
+        announceDO.setTime(new Date());
         assertTrue(announceMapper.createAnnouncement(announceDO));
 
-        announceDO.setLink("pasteme.cn");
+        List<AnnounceDO> list = announceMapper.getAnnouncementByPage(0, 10);
+        announceDO.setId(list.get(0).getId());
+        announceDO.setType(AnnounceType.value2Type(1));
+
         assertTrue(announceMapper.updateAnnouncement(announceDO));
-
-        List<AnnounceDO> list = announceMapper.getAnnouncementByPage(1, 1);
-        assertTrue(list.get(0).equals(announceDO));
-
         assertTrue(announceMapper.deleteAnnouncement(announceDO.getId()));
 
     }

@@ -4,7 +4,9 @@ import cn.pasteme.admin.dto.RiskCheckResultDTO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
+import cn.pasteme.admin.manager.annouce.AnnounceManager;
 import cn.pasteme.admin.manager.risk.impl.RiskControlManagerImpl;
+import cn.pasteme.admin.mapper.AnnounceMapper;
 import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.manager.risk.RiskControlManager;
@@ -37,8 +39,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Lucien
- * @version 1.1.0
+ * @author Lucien, Acerkoo
+ * @version 1.2.0
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -63,6 +65,9 @@ public class AdminManagerTests {
     private NLP nlp;
 
     private RiskControlManager riskControlManager;
+
+    @Autowired
+    private AnnounceManager announceManager;
 
     @Before
     public void before() {
@@ -204,6 +209,11 @@ public class AdminManagerTests {
 
             assertTrue(response.isSuccess());
             assertEquals(Long.valueOf(0), response.getData());
+        }
+
+        {
+            assertTrue(announceManager.countPage(3).isSuccess());
+            assertTrue(announceManager.getAnnouncement(1, 3).isSuccess());
         }
     }
 }
