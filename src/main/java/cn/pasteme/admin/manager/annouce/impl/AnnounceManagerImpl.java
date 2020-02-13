@@ -5,17 +5,18 @@ import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.enumeration.AnnounceType;
 import cn.pasteme.admin.manager.annouce.AnnounceManager;
 import cn.pasteme.admin.mapper.AnnounceMapper;
+import cn.pasteme.common.utils.result.Response;
+import cn.pasteme.common.utils.result.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  *
  * @author Acerkoo
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 @Slf4j
@@ -36,7 +37,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
             announceDO.setType(AnnounceType.value2Type(node.getType()));
             return announceMapper.createAnnouncement(announceDO);
         } catch (Exception e) {
-            log.error("create Announcement error=", e);
+            log.error("Create Announcement error=", e);
         }
         return false;
     }
@@ -70,24 +71,21 @@ public class AnnounceManagerImpl implements AnnounceManager {
     }
 
     @Override
-    public int countPage(int pageSize) {
+    public Response<Integer> countPage(int pageSize) {
         try {
             //Take up the whole
-            return (announceMapper.countAnnouncement() + pageSize - 1) / pageSize;
+            return Response.success((announceMapper.countAnnouncement() + pageSize - 1) / pageSize);
         } catch (Exception e) {
             log.error("Announce All error = ", e);
         }
-        return 0;
+        return Response.error(ResponseCode.PARAM_ERROR);
     }
 
     @Override
-    public List<AnnounceDO> getAnnouncement(int page, int pageSize) {
-        try {
-            return announceMapper.getAnnouncementByPage((page-1) * pageSize, pageSize);
-        } catch (Exception e) {
-            log.error(", error = ", e);
-        }
-        return new ArrayList<>();
+    public Response<List<AnnounceDO>> getAnnouncement(int page, int pageSize) {
+        List<AnnounceDO> list = announceMapper.getAnnouncementByPage((page-1) * pageSize, pageSize);
+        log.warn("Announcement list = {}", list);
+        return Response.success(list);
     }
 
 }

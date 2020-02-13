@@ -1,12 +1,10 @@
 package cn.pasteme.admin.mapper;
 
+import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
-import cn.pasteme.admin.enumeration.RiskDictionaryType;
-import cn.pasteme.admin.enumeration.RiskStateDoState;
-import cn.pasteme.admin.enumeration.RiskStateDoType;
-import cn.pasteme.admin.enumeration.RiskCheckResultType;
+import cn.pasteme.admin.enumeration.*;
 import cn.pasteme.algorithm.pair.Pair;
 
 import static org.junit.Assert.*;
@@ -24,8 +22,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author Lucien
- * @version 1.2.5
+ * @author Lucien, Acerkoo
+ * @version 1.3.0
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -46,6 +44,9 @@ public class AdminMapperTests {
 
     @Autowired
     private RiskCheckResultMapper riskCheckResultMapper;
+
+    @Autowired
+    private AnnounceMapper announceMapper;
 
     private List<String> getLatestDictionary() {
         RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.RISK_WORD);
@@ -120,4 +121,24 @@ public class AdminMapperTests {
         actually = riskCheckResultDO.getResult();
         assertEquals(expect, actually);
     }
+    @Test
+    public void announceMapperTest() {
+        AnnounceDO announceDO = new AnnounceDO();
+
+        announceDO.setTitle("UnitTest");
+        announceDO.setContent("test");
+        announceDO.setLink("pasteme.cn");
+        announceDO.setType(AnnounceType.value2Type(0));
+        announceDO.setTime(new Date());
+        assertTrue(announceMapper.createAnnouncement(announceDO));
+
+        List<AnnounceDO> list = announceMapper.getAnnouncementByPage(0, 10);
+        announceDO.setId(list.get(0).getId());
+        announceDO.setType(AnnounceType.value2Type(1));
+
+        assertTrue(announceMapper.updateAnnouncement(announceDO));
+        assertTrue(announceMapper.deleteAnnouncement(announceDO.getId()));
+
+    }
+
 }
