@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Annoucement 的增删改查
+ * Announcement 的增删改查
  *
  * @author Acerkoo
  * @version 1.0.1
