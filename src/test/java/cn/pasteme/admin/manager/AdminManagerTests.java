@@ -1,6 +1,8 @@
 package cn.pasteme.admin.manager;
 
+import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.dto.RiskCheckResultDTO;
+import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
@@ -64,7 +66,7 @@ public class AdminManagerTests {
     private RiskControlManager riskControlManager;
 
     @Autowired
-    private AnnounceManager announceManager;
+    private AnnouncementManager announcementManager;
 
     @Before
     public void before() {
@@ -208,9 +210,20 @@ public class AdminManagerTests {
             assertEquals(Long.valueOf(0), response.getData());
         }
 
+        // Announcement
         {
-            assertTrue(announceManager.countPage(3).isSuccess());
-            assertTrue(announceManager.getAnnouncement(1, 3).isSuccess());
+
+            assertTrue(announcementManager.countPage(3) >= 0);
+            AnnounceRequestDTO announceRequestDTO = new AnnounceRequestDTO();
+            announceRequestDTO.setTitle("Manager_Test");
+            announceRequestDTO.setType(0);
+            assertTrue(announcementManager.createAnnouncement(announceRequestDTO));
+
+            List<AnnounceDO> list = announcementManager.getAnnouncement(1, 3);
+            AnnounceDO announceDO = list.get(0);
+
+            assertTrue(announceDO.getType().getValue() < 3 && announceDO.getType().getValue() >= 0);
+            assertTrue(announcementManager.deleteAnnouncement(announceDO.getId()));
         }
     }
 }

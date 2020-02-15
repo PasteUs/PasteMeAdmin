@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * @version 1.0.0
  */
 @Slf4j
-public enum  AnnounceType implements ValueEnum {
+public enum AnnounceType implements ValueEnum {
 
     /**
      * 更新日志
@@ -30,10 +30,14 @@ public enum  AnnounceType implements ValueEnum {
 
     int value;
 
-    AnnounceType(int value) { this.value = value; }
+    AnnounceType(int value) {
+        this.value = value;
+    }
 
     @Override
-    public int getValue() { return value; }
+    public int getValue() {
+        return value;
+    }
 
     public static AnnounceType value2Type(int value) {
         for (AnnounceType announceType: AnnounceType.values()) {

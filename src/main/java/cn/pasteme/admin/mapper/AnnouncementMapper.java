@@ -15,7 +15,7 @@ import java.util.List;
  * @version 1.0.1
  */
 @Repository
-public interface AnnounceMapper {
+public interface AnnouncementMapper {
 
     /**
      * 新增一条公告
@@ -24,11 +24,11 @@ public interface AnnounceMapper {
      * @return 是否插入成功
      */
     @Insert({"INSERT INTO `pasteme_admin_announce`",
-            "(`title`, `content`, `link`, `type`, `date`)",
+            "(`title`, `content`, `link`, `type`, `date`, `is_deleted`)",
             "VALUES",
             "(#{title}, #{content}, #{link},",
             "#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler},",
-            "#{time})", })
+            "#{time}, false)"})
     boolean createAnnouncement(AnnounceDO announceDO);
 
     /**
@@ -36,7 +36,9 @@ public interface AnnounceMapper {
      *
      * @return 公告数量
      */
-    @Select("SELECT COUNT(*) FROM `pasteme_admin_announce`")
+    @Select({"SELECT COUNT(*)",
+            " FROM `pasteme_admin_announce`",
+            " WHERE `is_deleted`=false"})
     int countAnnouncement();
 
     /**
@@ -48,9 +50,9 @@ public interface AnnounceMapper {
      */
     @Select({"SELECT *",
             "FROM `pasteme_admin_announce`",
+            "WHERE `is_deleted` = false",
             "ORDER BY `date` DESC",
-            "LIMIT #{begin}, #{pageSize}",
-    })
+            "LIMIT #{begin}, #{pageSize}", })
     @Results({
             @Result(property = "id", column = "id"),
             @Result(property = "title", column = "title"),
@@ -67,7 +69,9 @@ public interface AnnounceMapper {
      * @param id 删除公告的主键值
      * @return 是否删除成功
      */
-    @Update({"DELETE FROM `pasteme_admin_announce` WHERE `id`=#{id}"})
+    @Update({"UPDATE `pasteme_admin_announce`",
+            " SET `is_deleted`=true ",
+            " WHERE `id`=#{id}"})
     boolean deleteAnnouncement(@Param("id") Long id);
 
     /**
@@ -79,6 +83,6 @@ public interface AnnounceMapper {
     @Update({"UPDATE `pasteme_admin_announce` set",
             "`title`=#{title}, `content`=#{content}, `link`=#{link}, `date`=#{time},",
             "`type`=#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
-            "WHERE `id`=#{id}"})
+            "WHERE `id`=#{id}" })
     boolean updateAnnouncement(AnnounceDO announceDO);
 }
