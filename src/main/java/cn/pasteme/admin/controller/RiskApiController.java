@@ -2,9 +2,8 @@ package cn.pasteme.admin.controller;
 
 import cn.pasteme.admin.dto.RiskCheckResultDTO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
-import cn.pasteme.admin.manager.risk.RiskControlManager;
+import cn.pasteme.admin.manager.RiskControlManager;
 import cn.pasteme.common.utils.result.Response;
-import cn.pasteme.common.utils.result.ResponseCode;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;

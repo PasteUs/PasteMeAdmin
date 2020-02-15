@@ -1,4 +1,4 @@
-package cn.pasteme.admin.manager.risk.impl;
+package cn.pasteme.admin.manager.impl;
 
 import cn.pasteme.admin.dto.RiskCheckResultDTO;
 import cn.pasteme.admin.entity.RiskCheckDO;
@@ -8,7 +8,7 @@ import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
 import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
-import cn.pasteme.admin.manager.risk.RiskControlManager;
+import cn.pasteme.admin.manager.RiskControlManager;
 import cn.pasteme.admin.mapper.RiskStateMapper;
 import cn.pasteme.algorithm.ac.AhoCorasick;
 import cn.pasteme.algorithm.ac.impl.NormalAhoCorasick;

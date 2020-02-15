@@ -1,4 +1,4 @@
-package cn.pasteme.admin.manager.risk;
+package cn.pasteme.admin.manager;
 
 import cn.pasteme.admin.dto.RiskCheckResultDTO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;

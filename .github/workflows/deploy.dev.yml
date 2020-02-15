@@ -3,7 +3,7 @@ name: Maven Deploy
 on:
   push:
     branches:
-      - master
+      - dev
 
 jobs:
   deploy:
@@ -31,19 +31,16 @@ jobs:
         with:
           java-version: 11
       - name: Deploy to Github Package Registry
-        env:
-          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-          GITHUB_PASSWORD: ${{ secrets.GITHUB_PASSWORD }}
         run: |
           mvn --settings .github/settings.xml \
               --file pom.xml \
               -Dspring.config.location=docker/config/application.yml \
-              deploy
+              package
 
       - name: publish docker
         uses: LucienShui/Publish-Docker-Github-Action@2.7.1
         with:
-          name: registry.cn-hangzhou.aliyuncs.com/pasteus/pasteme-admin:latest
+          name: registry.cn-hangzhou.aliyuncs.com/pasteus/pasteme-admin:beta
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: registry.cn-hangzhou.aliyuncs.com

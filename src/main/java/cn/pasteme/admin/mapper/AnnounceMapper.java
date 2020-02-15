@@ -14,15 +14,15 @@ import java.util.List;
  * @author Acerkoo
  * @version 1.0.1
  */
-
 @Repository
 public interface AnnounceMapper {
 
     /**
-     * 新增一条 Announcement
+     * 新增一条公告
      *
+     * @param announceDO 公告实体信息
+     * @return 是否插入成功
      */
-
     @Insert({"INSERT INTO `pasteme_admin_announce`",
             "(`title`, `content`, `link`, `type`, `date`)",
             "VALUES",
@@ -31,15 +31,20 @@ public interface AnnounceMapper {
             "#{time})", })
     boolean createAnnouncement(AnnounceDO announceDO);
 
+    /**
+     * 查询公告总数量
+     *
+     * @return 公告数量
+     */
     @Select("SELECT COUNT(*) FROM `pasteme_admin_announce`")
     int countAnnouncement();
 
     /**
      * 查询第 page 页的内容
      *
-     * @param begin
-     * @param pageSize
-     * @return
+     * @param begin 开始索引
+     * @param pageSize 页大小
+     * @return 公告信息列表
      */
     @Select({"SELECT *",
             "FROM `pasteme_admin_announce`",
@@ -59,20 +64,21 @@ public interface AnnounceMapper {
     /**
      * 删除指定通知
      *
-     * @param id
-     * @return
+     * @param id 删除公告的主键值
+     * @return 是否删除成功
      */
     @Update({"DELETE FROM `pasteme_admin_announce` WHERE `id`=#{id}"})
     boolean deleteAnnouncement(@Param("id") Long id);
 
     /**
-     * 更新信息
+     * 更新公告信息
      *
+     * @param announceDO 公告信息
+     * @return 是否更新成功
      */
     @Update({"UPDATE `pasteme_admin_announce` set",
             "`title`=#{title}, `content`=#{content}, `link`=#{link}, `date`=#{time},",
             "`type`=#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
             "WHERE `id`=#{id}"})
     boolean updateAnnouncement(AnnounceDO announceDO);
-
 }

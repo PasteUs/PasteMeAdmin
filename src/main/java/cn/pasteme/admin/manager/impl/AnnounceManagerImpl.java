@@ -1,15 +1,17 @@
-package cn.pasteme.admin.manager.annouce.impl;
+package cn.pasteme.admin.manager.impl;
 
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.enumeration.AnnounceType;
-import cn.pasteme.admin.manager.annouce.AnnounceManager;
+import cn.pasteme.admin.manager.AnnounceManager;
 import cn.pasteme.admin.mapper.AnnounceMapper;
 import cn.pasteme.common.utils.result.Response;
 import cn.pasteme.common.utils.result.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -18,16 +20,19 @@ import java.util.List;
  * @author Acerkoo
  * @version 1.0.1
  */
-
 @Slf4j
 @Service
 public class AnnounceManagerImpl implements AnnounceManager {
 
+    private final AnnounceMapper announceMapper;
+
     @Autowired
-    private AnnounceMapper announceMapper;
+    public AnnounceManagerImpl(AnnounceMapper announceMapper) {
+        this.announceMapper = announceMapper;
+    }
 
     @Override
-    public boolean createAnnouncement(AnnounceRequestDTO node) {
+    public boolean createAnnouncement(@Valid AnnounceRequestDTO node) {
         try {
             AnnounceDO announceDO = new AnnounceDO();
             announceDO.setTitle(node.getTitle());
@@ -54,7 +59,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
     }
 
     @Override
-    public boolean updateAnnouncement(Long id, AnnounceRequestDTO node) {
+    public boolean updateAnnouncement(Long id, @Valid AnnounceRequestDTO node) {
         try {
             AnnounceDO announceDO = new AnnounceDO();
             announceDO.setId(id);
@@ -87,5 +92,4 @@ public class AnnounceManagerImpl implements AnnounceManager {
         log.warn("Announcement list = {}", list);
         return Response.success(list);
     }
-
 }
