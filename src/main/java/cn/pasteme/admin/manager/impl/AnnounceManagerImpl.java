@@ -26,8 +26,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
 
     private final AnnounceMapper announceMapper;
 
-    @Autowired
-    public AnnounceManagerImpl(AnnounceMapper announceMapper) {
+    public AnnounceManagerImpl(@Autowired AnnounceMapper announceMapper) {
         this.announceMapper = announceMapper;
     }
 

@@ -2,8 +2,6 @@ package cn.pasteme.admin.dto;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * Announcement 的参数封装
  *
@@ -17,7 +15,6 @@ public class AnnounceRequestDTO {
 
     private String content;
 
-    @NotNull
     private String link;
 
     private int type;
