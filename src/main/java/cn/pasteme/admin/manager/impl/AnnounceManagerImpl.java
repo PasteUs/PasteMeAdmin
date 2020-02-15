@@ -10,6 +10,8 @@ import cn.pasteme.common.utils.result.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
     }
 
     @Override
-    public boolean createAnnouncement(AnnounceRequestDTO node) {
+    public boolean createAnnouncement(@Valid AnnounceRequestDTO node) {
         try {
             AnnounceDO announceDO = new AnnounceDO();
             announceDO.setTitle(node.getTitle());
@@ -57,7 +59,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
     }
 
     @Override
-    public boolean updateAnnouncement(Long id, AnnounceRequestDTO node) {
+    public boolean updateAnnouncement(Long id, @Valid AnnounceRequestDTO node) {
         try {
             AnnounceDO announceDO = new AnnounceDO();
             announceDO.setId(id);

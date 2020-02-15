@@ -4,6 +4,7 @@ import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.common.utils.result.Response;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -20,7 +21,7 @@ public interface AnnounceManager {
      * @param announceRequestDTO 新增 Announcement 的信息
      * @return 是否插入成功
      */
-    boolean createAnnouncement(AnnounceRequestDTO announceRequestDTO);
+    boolean createAnnouncement(@Valid AnnounceRequestDTO announceRequestDTO);
 
     /**
      * 删除指定 Announcement
@@ -37,7 +38,7 @@ public interface AnnounceManager {
      * @param announceRequestDTO 修改后的信息
      * @return 是否更新成功
      */
-    boolean updateAnnouncement(Long id, AnnounceRequestDTO announceRequestDTO);
+    boolean updateAnnouncement(Long id, @Valid AnnounceRequestDTO announceRequestDTO);
 
     /**
      * 查询指定 pageSize 后的页数，向上取整

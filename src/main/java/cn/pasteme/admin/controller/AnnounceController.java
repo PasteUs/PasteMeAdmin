@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -36,7 +37,7 @@ public class AnnounceController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     @RequestLogging(withResponse = true)
     @ErrorLogging
-    Response createAnnouncement(AnnounceRequestDTO ardto) {
+    Response createAnnouncement(@Valid AnnounceRequestDTO ardto) {
         return announceManager.createAnnouncement(ardto)? Response.success(): Response.error(ResponseCode.SERVER_ERROR);
     }
 
@@ -50,7 +51,7 @@ public class AnnounceController {
     @RequestMapping(value = "", method = RequestMethod.PUT)
     @RequestLogging(withResponse = true)
     @ErrorLogging
-    Response updateAnnouncement(Long id, AnnounceRequestDTO ardto) {
+    Response updateAnnouncement(Long id, @Valid AnnounceRequestDTO ardto) {
         return announceManager.updateAnnouncement(id, ardto)? Response.success(): Response.error(ResponseCode.PARAM_ERROR);
     }
 
