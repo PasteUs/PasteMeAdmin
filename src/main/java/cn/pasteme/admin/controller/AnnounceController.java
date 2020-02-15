@@ -29,8 +29,7 @@ public class AnnounceController {
 
     private final AnnounceManager announceManager;
 
-    @Autowired
-    public AnnounceController(AnnounceManager announceManager) {
+    public AnnounceController(@Autowired AnnounceManager announceManager) {
         this.announceManager = announceManager;
     }
 
