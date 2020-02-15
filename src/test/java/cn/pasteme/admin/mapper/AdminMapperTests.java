@@ -46,7 +46,7 @@ public class AdminMapperTests {
     private RiskCheckResultMapper riskCheckResultMapper;
 
     @Autowired
-    private AnnounceMapper announceMapper;
+    private AnnouncementMapper announcementMapper;
 
     private List<String> getLatestDictionary() {
         RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.RISK_WORD);
@@ -130,14 +130,14 @@ public class AdminMapperTests {
         announceDO.setLink("pasteme.cn");
         announceDO.setType(AnnounceType.value2Type(0));
         announceDO.setTime(new Date());
-        assertTrue(announceMapper.createAnnouncement(announceDO));
+        assertTrue(announcementMapper.createAnnouncement(announceDO));
 
-        List<AnnounceDO> list = announceMapper.getAnnouncementByPage(0, 10);
+        List<AnnounceDO> list = announcementMapper.getAnnouncementByPage(0, 10);
         announceDO.setId(list.get(0).getId());
         announceDO.setType(AnnounceType.value2Type(1));
 
-        assertTrue(announceMapper.updateAnnouncement(announceDO));
-        assertTrue(announceMapper.deleteAnnouncement(announceDO.getId()));
+        assertTrue(announcementMapper.updateAnnouncement(announceDO));
+        assertTrue(announcementMapper.deleteAnnouncement(announceDO.getId()));
 
     }
 

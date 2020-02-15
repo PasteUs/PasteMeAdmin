@@ -2,7 +2,7 @@ package cn.pasteme.admin.controller;
 
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
-import cn.pasteme.admin.manager.AnnounceManager;
+import cn.pasteme.admin.manager.AnnouncementManager;
 import cn.pasteme.common.annotation.ErrorLogging;
 import cn.pasteme.common.annotation.RequestLogging;
 import cn.pasteme.common.utils.result.Response;
@@ -27,42 +27,42 @@ import java.util.List;
 @RequestMapping("/api/announcement")
 public class AnnounceController {
 
-    private final AnnounceManager announceManager;
+    private final AnnouncementManager announcementManager;
 
-    public AnnounceController(@Autowired AnnounceManager announceManager) {
-        this.announceManager = announceManager;
+    public AnnounceController(@Autowired AnnouncementManager announcementManager) {
+        this.announcementManager = announcementManager;
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     @RequestLogging(withResponse = true)
     @ErrorLogging
     Response createAnnouncement(@Valid AnnounceRequestDTO announceRequestDTO) {
-        return announceManager.createAnnouncement(announceRequestDTO)? Response.success(): Response.error(ResponseCode.SERVER_ERROR);
+        return announcementManager.createAnnouncement(announceRequestDTO)? Response.success(): Response.error(ResponseCode.SERVER_ERROR);
     }
 
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     @RequestLogging(withResponse = true)
     @ErrorLogging
     Response deleteAnnouncement(Long id) {
-        return announceManager.deleteAnnouncement(id)? Response.success(): Response.error(ResponseCode.SERVER_ERROR);
+        return announcementManager.deleteAnnouncement(id)? Response.success(): Response.error(ResponseCode.SERVER_ERROR);
     }
 
     @RequestMapping(value = "", method = RequestMethod.PUT)
     @RequestLogging(withResponse = true)
     @ErrorLogging
     Response updateAnnouncement(Long id, @Valid AnnounceRequestDTO announceRequestDTO) {
-        return announceManager.updateAnnouncement(id, announceRequestDTO)? Response.success(): Response.error(ResponseCode.PARAM_ERROR);
+        return announcementManager.updateAnnouncement(id, announceRequestDTO)? Response.success(): Response.error(ResponseCode.PARAM_ERROR);
     }
 
     @RequestMapping(path = "/page", method = RequestMethod.GET)
     @RequestLogging(withResponse = true)
     @ErrorLogging
     Response<Integer> countPage(int pageSize) {
-        return announceManager.countPage(pageSize);
+        return Response.success(announcementManager.countPage(pageSize));
     }
 
     @RequestMapping(path = "", method = RequestMethod.GET)
     Response<List<AnnounceDO>> getAnnouncement(int page, int pageSize) {
-        return announceManager.getAnnouncement(page, pageSize);
+        return Response.success(announcementManager.getAnnouncement(page, pageSize));
     }
 }

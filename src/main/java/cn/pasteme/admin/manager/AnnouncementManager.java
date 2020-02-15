@@ -13,7 +13,7 @@ import java.util.List;
  * @author Acerkoo
  * @version 1.0.1
  */
-public interface AnnounceManager {
+public interface AnnouncementManager {
 
     /**
      * 新增一条 Announcement
@@ -46,7 +46,7 @@ public interface AnnounceManager {
      * @param pageSize 每页数量
      * @return 公告以 pageSize 为页大小的页数
      */
-    Response<Integer> countPage(int pageSize);
+    int countPage(int pageSize);
 
     /**
      * 查询第 page 页的内容
@@ -55,5 +55,5 @@ public interface AnnounceManager {
      * @param pageSize 每页数量
      * @return 指定页码的公告信息列表
      */
-    Response<List<AnnounceDO>> getAnnouncement(int page, int pageSize);
+    List<AnnounceDO> getAnnouncement(int page, int pageSize);
 }

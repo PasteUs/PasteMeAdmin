@@ -30,10 +30,14 @@ public enum AnnounceType implements ValueEnum {
 
     int value;
 
-    AnnounceType(int value) { this.value = value; }
+    AnnounceType(int value) {
+        this.value = value;
+    }
 
     @Override
-    public int getValue() { return value; }
+    public int getValue() {
+        return value;
+    }
 
     public static AnnounceType value2Type(int value) {
         for (AnnounceType announceType: AnnounceType.values()) {

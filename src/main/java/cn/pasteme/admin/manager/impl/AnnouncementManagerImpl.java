@@ -3,10 +3,8 @@ package cn.pasteme.admin.manager.impl;
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.enumeration.AnnounceType;
-import cn.pasteme.admin.manager.AnnounceManager;
-import cn.pasteme.admin.mapper.AnnounceMapper;
-import cn.pasteme.common.utils.result.Response;
-import cn.pasteme.common.utils.result.ResponseCode;
+import cn.pasteme.admin.manager.AnnouncementManager;
+import cn.pasteme.admin.mapper.AnnouncementMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,12 +20,12 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class AnnounceManagerImpl implements AnnounceManager {
+public class AnnouncementManagerImpl implements AnnouncementManager {
 
-    private final AnnounceMapper announceMapper;
+    private final AnnouncementMapper announcementMapper;
 
-    public AnnounceManagerImpl(@Autowired AnnounceMapper announceMapper) {
-        this.announceMapper = announceMapper;
+    public AnnouncementManagerImpl(@Autowired AnnouncementMapper announcementMapper) {
+        this.announcementMapper = announcementMapper;
     }
 
     @Override
@@ -39,7 +37,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
             announceDO.setTime(new Date());
             announceDO.setLink(announceRequestDTO.getLink());
             announceDO.setType(AnnounceType.value2Type(announceRequestDTO.getType()));
-            return announceMapper.createAnnouncement(announceDO);
+            return announcementMapper.createAnnouncement(announceDO);
         } catch (Exception e) {
             log.error("Create Announcement error = ", e);
         }
@@ -49,7 +47,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
     @Override
     public boolean deleteAnnouncement(Long id) {
         try {
-            return announceMapper.deleteAnnouncement(id);
+            return announcementMapper.deleteAnnouncement(id);
         } catch (Exception e) {
             log.error("When delete announcement, error = ", e);
         }
@@ -66,7 +64,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
             announceDO.setLink(announceRequestDTO.getLink());
             announceDO.setTime(new Date());
             announceDO.setType(AnnounceType.value2Type(announceRequestDTO.getType()));
-            return announceMapper.updateAnnouncement(announceDO);
+            return announcementMapper.updateAnnouncement(announceDO);
         } catch (Exception e) {
             log.error("Update Announcement error = ", e);
         }
@@ -74,20 +72,20 @@ public class AnnounceManagerImpl implements AnnounceManager {
     }
 
     @Override
-    public Response<Integer> countPage(int pageSize) {
+    public int countPage(int pageSize) {
         try {
             //Take up the whole
-            return Response.success((announceMapper.countAnnouncement() + pageSize - 1) / pageSize);
+            return (announcementMapper.countAnnouncement() + pageSize - 1) / pageSize;
         } catch (Exception e) {
             log.error("Announce All error = ", e);
         }
-        return Response.error(ResponseCode.PARAM_ERROR);
+        return 0;
     }
 
     @Override
-    public Response<List<AnnounceDO>> getAnnouncement(int page, int pageSize) {
-        List<AnnounceDO> list = announceMapper.getAnnouncementByPage((page-1) * pageSize, pageSize);
+    public List<AnnounceDO> getAnnouncement(int page, int pageSize) {
+        List<AnnounceDO> list = announcementMapper.getAnnouncementByPage((page-1) * pageSize, pageSize);
         log.info("Announcement list = {}", list);
-        return Response.success(list);
+        return list;
     }
 }
