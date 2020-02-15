@@ -26,23 +26,22 @@ public class AnnounceManagerImpl implements AnnounceManager {
 
     private final AnnounceMapper announceMapper;
 
-    @Autowired
-    public AnnounceManagerImpl(AnnounceMapper announceMapper) {
+    public AnnounceManagerImpl(@Autowired AnnounceMapper announceMapper) {
         this.announceMapper = announceMapper;
     }
 
     @Override
-    public boolean createAnnouncement(@Valid AnnounceRequestDTO node) {
+    public boolean createAnnouncement(@Valid AnnounceRequestDTO announceRequestDTO) {
         try {
             AnnounceDO announceDO = new AnnounceDO();
-            announceDO.setTitle(node.getTitle());
-            announceDO.setContent(node.getContent());
+            announceDO.setTitle(announceRequestDTO.getTitle());
+            announceDO.setContent(announceRequestDTO.getContent());
             announceDO.setTime(new Date());
-            announceDO.setLink(node.getLink());
-            announceDO.setType(AnnounceType.value2Type(node.getType()));
+            announceDO.setLink(announceRequestDTO.getLink());
+            announceDO.setType(AnnounceType.value2Type(announceRequestDTO.getType()));
             return announceMapper.createAnnouncement(announceDO);
         } catch (Exception e) {
-            log.error("Create Announcement error=", e);
+            log.error("Create Announcement error = ", e);
         }
         return false;
     }
@@ -50,8 +49,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
     @Override
     public boolean deleteAnnouncement(Long id) {
         try {
-            announceMapper.deleteAnnouncement(id);
-            return true;
+            return announceMapper.deleteAnnouncement(id);
         } catch (Exception e) {
             log.error("When delete announcement, error = ", e);
         }
@@ -59,18 +57,18 @@ public class AnnounceManagerImpl implements AnnounceManager {
     }
 
     @Override
-    public boolean updateAnnouncement(Long id, @Valid AnnounceRequestDTO node) {
+    public boolean updateAnnouncement(Long id, @Valid AnnounceRequestDTO announceRequestDTO) {
         try {
             AnnounceDO announceDO = new AnnounceDO();
             announceDO.setId(id);
-            announceDO.setTitle(node.getTitle());
-            announceDO.setContent(node.getContent());
-            announceDO.setLink(node.getLink());
+            announceDO.setTitle(announceRequestDTO.getTitle());
+            announceDO.setContent(announceRequestDTO.getContent());
+            announceDO.setLink(announceRequestDTO.getLink());
             announceDO.setTime(new Date());
-            announceDO.setType(AnnounceType.value2Type(node.getType()));
+            announceDO.setType(AnnounceType.value2Type(announceRequestDTO.getType()));
             return announceMapper.updateAnnouncement(announceDO);
         } catch (Exception e) {
-            log.error("updateAnnouncement error=", e);
+            log.error("Update Announcement error = ", e);
         }
         return false;
     }
@@ -89,7 +87,7 @@ public class AnnounceManagerImpl implements AnnounceManager {
     @Override
     public Response<List<AnnounceDO>> getAnnouncement(int page, int pageSize) {
         List<AnnounceDO> list = announceMapper.getAnnouncementByPage((page-1) * pageSize, pageSize);
-        log.warn("Announcement list = {}", list);
+        log.info("Announcement list = {}", list);
         return Response.success(list);
     }
 }

@@ -17,7 +17,6 @@ public class AnnounceRequestDTO {
 
     private String content;
 
-    @NotNull
     private String link;
 
     private int type;

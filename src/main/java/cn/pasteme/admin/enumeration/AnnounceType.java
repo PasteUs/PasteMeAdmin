@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * @version 1.0.0
  */
 @Slf4j
-public enum  AnnounceType implements ValueEnum {
+public enum AnnounceType implements ValueEnum {
 
     /**
      * 更新日志
