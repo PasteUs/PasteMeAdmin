@@ -4,7 +4,11 @@ import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
-import cn.pasteme.admin.enumeration.*;
+import cn.pasteme.admin.enumeration.RiskCheckResultType;
+import cn.pasteme.admin.enumeration.RiskDictionaryType;
+import cn.pasteme.admin.enumeration.RiskStateDoState;
+import cn.pasteme.admin.enumeration.RiskStateDoType;
+import cn.pasteme.admin.enumeration.AnnounceType;
 import cn.pasteme.algorithm.pair.Pair;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
