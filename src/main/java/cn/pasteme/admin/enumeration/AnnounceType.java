@@ -10,14 +10,22 @@ import lombok.extern.slf4j.Slf4j;
  * @author Acerkoo
  * @version 1.0.0
  */
-
 @Slf4j
 public enum  AnnounceType implements ValueEnum {
 
+    /**
+     * 更新日志
+     */
     UPDATE_LOG(0),
 
+    /**
+     * 紧急情况
+     */
     EMERGENCY(1),
 
+    /**
+     * 每日公告
+     */
     DAILY_ANNOUNCEMENT(2);
 
     int value;
@@ -36,5 +44,4 @@ public enum  AnnounceType implements ValueEnum {
         log.error("this type is an illegal parameter: {}", value);
         throw new GlobalException(ResponseCode.PARAM_ERROR);
     }
-
 }
