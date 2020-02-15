@@ -36,21 +36,21 @@ public class AnnounceController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     @RequestLogging(withResponse = true)
     @ErrorLogging
-    Response createAnnouncement(@Valid AnnounceRequestDTO announceRequestDTO) {
+    Response<Void> createAnnouncement(@Valid AnnounceRequestDTO announceRequestDTO) {
         return announcementManager.createAnnouncement(announceRequestDTO)? Response.success(): Response.error(ResponseCode.SERVER_ERROR);
     }
 
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     @RequestLogging(withResponse = true)
     @ErrorLogging
-    Response deleteAnnouncement(Long id) {
+    Response<Void> deleteAnnouncement(Long id) {
         return announcementManager.deleteAnnouncement(id)? Response.success(): Response.error(ResponseCode.SERVER_ERROR);
     }
 
     @RequestMapping(value = "", method = RequestMethod.PUT)
     @RequestLogging(withResponse = true)
     @ErrorLogging
-    Response updateAnnouncement(Long id, @Valid AnnounceRequestDTO announceRequestDTO) {
+    Response<Void> updateAnnouncement(Long id, @Valid AnnounceRequestDTO announceRequestDTO) {
         return announcementManager.updateAnnouncement(id, announceRequestDTO)? Response.success(): Response.error(ResponseCode.PARAM_ERROR);
     }
 

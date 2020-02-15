@@ -7,7 +7,9 @@ import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.*;
 import cn.pasteme.algorithm.pair.Pair;
 
-import static org.junit.Assert.*;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
