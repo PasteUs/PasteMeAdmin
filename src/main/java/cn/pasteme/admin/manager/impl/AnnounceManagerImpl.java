@@ -1,9 +1,9 @@
-package cn.pasteme.admin.manager.annouce.impl;
+package cn.pasteme.admin.manager.impl;
 
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.enumeration.AnnounceType;
-import cn.pasteme.admin.manager.annouce.AnnounceManager;
+import cn.pasteme.admin.manager.AnnounceManager;
 import cn.pasteme.admin.mapper.AnnounceMapper;
 import cn.pasteme.common.utils.result.Response;
 import cn.pasteme.common.utils.result.ResponseCode;
@@ -18,13 +18,16 @@ import java.util.List;
  * @author Acerkoo
  * @version 1.0.1
  */
-
 @Slf4j
 @Service
 public class AnnounceManagerImpl implements AnnounceManager {
 
+    private final AnnounceMapper announceMapper;
+
     @Autowired
-    private AnnounceMapper announceMapper;
+    public AnnounceManagerImpl(AnnounceMapper announceMapper) {
+        this.announceMapper = announceMapper;
+    }
 
     @Override
     public boolean createAnnouncement(AnnounceRequestDTO node) {
@@ -87,5 +90,4 @@ public class AnnounceManagerImpl implements AnnounceManager {
         log.warn("Announcement list = {}", list);
         return Response.success(list);
     }
-
 }

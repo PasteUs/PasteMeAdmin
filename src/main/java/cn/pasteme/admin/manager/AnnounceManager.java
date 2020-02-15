@@ -1,4 +1,4 @@
-package cn.pasteme.admin.manager.annouce;
+package cn.pasteme.admin.manager;
 
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
@@ -12,25 +12,22 @@ import java.util.List;
  * @author Acerkoo
  * @version 1.0.1
  */
-
 public interface AnnounceManager {
 
     /**
      * 新增一条 Announcement
      *
      * @param announceRequestDTO 新增 Announcement 的信息
-     * @return
+     * @return 是否插入成功
      */
-
     boolean createAnnouncement(AnnounceRequestDTO announceRequestDTO);
 
     /**
      * 删除指定 Announcement
      *
      * @param id 主键
-     * @return
+     * @return 是否删除成功
      */
-
     boolean deleteAnnouncement(Long id);
 
     /**
@@ -38,7 +35,7 @@ public interface AnnounceManager {
      *
      * @param id 主键
      * @param announceRequestDTO 修改后的信息
-     * @return
+     * @return 是否更新成功
      */
     boolean updateAnnouncement(Long id, AnnounceRequestDTO announceRequestDTO);
 
@@ -46,7 +43,7 @@ public interface AnnounceManager {
      * 查询指定 pageSize 后的页数，向上取整
      *
      * @param pageSize 每页数量
-     * @return
+     * @return 公告以 pageSize 为页大小的页数
      */
     Response<Integer> countPage(int pageSize);
 
@@ -55,8 +52,7 @@ public interface AnnounceManager {
      *
      * @param page 页码
      * @param pageSize 每页数量
-     * @return
+     * @return 指定页码的公告信息列表
      */
     Response<List<AnnounceDO>> getAnnouncement(int page, int pageSize);
-
 }

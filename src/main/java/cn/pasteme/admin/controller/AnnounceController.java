@@ -2,14 +2,13 @@ package cn.pasteme.admin.controller;
 
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
-import cn.pasteme.admin.manager.annouce.AnnounceManager;
+import cn.pasteme.admin.manager.AnnounceManager;
 import cn.pasteme.common.annotation.ErrorLogging;
 import cn.pasteme.common.annotation.RequestLogging;
 import cn.pasteme.common.utils.result.Response;
 import cn.pasteme.common.utils.result.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,16 +21,21 @@ import java.util.List;
  * @author Acerkoo
  * @version 1.0.1
  */
-
 @Slf4j
 @RestController
 @RequestMapping("/api/announcement")
 public class AnnounceController {
 
+    private final AnnounceManager announceManager;
+
     @Autowired
-    private AnnounceManager announceManager;
+    public AnnounceController(AnnounceManager announceManager) {
+        this.announceManager = announceManager;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestLogging(withResponse = true)
+    @ErrorLogging
     Response createAnnouncement(AnnounceRequestDTO ardto) {
         return announceManager.createAnnouncement(ardto)? Response.success(): Response.error(ResponseCode.SERVER_ERROR);
     }
@@ -61,5 +65,4 @@ public class AnnounceController {
     Response<List<AnnounceDO>> getAnnouncement(int page, int pageSize) {
         return announceManager.getAnnouncement(page, pageSize);
     }
-
 }
