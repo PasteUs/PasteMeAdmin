@@ -2,7 +2,6 @@ package cn.pasteme.admin.manager;
 
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
-import cn.pasteme.common.utils.result.Response;
 
 import javax.validation.Valid;
 import java.util.List;

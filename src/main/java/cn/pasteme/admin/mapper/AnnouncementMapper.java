@@ -2,10 +2,14 @@ package cn.pasteme.admin.mapper;
 
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.enumeration.AnnounceType;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 
@@ -38,7 +42,7 @@ public interface AnnouncementMapper {
      */
     @Select({"SELECT COUNT(*)",
             " FROM `pasteme_admin_announce`",
-            " WHERE `is_deleted`=false"})
+            " WHERE `is_deleted` = false"})
     int countAnnouncement();
 
     /**
@@ -70,8 +74,8 @@ public interface AnnouncementMapper {
      * @return 是否删除成功
      */
     @Update({"UPDATE `pasteme_admin_announce`",
-            " SET `is_deleted`=true ",
-            " WHERE `id`=#{id}"})
+            " SET `is_deleted` = true ",
+            " WHERE `id` = #{id}"})
     boolean deleteAnnouncement(@Param("id") Long id);
 
     /**
@@ -81,8 +85,8 @@ public interface AnnouncementMapper {
      * @return 是否更新成功
      */
     @Update({"UPDATE `pasteme_admin_announce` set",
-            "`title`=#{title}, `content`=#{content}, `link`=#{link}, `date`=#{time},",
-            "`type`=#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
-            "WHERE `id`=#{id}" })
+            "`title` = #{title}, `content` = #{content}, `link` = #{link}, `date` = #{time},",
+            "`type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
+            "WHERE `id` = #{id}" })
     boolean updateAnnouncement(AnnounceDO announceDO);
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -83,9 +84,14 @@ public class AnnouncementManagerImpl implements AnnouncementManager {
     }
 
     @Override
-    public List<AnnounceDO> getAnnouncement(int page, int pageSize) {
-        List<AnnounceDO> list = announcementMapper.getAnnouncementByPage((page-1) * pageSize, pageSize);
-        log.info("Announcement list = {}", list);
-        return list;
+    public List<AnnounceDO> getAnnouncement(int page, int pageSize){
+        try {
+            List<AnnounceDO> list = announcementMapper.getAnnouncementByPage((page - 1) * pageSize, pageSize);
+            log.info("Announcement list = {}", list);
+            return list;
+        } catch (Exception e) {
+            log.error("get Announcement, error = ", e);
+        }
+        return new ArrayList<>();
     }
 }
