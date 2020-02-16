@@ -2,14 +2,10 @@ package cn.pasteme.admin.manager;
 
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.dto.AnnounceResultDTO;
-import cn.pasteme.admin.entity.AnnounceDO;
-
 import javax.validation.Valid;
 import java.util.List;
 
-
 /**
- *
  * @author Acerkoo
  * @version 1.0.1
  */

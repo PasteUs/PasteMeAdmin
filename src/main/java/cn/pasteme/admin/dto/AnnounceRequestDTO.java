@@ -3,19 +3,17 @@ package cn.pasteme.admin.dto;
 import lombok.Data;
 
 /**
- * Announcement 的参数封装
+ * Announcement 请求时参数的封装
  *
  * @author Acerkoo
  * @version 1.0.0
  */
 @Data
-public class AnnounceRequestDTO {
+public class AnnounceRequestDTO extends AnnouncementDTO {
 
-    private String title;
-
-    private String content;
-
-    private String link;
-
+    /**
+     * 类型
+     */
     private int type;
+
 }

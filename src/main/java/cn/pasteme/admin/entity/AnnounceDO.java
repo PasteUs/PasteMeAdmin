@@ -3,7 +3,6 @@ package cn.pasteme.admin.entity;
 import cn.pasteme.admin.enumeration.AnnounceType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-
 import java.util.Date;
 
 /**

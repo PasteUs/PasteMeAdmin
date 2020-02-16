@@ -1,6 +1,5 @@
 package cn.pasteme.admin.mapper;
 
-import cn.pasteme.admin.dto.AnnounceResultDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.enumeration.AnnounceType;
 import org.apache.ibatis.annotations.Result;
@@ -10,12 +9,9 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Results;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
-
 /**
- *
  * @author Acerkoo
  * @version 1.0.1
  */
@@ -62,11 +58,12 @@ public interface AnnouncementMapper {
             @Result(property = "id", column = "id"),
             @Result(property = "title", column = "title"),
             @Result(property = "content", column = "content"),
-            @Result(property = "time", column = "update_time"),
+            @Result(property = "createTime", column = "create_time"),
+            @Result(property = "updateTime", column = "update_time"),
             @Result(property = "link", column = "link"),
             @Result(property = "type", column = "type", javaType = AnnounceType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class )
     })
-    List<AnnounceResultDTO> getAnnouncementByPage(@Param("begin") int begin, @Param("pageSize") int pageSize);
+    List<AnnounceDO> getAnnouncementByPage(@Param("begin") int begin, @Param("pageSize") int pageSize);
 
     /**
      * 删除指定通知

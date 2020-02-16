@@ -141,7 +141,7 @@ public class AdminMapperTests {
         announceDO.setUpdateTime(new Date());
         assertTrue(announcementMapper.createAnnouncement(announceDO));
 
-        List<AnnounceResultDTO> list = announcementMapper.getAnnouncementByPage(0, 3);
+        List<AnnounceDO> list = announcementMapper.getAnnouncementByPage(0, 3);
         announceDO.setId(list.get(0).getId());
         announceDO.setType(AnnounceType.value2Type(1));
 
