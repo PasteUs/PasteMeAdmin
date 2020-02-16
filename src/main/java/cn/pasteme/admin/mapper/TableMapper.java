@@ -61,7 +61,7 @@ public interface TableMapper {
             "    `content` TEXT,",
             "    `link` VARCHAR(255),",
             "    `type` INT NOT NULL,",
-            "    `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',",
+            "    `create_time` TIMESTAMP NOT NULL COMMENT '创建时间',",
             "    `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '最后修改时间',",
             "    `is_deleted` BIT,",
             "    KEY `idx_date` (`date`)",
