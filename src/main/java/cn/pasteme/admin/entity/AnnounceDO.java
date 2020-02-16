@@ -1,7 +1,6 @@
 package cn.pasteme.admin.entity;
 
 import cn.pasteme.admin.enumeration.AnnounceType;
-import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
