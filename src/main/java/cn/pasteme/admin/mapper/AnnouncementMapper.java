@@ -1,13 +1,14 @@
 package cn.pasteme.admin.mapper;
 
+import cn.pasteme.admin.dto.AnnounceResultDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.enumeration.AnnounceType;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Results;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,11 +29,11 @@ public interface AnnouncementMapper {
      * @return 是否插入成功
      */
     @Insert({"INSERT INTO `pasteme_admin_announce`",
-            "(`title`, `content`, `link`, `type`, `date`, `is_deleted`)",
+            "(`title`, `content`, `link`, `type`, `create_time`, `update_time`, `is_deleted`)",
             "VALUES",
             "(#{title}, #{content}, #{link},",
             "#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler},",
-            "#{time}, false)"})
+            "#{createTime}, #{updateTime}, false)"})
     boolean createAnnouncement(AnnounceDO announceDO);
 
     /**
@@ -55,17 +56,17 @@ public interface AnnouncementMapper {
     @Select({"SELECT *",
             "FROM `pasteme_admin_announce`",
             "WHERE `is_deleted` = false",
-            "ORDER BY `date` DESC",
+            "ORDER BY `update_time` DESC",
             "LIMIT #{begin}, #{pageSize}", })
     @Results({
             @Result(property = "id", column = "id"),
             @Result(property = "title", column = "title"),
             @Result(property = "content", column = "content"),
+            @Result(property = "time", column = "update_time"),
             @Result(property = "link", column = "link"),
-            @Result(property = "type", column = "type", javaType = AnnounceType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class ),
-            @Result(property = "time", column = "date" )
+            @Result(property = "type", column = "type", javaType = AnnounceType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class )
     })
-    List<AnnounceDO> getAnnouncementByPage(@Param("begin") int begin, @Param("pageSize") int pageSize);
+    List<AnnounceResultDTO> getAnnouncementByPage(@Param("begin") int begin, @Param("pageSize") int pageSize);
 
     /**
      * 删除指定通知
@@ -85,7 +86,7 @@ public interface AnnouncementMapper {
      * @return 是否更新成功
      */
     @Update({"UPDATE `pasteme_admin_announce` set",
-            "`title` = #{title}, `content` = #{content}, `link` = #{link}, `date` = #{time},",
+            "`title` = #{title}, `content` = #{content}, `link` = #{link}, `update_time` = #{updateTime},",
             "`type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}",
             "WHERE `id` = #{id}" })
     boolean updateAnnouncement(AnnounceDO announceDO);
