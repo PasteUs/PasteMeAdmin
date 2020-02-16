@@ -1,5 +1,7 @@
 package cn.pasteme.admin.mapper;
 
+import cn.pasteme.admin.dto.AnnounceRequestDTO;
+import cn.pasteme.admin.dto.AnnounceResultDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
@@ -135,10 +137,11 @@ public class AdminMapperTests {
         announceDO.setContent("test");
         announceDO.setLink("pasteme.cn");
         announceDO.setType(AnnounceType.value2Type(0));
-        announceDO.setTime(new Date());
+        announceDO.setCreateTime(new Date());
+        announceDO.setUpdateTime(new Date());
         assertTrue(announcementMapper.createAnnouncement(announceDO));
 
-        List<AnnounceDO> list = announcementMapper.getAnnouncementByPage(0, 10);
+        List<AnnounceDO> list = announcementMapper.getAnnouncementByPage(0, 3);
         announceDO.setId(list.get(0).getId());
         announceDO.setType(AnnounceType.value2Type(1));
 

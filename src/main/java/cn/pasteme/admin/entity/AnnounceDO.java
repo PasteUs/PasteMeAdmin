@@ -3,7 +3,6 @@ package cn.pasteme.admin.entity;
 import cn.pasteme.admin.enumeration.AnnounceType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-
 import java.util.Date;
 
 /**
@@ -31,12 +30,24 @@ public class AnnounceDO {
     private String content;
 
     /**
-     * time 最后修改时间
+     * createTime 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    private Date time;
+    private Date createTime;
 
+    /**
+     * updateTime 最后修改时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    private Date updateTime;
+
+    /**
+     * link 公告附加链接
+     */
     private String link;
 
+    /**
+     * AnnounceType 通知类型
+     */
     private AnnounceType type;
 }

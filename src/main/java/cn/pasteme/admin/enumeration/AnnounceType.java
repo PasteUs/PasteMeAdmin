@@ -6,7 +6,6 @@ import cn.pasteme.common.utils.result.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- *
  * @author Acerkoo
  * @version 1.0.0
  */

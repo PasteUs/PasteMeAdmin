@@ -5,10 +5,11 @@ CREATE TABLE IF NOT EXISTS `pasteme_admin_announce`
     `content` TEXT,
     `link` VARCHAR(255),
     `type` INT NOT NULL,
-    `date` TIMESTAMP NOT NULL COMMENT '创建时间',
+    `create_time` TIMESTAMP NOT NULL COMMENT '创建时间',
+    `update_time` TIMESTAMP NULL COMMENT '最后修改时间',
     `is_deleted` BIT,
 
-    KEY `idx_date` (`date`),
+    KEY `idx_date` (`update_time`),
     KEY `idx_delete` (`is_deleted`)
 )
     COMMENT '存储通知'
