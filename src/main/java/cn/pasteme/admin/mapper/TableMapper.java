@@ -50,4 +50,23 @@ public interface TableMapper {
             "`dictionary` JSON NOT NULL",
             ")"})
     void createPasteMeAdminDictionary();
+
+    /**
+     * 创建 pasteme_admin_announcement
+     */
+    @Update({"CREATE TABLE IF NOT EXISTS `pasteme_admin_announce`",
+            "(",
+            "    `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,",
+            "    `title` VARCHAR(255) NOT NULL,",
+            "    `content` TEXT,",
+            "    `link` VARCHAR(255),",
+            "    `type` INT NOT NULL,",
+            "    `create_time` TIMESTAMP NOT NULL COMMENT '创建时间',",
+            "    `update_time` TIMESTAMP NULL COMMENT '最后修改时间',",
+            "    `is_deleted` BIT,",
+            "    KEY `idx_date` (`date`)",
+            "    KEY `idx_delete` (`is_deleted`)",
+            ")" })
+    void createPasteMeAdminAnnounce();
 }
+

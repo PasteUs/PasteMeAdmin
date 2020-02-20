@@ -1,15 +1,21 @@
 package cn.pasteme.admin.mapper;
 
+import cn.pasteme.admin.dto.AnnounceRequestDTO;
+import cn.pasteme.admin.dto.AnnounceResultDTO;
+import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
+import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
 import cn.pasteme.admin.enumeration.RiskStateDoState;
 import cn.pasteme.admin.enumeration.RiskStateDoType;
-import cn.pasteme.admin.enumeration.RiskCheckResultType;
+import cn.pasteme.admin.enumeration.AnnounceType;
 import cn.pasteme.algorithm.pair.Pair;
 
-import static org.junit.Assert.*;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -24,8 +30,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author Lucien
- * @version 1.2.5
+ * @author Lucien, Acerkoo
+ * @version 1.3.0
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -46,6 +52,9 @@ public class AdminMapperTests {
 
     @Autowired
     private RiskCheckResultMapper riskCheckResultMapper;
+
+    @Autowired
+    private AnnouncementMapper announcementMapper;
 
     private List<String> getLatestDictionary() {
         RiskDictionaryDO riskDictionaryDO = riskDictionaryMapper.getLatestDictionary(RiskDictionaryType.RISK_WORD);
@@ -120,4 +129,25 @@ public class AdminMapperTests {
         actually = riskCheckResultDO.getResult();
         assertEquals(expect, actually);
     }
+    @Test
+    public void announceMapperTest() {
+        AnnounceDO announceDO = new AnnounceDO();
+
+        announceDO.setTitle("UnitTest");
+        announceDO.setContent("test");
+        announceDO.setLink("pasteme.cn");
+        announceDO.setType(AnnounceType.value2Type(0));
+        announceDO.setCreateTime(new Date());
+        announceDO.setUpdateTime(new Date());
+        assertTrue(announcementMapper.createAnnouncement(announceDO));
+
+        List<AnnounceDO> list = announcementMapper.getAnnouncementByPage(0, 3);
+        announceDO.setId(list.get(0).getId());
+        announceDO.setType(AnnounceType.value2Type(1));
+
+        assertTrue(announcementMapper.updateAnnouncement(announceDO));
+        assertTrue(announcementMapper.deleteAnnouncement(announceDO.getId()));
+
+    }
+
 }

@@ -1,13 +1,15 @@
 package cn.pasteme.admin.manager;
 
+import cn.pasteme.admin.dto.AnnounceRequestDTO;
+import cn.pasteme.admin.dto.AnnounceResultDTO;
 import cn.pasteme.admin.dto.RiskCheckResultDTO;
+import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
-import cn.pasteme.admin.manager.risk.impl.RiskControlManagerImpl;
+import cn.pasteme.admin.manager.impl.RiskControlManagerImpl;
 import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
-import cn.pasteme.admin.manager.risk.RiskControlManager;
 import cn.pasteme.admin.mapper.RiskStateMapper;
 import cn.pasteme.algorithm.ac.AhoCorasick;
 import cn.pasteme.algorithm.nlp.NLP;
@@ -37,8 +39,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Lucien
- * @version 1.1.0
+ * @author Lucien, Acerkoo
+ * @version 1.2.0
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -63,6 +65,9 @@ public class AdminManagerTests {
     private NLP nlp;
 
     private RiskControlManager riskControlManager;
+
+    @Autowired
+    private AnnouncementManager announcementManager;
 
     @Before
     public void before() {
@@ -204,6 +209,26 @@ public class AdminManagerTests {
 
             assertTrue(response.isSuccess());
             assertEquals(Long.valueOf(0), response.getData());
+        }
+
+        // Announcement
+        {
+
+            try {
+                assertTrue(announcementManager.countPage(3) >= 0);
+                AnnounceRequestDTO announceRequestDTO = new AnnounceRequestDTO();
+                announceRequestDTO.setTitle("Manager_Test");
+                announceRequestDTO.setType(0);
+                assertTrue(announcementManager.createAnnouncement(announceRequestDTO));
+
+                List<AnnounceResultDTO> list = announcementManager.getAnnouncement(1, 3);
+                AnnounceResultDTO announceResultDTO = list.get(0);
+
+                assertTrue(announceResultDTO.getType().getValue() < 3 && announceResultDTO.getType().getValue() >= 0);
+                assertTrue(announcementManager.deleteAnnouncement(announceResultDTO.getId()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
