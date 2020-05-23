@@ -19,7 +19,10 @@ public enum RiskCheckResultType implements ValueEnum {
     KEYWORD_COUNT(1),
 
     // 分词计数
-    TOKEN_COUNT(2);
+    TOKEN_COUNT(2),
+
+    // 文本分类
+    TEXT_CLASSIFICATION(3);
 
     @Getter
     int value;

@@ -1,7 +1,5 @@
 package cn.pasteme.admin.mapper;
 
-import cn.pasteme.admin.dto.AnnounceRequestDTO;
-import cn.pasteme.admin.dto.AnnounceResultDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
@@ -110,23 +108,23 @@ public class AdminMapperTests {
         expect = new ArrayList<>();
         expect.add(new Pair<>("English Test", 1L));
         expect.add(new Pair<>("中文测试", 2L));
-        riskCheckResultDO.setResult(expect);
+        riskCheckResultDO.setPairListResult(expect);
 
         assertTrue(riskCheckResultMapper.createDO(riskCheckResultDO));
         riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORD_COUNT);
         assertNotNull(riskCheckResultDO);
-        actually = riskCheckResultDO.getResult();
+        actually = riskCheckResultDO.getPairListResult();
         assertEquals(expect, actually);
 
         expect.add(new Pair<>("Hello World!", 10086L));
         expect.add(new Pair<>("你好，世界！", 10010L));
 
-        riskCheckResultDO.setResult(expect);
+        riskCheckResultDO.setPairListResult(expect);
 
         assertTrue(riskCheckResultMapper.updateResult(riskCheckResultDO));
         riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORD_COUNT);
         assertNotNull(riskCheckResultDO);
-        actually = riskCheckResultDO.getResult();
+        actually = riskCheckResultDO.getPairListResult();
         assertEquals(expect, actually);
     }
     @Test

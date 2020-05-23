@@ -3,7 +3,6 @@ package cn.pasteme.admin.manager;
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.dto.AnnounceResultDTO;
 import cn.pasteme.admin.dto.RiskCheckResultDTO;
-import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
@@ -12,7 +11,8 @@ import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.mapper.RiskStateMapper;
 import cn.pasteme.algorithm.ac.AhoCorasick;
-import cn.pasteme.algorithm.nlp.NLP;
+import cn.pasteme.algorithm.model.TextRiskClassification;
+import cn.pasteme.algorithm.nlp.NaturalLanguageProcessing;
 import cn.pasteme.algorithm.pair.Pair;
 import cn.pasteme.common.dto.PasteResponseDTO;
 import cn.pasteme.common.manager.PermanentManager;
@@ -62,12 +62,15 @@ public class AdminManagerTests {
     private RiskStateMapper riskStateMapper;
 
     @Autowired
-    private NLP nlp;
+    private NaturalLanguageProcessing nlp;
 
     private RiskControlManager riskControlManager;
 
     @Autowired
     private AnnouncementManager announcementManager;
+
+    @Autowired
+    private TextRiskClassification textRiskClassification;
 
     @Before
     public void before() {
@@ -126,7 +129,8 @@ public class AdminManagerTests {
                 permanentManager,
                 riskCheckResultMapper,
                 riskStateMapper,
-                nlp);
+                nlp,
+                textRiskClassification);
     }
 
     @Test
