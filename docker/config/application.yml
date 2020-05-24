@@ -36,6 +36,6 @@ pasteme:
   algorithm:
     model:
       TextRiskClassificationImpl:
-        host: predict.pasteme.lucien.ink
-        modelName: TestPasteMeRIM
+        host: your.predict.service.host
+        modelName: PasteMeRIM
 
