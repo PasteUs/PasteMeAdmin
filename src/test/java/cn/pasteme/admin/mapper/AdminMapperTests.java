@@ -108,23 +108,23 @@ public class AdminMapperTests {
         expect = new ArrayList<>();
         expect.add(new Pair<>("English Test", 1L));
         expect.add(new Pair<>("中文测试", 2L));
-        riskCheckResultDO.setPairListResult(expect);
+        riskCheckResultDO.setResult(expect);
 
         assertTrue(riskCheckResultMapper.createDO(riskCheckResultDO));
         riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORD_COUNT);
         assertNotNull(riskCheckResultDO);
-        actually = riskCheckResultDO.getPairListResult();
+        actually = riskCheckResultDO.getResult();
         assertEquals(expect, actually);
 
         expect.add(new Pair<>("Hello World!", 10086L));
         expect.add(new Pair<>("你好，世界！", 10010L));
 
-        riskCheckResultDO.setPairListResult(expect);
+        riskCheckResultDO.setResult(expect);
 
         assertTrue(riskCheckResultMapper.updateResult(riskCheckResultDO));
         riskCheckResultDO = riskCheckResultMapper.getResultByKeyAndType(100L, RiskCheckResultType.KEYWORD_COUNT);
         assertNotNull(riskCheckResultDO);
-        actually = riskCheckResultDO.getPairListResult();
+        actually = riskCheckResultDO.getResult();
         assertEquals(expect, actually);
     }
     @Test

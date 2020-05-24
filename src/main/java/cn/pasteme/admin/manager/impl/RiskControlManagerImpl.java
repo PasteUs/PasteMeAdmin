@@ -162,7 +162,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
             RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
             riskCheckResultDO.setKey(key);
             riskCheckResultDO.setType(RiskCheckResultType.KEYWORD_COUNT);
-            riskCheckResultDO.setPairListResult(result);
+            riskCheckResultDO.setResult(result);
 
             return insertOrUpdateCheckResult(riskCheckDO, riskCheckResultDO);
         } catch (Exception e) {
@@ -221,7 +221,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
             RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
             riskCheckResultDO.setKey(key);
             riskCheckResultDO.setType(RiskCheckResultType.TOKEN_COUNT);
-            riskCheckResultDO.setPairListResult(result);
+            riskCheckResultDO.setResult(result);
 
             riskCheckResultMapper.createDO(riskCheckResultDO);
             return Response.success();

@@ -49,7 +49,7 @@ public class RiskCheckResultDO {
         this.result.put("integer", value);
     }
 
-    public List<Pair<String, Long>> getPairListResult() {
+    public List<Pair<String, Long>> getResult() {
         if (null != result) {
             JSONArray jsonArray = result.getJSONArray("pairList");
             return jsonArray.toJavaObject(new TypeReference<List<Pair<String, Long>>>(){});
@@ -57,7 +57,7 @@ public class RiskCheckResultDO {
         return null;
     }
 
-    public void setPairListResult(List<Pair<String, Long>> result) {
+    public void setResult(List<Pair<String, Long>> result) {
         this.result = new JSONObject();
         this.result.put("pairList", result);
     }

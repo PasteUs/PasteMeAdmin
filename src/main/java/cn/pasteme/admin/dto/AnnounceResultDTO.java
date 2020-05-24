@@ -3,6 +3,8 @@ package cn.pasteme.admin.dto;
 import cn.pasteme.admin.enumeration.AnnounceType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
 /**
@@ -12,6 +14,7 @@ import java.util.Date;
  * @version 1.0.0
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AnnounceResultDTO extends AnnouncementDTO {
 
     /**
