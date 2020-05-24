@@ -30,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -71,6 +72,9 @@ public class AdminManagerTests {
 
     @Autowired
     private TextRiskClassification textRiskClassification;
+
+    @Autowired
+    private ThreadPoolExecutor threadPoolExecutor;
 
     @Before
     public void before() {
@@ -130,7 +134,8 @@ public class AdminManagerTests {
                 riskCheckResultMapper,
                 riskStateMapper,
                 nlp,
-                textRiskClassification);
+                textRiskClassification,
+                threadPoolExecutor);
     }
 
     @Test

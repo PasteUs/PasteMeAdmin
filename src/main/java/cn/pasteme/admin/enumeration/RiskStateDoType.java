@@ -17,10 +17,10 @@ public enum RiskStateDoType implements ValueEnum {
     NORMAL(0),
 
     // 非法
-    PORN(1);
+    RISK(1);
 
     @Getter
-    private int value;
+    final private int value;
 
     RiskStateDoType(int value) {
         this.value = value;

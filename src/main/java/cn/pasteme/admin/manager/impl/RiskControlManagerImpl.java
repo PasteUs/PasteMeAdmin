@@ -6,6 +6,7 @@ import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
+import cn.pasteme.admin.enumeration.RiskStateDoState;
 import cn.pasteme.admin.manager.RiskControlManager;
 import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
@@ -117,6 +118,35 @@ public class RiskControlManagerImpl implements RiskControlManager {
         }
     }
 
+    private Response<Void> insertOrUpdateCheckResult(RiskCheckDO riskCheckDO, RiskCheckResultDO riskCheckResultDO) {
+
+        Long key = riskCheckDO.getKey();
+
+        if (riskStateMapper.countByKey(key) > 0) {
+            if (!riskStateMapper.updateDO(riskCheckDO)) {
+                log.error("error = 'riskStateMapper.updateDO() failed'");
+                return Response.error(ResponseCode.SERVER_ERROR);
+            }
+
+            if (!riskCheckResultMapper.updateResult(riskCheckResultDO)) {
+                log.error("error = 'riskCheckResultMapper.updateResult() failed'");
+                return Response.error(ResponseCode.SERVER_ERROR);
+            }
+        } else {
+            if (!riskStateMapper.insertDO(riskCheckDO)) {
+                log.error("error = 'riskStateMapper.insertDO() failed'");
+                return Response.error(ResponseCode.SERVER_ERROR);
+            }
+
+            if (!riskCheckResultMapper.createDO(riskCheckResultDO)) {
+                log.error("error = 'riskCheckResultMapper.createDO() failed'");
+                return Response.error(ResponseCode.SERVER_ERROR);
+            }
+        }
+
+        return Response.success(null);
+    }
+
     @Override
     public Response riskCheck(@NotNull Long key) {
         try {
@@ -134,29 +164,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
             riskCheckResultDO.setType(RiskCheckResultType.KEYWORD_COUNT);
             riskCheckResultDO.setPairListResult(result);
 
-            if (riskStateMapper.countByKey(key) > 0) {
-                if (!riskStateMapper.updateDO(riskCheckDO)) {
-                    log.error("error = 'riskStateMapper.updateDO() failed'");
-                    return Response.error(ResponseCode.SERVER_ERROR);
-                }
-
-                if (!riskCheckResultMapper.updateResult(riskCheckResultDO)) {
-                    log.error("error = 'riskCheckResultMapper.updateResult() failed'");
-                    return Response.error(ResponseCode.SERVER_ERROR);
-                }
-            } else {
-                if (!riskStateMapper.insertDO(riskCheckDO)) {
-                    log.error("error = 'riskStateMapper.insertDO() failed'");
-                    return Response.error(ResponseCode.SERVER_ERROR);
-                }
-
-                if (!riskCheckResultMapper.createDO(riskCheckResultDO)) {
-                    log.error("error = 'riskCheckResultMapper.createDO() failed'");
-                    return Response.error(ResponseCode.SERVER_ERROR);
-                }
-            }
-
-            return Response.success();
+            return insertOrUpdateCheckResult(riskCheckDO, riskCheckResultDO);
         } catch (Exception e) {
             log.error("key = {}, error = ", key, e);
             return Response.error(ResponseCode.SERVER_ERROR);
@@ -268,13 +276,30 @@ public class RiskControlManagerImpl implements RiskControlManager {
             if (!response.isSuccess()) {
                 return Response.error(response);
             }
+
             String content = response.getData().getContent();
+
             int classifyResult = textRiskClassification.inference(content);
+
+            // 风险检测的状态
+            RiskCheckDO riskCheckDO = new RiskCheckDO(key);
+
+            if (classifyResult == 1) {
+                riskCheckDO.setState(RiskStateDoState.REQUEST_REVIEW);
+            }
+
+            // 风险检测的结果
             RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
             riskCheckResultDO.setKey(key);
             riskCheckResultDO.setType(RiskCheckResultType.TEXT_CLASSIFICATION);
             riskCheckResultDO.setIntegerResult(classifyResult);
-            return Response.success(classifyResult);
+
+            Response<Void> insertOrUpdateCheckResult = insertOrUpdateCheckResult(riskCheckDO, riskCheckResultDO);
+
+            if (insertOrUpdateCheckResult.isSuccess()) {
+                return Response.success(classifyResult);
+            }
+            return Response.error(insertOrUpdateCheckResult);
         } catch (Exception e) {
             return Response.error(ResponseCode.SERVER_ERROR);
         }

@@ -1,6 +1,7 @@
 package cn.pasteme.admin.configuration;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -12,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Lucien
  * @version 1.0.0
  */
+@Configuration
 public class ThreadPoolExecutorConfiguration {
 
     @Bean("threadPoolExecutor")

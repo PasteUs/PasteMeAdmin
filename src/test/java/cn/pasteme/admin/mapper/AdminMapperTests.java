@@ -78,12 +78,12 @@ public class AdminMapperTests {
         assertNotNull(riskCheckDO);
 
         riskCheckDO.setState(RiskStateDoState.CHECKED);
-        riskCheckDO.setType(RiskStateDoType.PORN);
+        riskCheckDO.setType(RiskStateDoType.RISK);
         assertTrue(riskStateMapper.updateDO(riskCheckDO));
         riskCheckDO = riskStateMapper.getDoByKey(100L);
         assertNotNull(riskCheckDO);
         assertEquals(RiskStateDoState.CHECKED, riskCheckDO.getState());
-        assertEquals(RiskStateDoType.PORN, riskCheckDO.getType());
+        assertEquals(RiskStateDoType.RISK, riskCheckDO.getType());
     }
 
     @Test

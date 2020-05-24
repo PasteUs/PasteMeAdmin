@@ -26,7 +26,7 @@ public enum RiskStateDoState implements ValueEnum {
     REQUEST_REVIEW(3);
 
     @Getter
-    private int value;
+    final private int value;
 
     RiskStateDoState(int value) {
         this.value = value;

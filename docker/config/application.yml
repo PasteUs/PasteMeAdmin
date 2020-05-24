@@ -30,3 +30,11 @@ logging:
       backend: TRACE
       common: TRACE
       algorithm: TRACE
+
+pasteme:
+  algorithm:
+    model:
+      TextRiskClassificationImpl:
+        host: predict.pasteme.lucien.ink
+        modelName: TestPasteMeRIM
+
