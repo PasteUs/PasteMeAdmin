@@ -4,6 +4,8 @@ import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.algorithm.pair.Pair;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -20,36 +22,43 @@ import java.util.List;
 @Slf4j
 public class RiskCheckResultDO {
 
+    /**
+     * 主键
+     */
     private Long key;
 
+    /**
+     * 风险检查的类型
+     */
     private RiskCheckResultType type;
 
     /**
-     * 实际上是 List<Pair<String, Long>> 格式
-     * 向 Java 编译器妥协，使用 JSON 格式
+     * JSON result
      */
-    private JSON result;
+    private JSONObject result;
+
+    public Integer getIntegerResult() {
+        if (null != this.result) {
+            return this.result.getInteger("integer");
+        }
+        return null;
+    }
+
+    public void setIntegerResult(Integer value) {
+        this.result = new JSONObject();
+        this.result.put("integer", value);
+    }
 
     public List<Pair<String, Long>> getResult() {
-        try {
-            if (null != result) {
-                return result.toJavaObject(new TypeReference<List<Pair<String, Long>>>(){});
-            }
-        } catch (Exception e) {
-            log.error("error = ", e);
+        if (null != result) {
+            JSONArray jsonArray = result.getJSONArray("pairList");
+            return jsonArray.toJavaObject(new TypeReference<List<Pair<String, Long>>>(){});
         }
         return null;
     }
 
     public void setResult(List<Pair<String, Long>> result) {
-        try {
-            if (null != result) {
-                this.result = (JSON) JSON.toJSON(result);
-                return ;
-            }
-        } catch (Exception e) {
-            log.error("error = ", e);
-        }
-        this.result = null;
+        this.result = new JSONObject();
+        this.result.put("pairList", result);
     }
 }

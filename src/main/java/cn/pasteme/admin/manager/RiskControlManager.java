@@ -83,4 +83,19 @@ public interface RiskControlManager {
      * @return 数量
      */
     Response<Long> count(@NotNull RiskCheckResultType type);
+
+    /**
+     * 文本分类
+     * @param key 主键
+     * @return 0 或 1，0 代表 Normal，1 代表 Risk
+     */
+    Response<Integer> classify(@NotNull Long key);
+
+    /**
+     * 异步文本分类
+     *
+     * @param key 主键
+     * @return 没有返回值
+     */
+    Response<Void> asyncClassify(@NotNull Long key);
 }

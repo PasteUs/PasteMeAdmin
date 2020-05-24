@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>pasteme-admin</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>PasteMe Admin</name>
     <description>PasteMe Admin</description>
 
@@ -18,13 +18,13 @@
         <dependency>
             <groupId>cn.pasteme</groupId>
             <artifactId>pasteme-common</artifactId>
-            <version>1.0.11-SNAPSHOT</version>
+            <version>1.0.12-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>cn.pasteme</groupId>
             <artifactId>pasteme-algorithm</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>

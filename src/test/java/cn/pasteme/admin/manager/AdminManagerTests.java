@@ -3,7 +3,6 @@ package cn.pasteme.admin.manager;
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.dto.AnnounceResultDTO;
 import cn.pasteme.admin.dto.RiskCheckResultDTO;
-import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
@@ -12,24 +11,29 @@ import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
 import cn.pasteme.admin.mapper.RiskStateMapper;
 import cn.pasteme.algorithm.ac.AhoCorasick;
-import cn.pasteme.algorithm.nlp.NLP;
+import cn.pasteme.algorithm.model.TextRiskClassification;
+import cn.pasteme.algorithm.nlp.NaturalLanguageProcessing;
 import cn.pasteme.algorithm.pair.Pair;
 import cn.pasteme.common.dto.PasteResponseDTO;
 import cn.pasteme.common.manager.PermanentManager;
 import cn.pasteme.common.utils.result.Response;
-
 import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -44,6 +48,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AdminManagerTests {
 
     @Autowired
@@ -62,12 +67,18 @@ public class AdminManagerTests {
     private RiskStateMapper riskStateMapper;
 
     @Autowired
-    private NLP nlp;
+    private NaturalLanguageProcessing nlp;
 
     private RiskControlManager riskControlManager;
 
     @Autowired
     private AnnouncementManager announcementManager;
+
+    @Autowired
+    private TextRiskClassification textRiskClassification;
+
+    @Autowired
+    private ThreadPoolExecutor threadPoolExecutor;
 
     @Before
     public void before() {
@@ -126,109 +137,140 @@ public class AdminManagerTests {
                 permanentManager,
                 riskCheckResultMapper,
                 riskStateMapper,
-                nlp);
+                nlp,
+                textRiskClassification,
+                threadPoolExecutor);
+    }
+
+    /**
+     * tokenCount(text)
+     */
+    @Test
+    public void test_01_tokenCountByText() {
+        // set stop words
+        List<String> stopWords = Arrays.asList("，", "！");
+
+        assertTrue(riskControlManager.setStopWords(stopWords).isSuccess());
+
+        Response<List<Pair<String, Long>>> response = riskControlManager.tokenCount("你好，世界！");
+
+        List<Pair<String, Long>> list = Arrays.asList(new Pair<>("世界", 1L), new Pair<>("你好", 1L));
+
+        assertTrue(response.isSuccess());
+        assertEquals(2, response.getData().size());
+        assertEquals(list, response.getData());
+    }
+
+    /**
+     * tokenCount(key)
+     */
+    @Test
+    public void test_02_tokenCountByKey() {
+        Response response = riskControlManager.tokenCount(100L);
+        assertTrue(response.isSuccess());
+    }
+
+    /**
+     * riskCheck(text)
+     */
+    @Test
+    public void test_03_riskCheckByText() {
+        Response<List<Pair<String, Long>>> response = riskControlManager.riskCheck("测试测试，TestTest.");
+
+        List<Pair<String, Long>> result = Arrays.asList(new Pair<>("Test", 2L), new Pair<>("测试", 2L));
+
+        assertTrue(response.isSuccess());
+        assertEquals(2, response.getData().size());
+        assertEquals(result, response.getData());
+    }
+
+    /**
+     * riskCheck(key)
+     */
+    @Test
+    public void test_04_riskCheckByKey() {
+        Response response = riskControlManager.riskCheck(100L);
+        assertTrue(response.isSuccess());
+    }
+
+    /**
+     * tokenCount without stop words
+     */
+    @Test
+    public void test_05_tokenCountWithoutStopWords() {
+        List<Pair<String, Long>> list = Arrays.asList(new Pair<>("世界", 1L), new Pair<>("你好", 1L), new Pair<>("！", 1L), new Pair<>("，", 1L));
+
+        assertTrue(riskControlManager.setStopWords(new ArrayList<>()).isSuccess());
+
+        Response<List<Pair<String, Long>>> response = riskControlManager.tokenCount("你好，世界！");
+
+        assertTrue(response.isSuccess());
+
+        assertEquals(list, response.getData());
+    }
+
+    /**
+     * riskCheck without risk dictionary
+     */
+    @Test
+    public void test_06_riskCheckWithoutRiskDictionary() {
+        assertTrue(riskControlManager.setRiskDictionary(new ArrayList<>()).isSuccess());
+
+        Response<List<Pair<String, Long>>> response = riskControlManager.riskCheck("测试测试，TestTest.");
+
+        assertTrue(response.isSuccess());
+
+        assertEquals(new ArrayList<>(), response.getData());
+    }
+
+    /**
+     * getCheckResult
+     */
+    public void test_07_getCheckResult() {
+        Response<List<RiskCheckResultDTO>> response = riskControlManager.getCheckResult(0L, 1L, RiskCheckResultType.KEYWORD_COUNT);
+
+        assertTrue(response.isSuccess());
+        assertEquals(new ArrayList<>(), response.getData());
+    }
+
+    /**
+     * Test Count
+     */
+    @Test
+    public void test_08_getCountOfKeyWordCount() {
+        Response<Long> response = riskControlManager.count(RiskCheckResultType.KEYWORD_COUNT);
+
+        assertTrue(response.isSuccess());
+        assertEquals(Long.valueOf(0), response.getData());
+
+    }
+
+    /**
+     * Announcement
+     */
+    @Test
+    @Transactional
+    public void test_09_announcement() {
+        try {
+            assertTrue(announcementManager.countPage(3) >= 0);
+            AnnounceRequestDTO announceRequestDTO = new AnnounceRequestDTO();
+            announceRequestDTO.setTitle("Manager_Test");
+            announceRequestDTO.setType(0);
+            assertTrue(announcementManager.createAnnouncement(announceRequestDTO));
+
+            List<AnnounceResultDTO> list = announcementManager.getAnnouncement(1, 3);
+            AnnounceResultDTO announceResultDTO = list.get(0);
+
+            assertTrue(announceResultDTO.getType().getValue() < 3 && announceResultDTO.getType().getValue() >= 0);
+            assertTrue(announcementManager.deleteAnnouncement(announceResultDTO.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void main() {
-        // set stop words
-        {
-            List<String> stopWords = Arrays.asList("，", "！");
-
-            assertTrue(riskControlManager.setStopWords(stopWords).isSuccess());
-        }
-
-        // tokenCount(text)
-        {
-            Response<List<Pair<String, Long>>> response = riskControlManager.tokenCount("你好，世界！");
-
-            List<Pair<String, Long>> list = Arrays.asList(new Pair<>("世界", 1L), new Pair<>("你好", 1L));
-
-            assertTrue(response.isSuccess());
-            assertEquals(2, response.getData().size());
-            assertEquals(list, response.getData());
-        }
-
-        // tokenCount(key)
-        {
-            Response response = riskControlManager.tokenCount(100L);
-            assertTrue(response.isSuccess());
-        }
-
-        // riskCheck(test)
-        {
-            Response<List<Pair<String, Long>>> response = riskControlManager.riskCheck("测试测试，TestTest.");
-
-            List<Pair<String, Long>> result = Arrays.asList(new Pair<>("Test", 2L), new Pair<>("测试", 2L));
-
-            assertTrue(response.isSuccess());
-            assertEquals(2, response.getData().size());
-            assertEquals(result, response.getData());
-        }
-
-        // riskCheck(key)
-        {
-            Response response = riskControlManager.riskCheck(100L);
-            assertTrue(response.isSuccess());
-        }
-
-        // tokenCount without stop words
-        {
-            List<Pair<String, Long>> list = Arrays.asList(new Pair<>("世界", 1L), new Pair<>("你好", 1L), new Pair<>("！", 1L), new Pair<>("，", 1L));
-
-            assertTrue(riskControlManager.setStopWords(new ArrayList<>()).isSuccess());
-
-            Response<List<Pair<String, Long>>> response = riskControlManager.tokenCount("你好，世界！");
-
-            assertTrue(response.isSuccess());
-
-            assertEquals(list, response.getData());
-        }
-
-        // riskCheck without risk dictionary
-        {
-            assertTrue(riskControlManager.setRiskDictionary(new ArrayList<>()).isSuccess());
-
-            Response<List<Pair<String, Long>>> response = riskControlManager.riskCheck("测试测试，TestTest.");
-
-            assertTrue(response.isSuccess());
-
-            assertEquals(new ArrayList<>(), response.getData());
-        }
-
-        // getCheckResult
-        {
-            Response<List<RiskCheckResultDTO>> response = riskControlManager.getCheckResult(0L, 1L, RiskCheckResultType.KEYWORD_COUNT);
-
-            assertTrue(response.isSuccess());
-            assertEquals(new ArrayList<>(), response.getData());
-        }
-
-        {
-            Response<Long> response = riskControlManager.count(RiskCheckResultType.KEYWORD_COUNT);
-
-            assertTrue(response.isSuccess());
-            assertEquals(Long.valueOf(0), response.getData());
-        }
-
-        // Announcement
-        {
-
-            try {
-                assertTrue(announcementManager.countPage(3) >= 0);
-                AnnounceRequestDTO announceRequestDTO = new AnnounceRequestDTO();
-                announceRequestDTO.setTitle("Manager_Test");
-                announceRequestDTO.setType(0);
-                assertTrue(announcementManager.createAnnouncement(announceRequestDTO));
-
-                List<AnnounceResultDTO> list = announcementManager.getAnnouncement(1, 3);
-                AnnounceResultDTO announceResultDTO = list.get(0);
-
-                assertTrue(announceResultDTO.getType().getValue() < 3 && announceResultDTO.getType().getValue() >= 0);
-                assertTrue(announcementManager.deleteAnnouncement(announceResultDTO.getId()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    @Ignore
+    public void test_10_asyncClassify() {
+        riskControlManager.asyncClassify(100L);
     }
 }

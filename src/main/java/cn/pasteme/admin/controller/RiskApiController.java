@@ -41,6 +41,11 @@ public class RiskApiController {
         return riskControlManager.riskCheck(key);
     }
 
+    @RequestMapping(value = "/classify/{key}", method = RequestMethod.POST)
+    public Response<Void> classify(@PathVariable("key") Long key) {
+        return riskControlManager.asyncClassify(key);
+    }
+
     @RequestMapping(value = "/tokenCount/{key}", method = RequestMethod.POST)
     public Response tokenCountByKey(@PathVariable("key") Long key) {
         return riskControlManager.tokenCount(key);

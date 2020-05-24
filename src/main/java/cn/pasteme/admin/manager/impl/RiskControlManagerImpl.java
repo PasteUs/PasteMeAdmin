@@ -6,15 +6,17 @@ import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
+import cn.pasteme.admin.enumeration.RiskStateDoState;
+import cn.pasteme.admin.manager.RiskControlManager;
 import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
-import cn.pasteme.admin.manager.RiskControlManager;
 import cn.pasteme.admin.mapper.RiskStateMapper;
 import cn.pasteme.algorithm.ac.AhoCorasick;
 import cn.pasteme.algorithm.ac.impl.NormalAhoCorasick;
 import cn.pasteme.algorithm.dictionary.Dictionary;
-import cn.pasteme.algorithm.nlp.NLP;
-import cn.pasteme.algorithm.nlp.impl.NormalNLP;
+import cn.pasteme.algorithm.model.TextRiskClassification;
+import cn.pasteme.algorithm.nlp.NaturalLanguageProcessing;
+import cn.pasteme.algorithm.nlp.impl.NormalNaturalLanguageProcessing;
 import cn.pasteme.algorithm.pair.Pair;
 import cn.pasteme.algorithm.trie.Trie;
 import cn.pasteme.algorithm.trie.impl.NormalTrie;
@@ -22,15 +24,16 @@ import cn.pasteme.common.dto.PasteResponseDTO;
 import cn.pasteme.common.manager.PermanentManager;
 import cn.pasteme.common.utils.result.Response;
 import cn.pasteme.common.utils.result.ResponseCode;
-
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.validation.constraints.NotNull;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 /**
@@ -52,21 +55,29 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
     private RiskStateMapper riskStateMapper;
 
-    private NLP nlp;
+    private NaturalLanguageProcessing nlp;
+
+    private TextRiskClassification textRiskClassification;
+
+    private ThreadPoolExecutor threadPoolExecutor;
 
     public RiskControlManagerImpl(
-            AhoCorasick ahoCorasick,
-            RiskDictionaryMapper riskDictionaryMapper,
-            PermanentManager permanentManager,
-            RiskCheckResultMapper riskCheckResultMapper,
-            RiskStateMapper riskStateMapper,
-            NLP nlp) {
+            @Autowired AhoCorasick ahoCorasick,
+            @Autowired RiskDictionaryMapper riskDictionaryMapper,
+            @Autowired PermanentManager permanentManager,
+            @Autowired RiskCheckResultMapper riskCheckResultMapper,
+            @Autowired RiskStateMapper riskStateMapper,
+            @Autowired NaturalLanguageProcessing nlp,
+            @Autowired TextRiskClassification textRiskClassification,
+            @Autowired ThreadPoolExecutor threadPoolExecutor) {
         this.ahoCorasick = ahoCorasick;
         this.riskDictionaryMapper = riskDictionaryMapper;
         this.permanentManager = permanentManager;
         this.riskCheckResultMapper = riskCheckResultMapper;
         this.riskStateMapper = riskStateMapper;
         this.nlp = nlp;
+        this.textRiskClassification = textRiskClassification;
+        this.threadPoolExecutor = threadPoolExecutor;
 
         List<String> dictionary = new ArrayList<>();
 
@@ -107,12 +118,41 @@ public class RiskControlManagerImpl implements RiskControlManager {
         }
     }
 
+    private Response<Void> insertOrUpdateCheckResult(RiskCheckDO riskCheckDO, RiskCheckResultDO riskCheckResultDO) {
+
+        Long key = riskCheckDO.getKey();
+
+        if (riskStateMapper.countByKey(key) > 0) {
+            if (!riskStateMapper.updateDO(riskCheckDO)) {
+                log.error("error = 'riskStateMapper.updateDO() failed'");
+                return Response.error(ResponseCode.SERVER_ERROR);
+            }
+
+            if (!riskCheckResultMapper.updateResult(riskCheckResultDO)) {
+                log.error("error = 'riskCheckResultMapper.updateResult() failed'");
+                return Response.error(ResponseCode.SERVER_ERROR);
+            }
+        } else {
+            if (!riskStateMapper.insertDO(riskCheckDO)) {
+                log.error("error = 'riskStateMapper.insertDO() failed'");
+                return Response.error(ResponseCode.SERVER_ERROR);
+            }
+
+            if (!riskCheckResultMapper.createDO(riskCheckResultDO)) {
+                log.error("error = 'riskCheckResultMapper.createDO() failed'");
+                return Response.error(ResponseCode.SERVER_ERROR);
+            }
+        }
+
+        return Response.success(null);
+    }
+
     @Override
     public Response riskCheck(@NotNull Long key) {
         try {
             Response<PasteResponseDTO> response = permanentManager.get(key.toString());
             if (!response.isSuccess()) {
-                return response;
+                return Response.error(response);
             }
             List<Pair<String, Long>> result = ahoCorasick.countMatch(response.getData().getContent());
             log.info("key = {}, result = {}", key, result);
@@ -124,29 +164,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
             riskCheckResultDO.setType(RiskCheckResultType.KEYWORD_COUNT);
             riskCheckResultDO.setResult(result);
 
-            if (riskStateMapper.countByKey(key) > 0) {
-                if (!riskStateMapper.updateDO(riskCheckDO)) {
-                    log.error("error = 'riskStateMapper.updateDO() failed'");
-                    return Response.error(ResponseCode.SERVER_ERROR);
-                }
-
-                if (!riskCheckResultMapper.updateResult(riskCheckResultDO)) {
-                    log.error("error = 'riskCheckResultMapper.updateResult() failed'");
-                    return Response.error(ResponseCode.SERVER_ERROR);
-                }
-            } else {
-                if (!riskStateMapper.insertDO(riskCheckDO)) {
-                    log.error("error = 'riskStateMapper.insertDO() failed'");
-                    return Response.error(ResponseCode.SERVER_ERROR);
-                }
-
-                if (!riskCheckResultMapper.createDO(riskCheckResultDO)) {
-                    log.error("error = 'riskCheckResultMapper.createDO() failed'");
-                    return Response.error(ResponseCode.SERVER_ERROR);
-                }
-            }
-
-            return Response.success();
+            return insertOrUpdateCheckResult(riskCheckDO, riskCheckResultDO);
         } catch (Exception e) {
             log.error("key = {}, error = ", key, e);
             return Response.error(ResponseCode.SERVER_ERROR);
@@ -173,7 +191,7 @@ public class RiskControlManagerImpl implements RiskControlManager {
             riskDictionaryMapper.updateDictionary(RiskDictionaryType.STOP_WORD, stopWords);
             Trie trie = new NormalTrie();
             trie.addAll(stopWords);
-            nlp = new NormalNLP(new Dictionary(trie));
+            nlp = new NormalNaturalLanguageProcessing(new Dictionary(trie));
             return Response.success();
         } catch (Exception e) {
             log.error("stopWords = {}, error = ", stopWords, e);
@@ -249,5 +267,49 @@ public class RiskControlManagerImpl implements RiskControlManager {
             log.error("riskCheckResultType = {}, error = ", riskCheckResultType, e);
             return Response.error(ResponseCode.SERVER_ERROR);
         }
+    }
+
+    @Override
+    public Response<Integer> classify(@NotNull Long key) {
+        try {
+            Response<PasteResponseDTO> response = permanentManager.get(key.toString());
+            if (!response.isSuccess()) {
+                return Response.error(response);
+            }
+
+            String content = response.getData().getContent();
+
+            int classifyResult = textRiskClassification.inference(content);
+
+            // 风险检测的状态
+            RiskCheckDO riskCheckDO = new RiskCheckDO(key);
+
+            if (classifyResult == 1) {
+                riskCheckDO.setState(RiskStateDoState.REQUEST_REVIEW);
+            }
+
+            // 风险检测的结果
+            RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
+            riskCheckResultDO.setKey(key);
+            riskCheckResultDO.setType(RiskCheckResultType.TEXT_CLASSIFICATION);
+            riskCheckResultDO.setIntegerResult(classifyResult);
+
+            Response<Void> insertOrUpdateCheckResult = insertOrUpdateCheckResult(riskCheckDO, riskCheckResultDO);
+
+            if (insertOrUpdateCheckResult.isSuccess()) {
+                return Response.success(classifyResult);
+            }
+            return Response.error(insertOrUpdateCheckResult);
+        } catch (Exception e) {
+            return Response.error(ResponseCode.SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response<Void> asyncClassify(@NotNull Long key) {
+        this.threadPoolExecutor.submit(() -> {
+            classify(key);
+        });
+        return Response.success(null);
     }
 }

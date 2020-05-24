@@ -1,9 +1,10 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: username
-    password: password
-    url: jdbc:mysql://localhost:4399/pasteme?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: username
+      password: password
+      jdbc-url: jdbc:mysql://localhost:4399/pasteme?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true
     schema:
       - classpath:sql/init/*.sql
     initialization-mode: always
@@ -30,3 +31,11 @@ logging:
       backend: TRACE
       common: TRACE
       algorithm: TRACE
+
+pasteme:
+  algorithm:
+    model:
+      TextRiskClassificationImpl:
+        host: your.predict.service.host
+        modelName: PasteMeRIM
+
