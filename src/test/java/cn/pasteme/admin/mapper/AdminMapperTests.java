@@ -1,7 +1,5 @@
 package cn.pasteme.admin.mapper;
 
-import cn.pasteme.admin.dto.AnnounceRequestDTO;
-import cn.pasteme.admin.dto.AnnounceResultDTO;
 import cn.pasteme.admin.entity.AnnounceDO;
 import cn.pasteme.admin.entity.RiskCheckDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
@@ -80,12 +78,12 @@ public class AdminMapperTests {
         assertNotNull(riskCheckDO);
 
         riskCheckDO.setState(RiskStateDoState.CHECKED);
-        riskCheckDO.setType(RiskStateDoType.PORN);
+        riskCheckDO.setType(RiskStateDoType.RISK);
         assertTrue(riskStateMapper.updateDO(riskCheckDO));
         riskCheckDO = riskStateMapper.getDoByKey(100L);
         assertNotNull(riskCheckDO);
         assertEquals(RiskStateDoState.CHECKED, riskCheckDO.getState());
-        assertEquals(RiskStateDoType.PORN, riskCheckDO.getType());
+        assertEquals(RiskStateDoType.RISK, riskCheckDO.getType());
     }
 
     @Test

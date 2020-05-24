@@ -47,6 +47,7 @@ build/
 
 ## log file
 *.log
+log
 
 # macOS
 .DS_Store

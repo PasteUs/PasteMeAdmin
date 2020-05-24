@@ -1,13 +1,14 @@
-name: Maven Deploy
+name: Java Release
 
 on:
-  push:
-    branches:
-      - dev
+  release:
+    types: [published]
 
 jobs:
-  deploy:
+
+  release:
     if: github.repository == 'PasteUs/PasteMeAdmin'
+    name: Build on ${{ matrix.os }} and upload
 
     services:
       mysql:
@@ -21,7 +22,11 @@ jobs:
           - 4399:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v1
@@ -30,19 +35,27 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-
-      - name: Build Package
+          
+      - name: Build
         run: |
           mvn --settings .github/settings.xml \
               --file pom.xml \
               -Dspring.config.location=docker/config/application.yml \
               package
 
-      - name: publish docker
+#      - name: Upload to release
+#        uses: JasonEtco/upload-to-release@master
+#        with:
+#          args: pasteme-admin-jar.tar.gz application/octet-stream
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_PASSWORD }}
+
+      - name: Publish Docker
         uses: LucienShui/Publish-Docker-Github-Action@2.7.1
         with:
-          name: registry.cn-hangzhou.aliyuncs.com/pasteus/pasteme-admin:beta
+          name: registry.cn-hangzhou.aliyuncs.com/pasteus/pasteme-admin
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: registry.cn-hangzhou.aliyuncs.com
           dockerfile: Dockerfile
+          tag_names: true
