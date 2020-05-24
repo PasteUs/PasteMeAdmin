@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>pasteme-admin</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>PasteMe Admin</name>
     <description>PasteMe Admin</description>
 
