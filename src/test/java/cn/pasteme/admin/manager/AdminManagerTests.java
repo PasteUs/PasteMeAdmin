@@ -297,6 +297,7 @@ public class AdminManagerTests {
      * 异步的时候不会回滚
      */
     @Test
+    @Ignore
     @Transactional
     public void test_10_asyncClassify() {
         riskControlManager.asyncClassify(100L);
