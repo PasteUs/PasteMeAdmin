@@ -1,8 +1,8 @@
 package cn.pasteme.admin.mapper;
 
-import cn.pasteme.admin.entity.RiskCheckDO;
-import cn.pasteme.admin.enumeration.RiskStateDoState;
-import cn.pasteme.admin.enumeration.RiskStateDoType;
+import cn.pasteme.admin.entity.RiskCheckStateDO;
+import cn.pasteme.admin.enumeration.RiskCheckStateTypeEnum;
+import cn.pasteme.admin.enumeration.RiskCheckStateEnum;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
@@ -21,19 +21,32 @@ public interface RiskStateMapper {
     /**
      * 将 DO 插入数据库
      *
-     * @param riskCheckDO DO
+     * @param riskCheckStateDO DO
      * @return boolean
      */
     @Insert({"INSERT INTO `pasteme_admin_risk_state` (`key`, `type`, `state`)",
             "VALUES (#{key},",
             "#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}, ",
             "#{state, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler})"})
-    boolean insertDO(RiskCheckDO riskCheckDO);
+    boolean insertDO(RiskCheckStateDO riskCheckStateDO);
+
+    /**
+     * 插入或更新 DO
+     *
+     * @param riskCheckStateDO DO
+     * @return boolean
+     */
+    @Insert({"REPLACE INTO `pasteme_admin_risk_state` (`key`, `type`, `state`)",
+            "VALUES (#{key},",
+            "#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}, ",
+            "#{state, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler})"})
+    boolean insertOrUpdate(RiskCheckStateDO riskCheckStateDO);
+
 
     /**
      * 更新 Record
      *
-     * @param riskCheckDO DO
+     * @param riskCheckStateDO DO
      * @return boolean
      */
     @Update({"<script>",
@@ -48,7 +61,7 @@ public interface RiskStateMapper {
             "</set>",
             "WHERE `key` = #{key}",
     "</script>"})
-    boolean updateDO(RiskCheckDO riskCheckDO);
+    boolean updateDO(RiskCheckStateDO riskCheckStateDO);
 
     /**
      * 通过主键获取记录
@@ -57,12 +70,12 @@ public interface RiskStateMapper {
      * @return DO
      */
     @Select("SELECT `key`, `state`, `type` FROM `pasteme_admin_risk_state` WHERE `key` = #{key}")
-    @Results(id = "RiskCheckDO", value = {
+    @Results(id = "RiskCheckStateDO", value = {
             @Result(column = "key", property = "key"),
-            @Result(column = "type", property = "type", javaType = RiskStateDoType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class),
-            @Result(column = "state", property = "state", javaType = RiskStateDoState.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class)
+            @Result(column = "type", property = "type", javaType = RiskCheckStateEnum.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class),
+            @Result(column = "state", property = "state", javaType = RiskCheckStateTypeEnum.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class)
     })
-    RiskCheckDO getDoByKey(Long key);
+    RiskCheckStateDO getDoByKey(Long key);
 
     /**
      * 统计主键计数

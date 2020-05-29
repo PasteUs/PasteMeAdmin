@@ -1,6 +1,6 @@
 package cn.pasteme.admin.manager;
 
-import cn.pasteme.admin.dto.RiskCheckResultDTO;
+import cn.pasteme.admin.dto.AbstractRiskCheckResultDTO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.algorithm.pair.Pair;
 import cn.pasteme.common.utils.result.Response;
@@ -68,13 +68,13 @@ public interface RiskControlManager {
      * 分页获取 Check 结果
      *
      * @param pageIndex 页下标
-     * @param pageSize 一页的大小
-     * @param type 结果类型
+     * @param pageSize  一页的大小
+     * @param type      结果类型
      * @return List
      */
-    Response<List<RiskCheckResultDTO>> getCheckResult(@NotNull Long pageIndex,
-                                                      @NotNull Long pageSize,
-                                                      @NotNull RiskCheckResultType type);
+    Response<List<AbstractRiskCheckResultDTO>> getPairListCheckResult(@NotNull Long pageIndex,
+                                                                      @NotNull Long pageSize,
+                                                                      @NotNull RiskCheckResultType type);
 
     /**
      * 获取某类结果的数量
@@ -86,6 +86,7 @@ public interface RiskControlManager {
 
     /**
      * 文本分类
+     *
      * @param key 主键
      * @return 0 或 1，0 代表 Normal，1 代表 Risk
      */

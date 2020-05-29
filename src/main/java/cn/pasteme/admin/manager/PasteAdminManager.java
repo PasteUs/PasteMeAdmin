@@ -1,8 +1,8 @@
 package cn.pasteme.admin.manager;
 
 import cn.pasteme.admin.bo.PasteAccessCountBO;
-import cn.pasteme.admin.enumeration.RiskStateDoState;
-import cn.pasteme.admin.enumeration.RiskStateDoType;
+import cn.pasteme.admin.enumeration.RiskCheckStateTypeEnum;
+import cn.pasteme.admin.enumeration.RiskCheckStateEnum;
 import cn.pasteme.common.utils.result.Response;
 
 import java.util.Date;
@@ -31,7 +31,7 @@ public interface PasteAdminManager {
      * @param state 状态
      * @return boolean
      */
-    boolean changeTypeAndStateByKey(Long key, RiskStateDoType type, RiskStateDoState state);
+    boolean changeTypeAndStateByKey(Long key, RiskCheckStateEnum type, RiskCheckStateTypeEnum state);
 
     /**
      * 计数单条 Paste 的周期（年/月/日）访问次数

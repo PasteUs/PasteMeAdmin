@@ -5,13 +5,13 @@ import cn.pasteme.common.enumeration.ValueEnum;
 import lombok.Getter;
 
 /**
- * RiskCheckDO.state 值域
+ * RiskCheckStateDO.state 值域
  * 同时也是 label
  *
  * @author Lucien
  * @version 1.1.2
  */
-public enum RiskStateDoType implements ValueEnum {
+public enum RiskCheckStateEnum implements ValueEnum {
 
     // 普通
     NORMAL(0),
@@ -22,7 +22,7 @@ public enum RiskStateDoType implements ValueEnum {
     @Getter
     final private int value;
 
-    RiskStateDoType(int value) {
+    RiskCheckStateEnum(int value) {
         this.value = value;
     }
 }

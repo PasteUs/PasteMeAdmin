@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AnnounceRequestDTO extends AnnouncementDTO {
+public class AnnounceRequestDTO extends AbstractAnnouncementDTO {
 
     /**
      * 类型

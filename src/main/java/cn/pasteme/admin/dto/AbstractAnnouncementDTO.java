@@ -9,7 +9,7 @@ import lombok.Data;
  * @version 1.0.0
  */
 @Data
-public abstract class AnnouncementDTO {
+public abstract class AbstractAnnouncementDTO {
 
     /**
      * title 标题
