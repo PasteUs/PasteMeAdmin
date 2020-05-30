@@ -1,10 +1,10 @@
 package cn.pasteme.admin.manager.impl;
 
 import cn.pasteme.admin.bo.PasteAccessCountBO;
-import cn.pasteme.admin.entity.RiskCheckDO;
+import cn.pasteme.admin.entity.RiskCheckStateDO;
 import cn.pasteme.admin.enumeration.AccessDateType;
-import cn.pasteme.admin.enumeration.RiskStateDoState;
-import cn.pasteme.admin.enumeration.RiskStateDoType;
+import cn.pasteme.admin.enumeration.RiskCheckStateTypeEnum;
+import cn.pasteme.admin.enumeration.RiskCheckStateEnum;
 import cn.pasteme.admin.manager.PasteAdminManager;
 import cn.pasteme.admin.mapper.AccessCountMapper;
 import cn.pasteme.admin.mapper.RiskStateMapper;
@@ -45,13 +45,13 @@ public class PasteAdminManagerImpl implements PasteAdminManager {
     }
 
     @Override
-    public boolean changeTypeAndStateByKey(Long key, RiskStateDoType type, RiskStateDoState state) {
+    public boolean changeTypeAndStateByKey(Long key, RiskCheckStateEnum type, RiskCheckStateTypeEnum state) {
         try {
-            RiskCheckDO riskCheckDO = riskStateMapper.getDoByKey(key);
-            log.warn("riskCheckDO = {}", riskCheckDO);
-            riskCheckDO.setType(type);
-            riskCheckDO.setState(state);
-            riskStateMapper.updateDO(riskCheckDO);
+            RiskCheckStateDO riskCheckStateDO = riskStateMapper.getDoByKey(key);
+            log.warn("riskCheckStateDO = {}", riskCheckStateDO);
+            riskCheckStateDO.setType(type);
+            riskCheckStateDO.setState(state);
+            riskStateMapper.updateDO(riskCheckStateDO);
             return true;
         } catch (Exception e) {
             log.error("error = ", e);

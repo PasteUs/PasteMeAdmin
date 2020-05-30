@@ -1,8 +1,8 @@
 package cn.pasteme.admin.manager;
 
+import cn.pasteme.admin.dto.AbstractRiskCheckResultDTO;
 import cn.pasteme.admin.dto.AnnounceRequestDTO;
 import cn.pasteme.admin.dto.AnnounceResultDTO;
-import cn.pasteme.admin.dto.RiskCheckResultDTO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
@@ -30,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,8 +38,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -60,10 +61,12 @@ public class AdminManagerTests {
     @Mock
     private RiskDictionaryMapper riskDictionaryMapper;
 
-    @Mock
+//    @Mock
+    @Autowired
     private RiskCheckResultMapper riskCheckResultMapper;
 
-    @Mock
+//    @Mock
+    @Autowired
     private RiskStateMapper riskStateMapper;
 
     @Autowired
@@ -74,7 +77,7 @@ public class AdminManagerTests {
     @Autowired
     private AnnouncementManager announcementManager;
 
-    @Autowired
+    @Mock
     private TextRiskClassification textRiskClassification;
 
     @Autowired
@@ -86,7 +89,7 @@ public class AdminManagerTests {
 
         // riskDictionaryMapper
         {
-            when(riskDictionaryMapper.updateDictionary(any(), anyList())).thenReturn(true);
+            when(riskDictionaryMapper.updateDictionary(notNull(), anyList())).thenReturn(true);
 
             {
                 RiskDictionaryDO stopWords = mock(RiskDictionaryDO.class);
@@ -114,21 +117,34 @@ public class AdminManagerTests {
             when(permanentManager.get("100")).thenReturn(Response.success(pasteResponseDTO));
         }
 
+        /*
         // riskCheckResultMapper
         {
-            when(riskCheckResultMapper.createDO(any())).thenReturn(true);
-            when(riskCheckResultMapper.getResultsByType(any(), any(), any())).thenReturn(new ArrayList<>());
-            when(riskCheckResultMapper.getCountByType(any())).thenReturn(0L);
-            when(riskCheckResultMapper.updateResult(any())).thenReturn(true);
+            when(riskCheckResultMapper.createDO(notNull())).thenReturn(true);
+            when(riskCheckResultMapper.createDO(null)).thenThrow(new NullPointerException());
+            when(riskCheckResultMapper.getResultsByType(notNull(), notNull(), notNull())).thenReturn(new ArrayList<>());
+            when(riskCheckResultMapper.getCountByType(notNull())).thenReturn(0L);
+            when(riskCheckResultMapper.updateResult(notNull())).thenReturn(true);
+            when(riskCheckResultMapper.updateResult(null)).thenThrow(new NullPointerException());
         }
 
         // riskStateMapper
         {
-            when(riskStateMapper.countByKey(any())).thenReturn(0);
+            when(riskStateMapper.countByKey(notNull())).thenReturn(0);
             when(riskStateMapper.countByKey(100L)).thenReturn(1);
 
-            when(riskStateMapper.updateDO(any())).thenReturn(true);
-            when(riskStateMapper.insertDO(any())).thenReturn(true);
+            when(riskStateMapper.updateDO(notNull())).thenReturn(true);
+            when(riskStateMapper.insertDO(notNull())).thenReturn(true);
+        }
+         */
+
+        // textClassification
+        {
+            try {
+                when(textRiskClassification.inference(notNull())).thenReturn(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         riskControlManager = new RiskControlManagerImpl(
@@ -146,6 +162,7 @@ public class AdminManagerTests {
      * tokenCount(text)
      */
     @Test
+    @Transactional
     public void test_01_tokenCountByText() {
         // set stop words
         List<String> stopWords = Arrays.asList("，", "！");
@@ -165,6 +182,7 @@ public class AdminManagerTests {
      * tokenCount(key)
      */
     @Test
+    @Transactional
     public void test_02_tokenCountByKey() {
         Response response = riskControlManager.tokenCount(100L);
         assertTrue(response.isSuccess());
@@ -174,6 +192,7 @@ public class AdminManagerTests {
      * riskCheck(text)
      */
     @Test
+    @Transactional
     public void test_03_riskCheckByText() {
         Response<List<Pair<String, Long>>> response = riskControlManager.riskCheck("测试测试，TestTest.");
 
@@ -188,6 +207,7 @@ public class AdminManagerTests {
      * riskCheck(key)
      */
     @Test
+    @Transactional
     public void test_04_riskCheckByKey() {
         Response response = riskControlManager.riskCheck(100L);
         assertTrue(response.isSuccess());
@@ -197,6 +217,7 @@ public class AdminManagerTests {
      * tokenCount without stop words
      */
     @Test
+    @Transactional
     public void test_05_tokenCountWithoutStopWords() {
         List<Pair<String, Long>> list = Arrays.asList(new Pair<>("世界", 1L), new Pair<>("你好", 1L), new Pair<>("！", 1L), new Pair<>("，", 1L));
 
@@ -213,6 +234,7 @@ public class AdminManagerTests {
      * riskCheck without risk dictionary
      */
     @Test
+    @Transactional
     public void test_06_riskCheckWithoutRiskDictionary() {
         assertTrue(riskControlManager.setRiskDictionary(new ArrayList<>()).isSuccess());
 
@@ -226,8 +248,10 @@ public class AdminManagerTests {
     /**
      * getCheckResult
      */
+    @Test
+    @Transactional
     public void test_07_getCheckResult() {
-        Response<List<RiskCheckResultDTO>> response = riskControlManager.getCheckResult(0L, 1L, RiskCheckResultType.KEYWORD_COUNT);
+        Response<List<AbstractRiskCheckResultDTO>> response = riskControlManager.getPairListCheckResult(0L, 1L, RiskCheckResultType.KEYWORD_COUNT);
 
         assertTrue(response.isSuccess());
         assertEquals(new ArrayList<>(), response.getData());
@@ -237,6 +261,7 @@ public class AdminManagerTests {
      * Test Count
      */
     @Test
+    @Transactional
     public void test_08_getCountOfKeyWordCount() {
         Response<Long> response = riskControlManager.count(RiskCheckResultType.KEYWORD_COUNT);
 
@@ -268,9 +293,21 @@ public class AdminManagerTests {
         }
     }
 
+    /**
+     * 异步的时候不会回滚
+     */
     @Test
     @Ignore
+    @Transactional
     public void test_10_asyncClassify() {
         riskControlManager.asyncClassify(100L);
+    }
+
+    @Test
+    @Transactional
+    public void test_11_classify() {
+        Response<Integer> response = riskControlManager.classify(100L);
+        assertTrue(response.isSuccess());
+        assertEquals(Integer.valueOf(0), response.getData());
     }
 }

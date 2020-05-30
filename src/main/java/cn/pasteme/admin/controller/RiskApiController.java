@@ -1,6 +1,6 @@
 package cn.pasteme.admin.controller;
 
-import cn.pasteme.admin.dto.RiskCheckResultDTO;
+import cn.pasteme.admin.dto.AbstractRiskCheckResultDTO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.manager.RiskControlManager;
 import cn.pasteme.common.utils.result.Response;
@@ -52,12 +52,12 @@ public class RiskApiController {
     }
 
     @RequestMapping(value = "/tokenCount", method = RequestMethod.GET)
-    public Response<List<RiskCheckResultDTO>> getTokenCount(@RequestParam("page") Long pageIndex) {
-        return riskControlManager.getCheckResult(pageIndex, pageSize, RiskCheckResultType.TOKEN_COUNT);
+    public Response<List<AbstractRiskCheckResultDTO>> getTokenCount(@RequestParam("page") Long pageIndex) {
+        return riskControlManager.getPairListCheckResult(pageIndex, pageSize, RiskCheckResultType.TOKEN_COUNT);
     }
 
     @RequestMapping(value = "/check", method = RequestMethod.GET)
-    public Response<List<RiskCheckResultDTO>> getCheck(@RequestParam("page") Long pageIndex) {
-        return riskControlManager.getCheckResult(pageIndex, pageSize, RiskCheckResultType.KEYWORD_COUNT);
+    public Response<List<AbstractRiskCheckResultDTO>> getCheck(@RequestParam("page") Long pageIndex) {
+        return riskControlManager.getPairListCheckResult(pageIndex, pageSize, RiskCheckResultType.KEYWORD_COUNT);
     }
 }

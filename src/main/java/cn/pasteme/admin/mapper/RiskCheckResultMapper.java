@@ -2,8 +2,6 @@ package cn.pasteme.admin.mapper;
 
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
-
-import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
@@ -32,9 +30,24 @@ public interface RiskCheckResultMapper {
             ") VALUES (",
             "#{key},",
             "#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler},",
-            "#{result, typeHandler=cn.pasteme.common.mapper.handler.JsonTypeHandler})"
+            "#{result})"
     })
     boolean createDO(RiskCheckResultDO riskCheckResultDO);
+
+    /**
+     * 创建或更新 DO
+     *
+     * @param riskCheckResultDO DO
+     * @return boolean
+     */
+    @Insert({"REPLACE INTO `pasteme_admin_risk_check_result` (",
+            "`key`, `type`, `result`",
+            ") VALUES (",
+            "#{key},",
+            "#{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler},",
+            "#{result})"
+    })
+    boolean insertOrUpdate(RiskCheckResultDO riskCheckResultDO);
 
     /**
      * 更新 DO
@@ -43,7 +56,7 @@ public interface RiskCheckResultMapper {
      * @return boolean
      */
     @Update({"UPDATE `pasteme_admin_risk_check_result` SET",
-            "`result` = #{result, typeHandler=cn.pasteme.common.mapper.handler.JsonTypeHandler}",
+            "`result` = #{result}",
             "WHERE `key` = #{key}",
             "AND `type` = #{type, typeHandler=cn.pasteme.common.mapper.handler.ValueEnumTypeHandler}"})
     boolean updateResult(RiskCheckResultDO riskCheckResultDO);
@@ -51,7 +64,7 @@ public interface RiskCheckResultMapper {
     /**
      * 查询 DO
      *
-     * @param key 主键
+     * @param key  主键
      * @param type 类型
      * @return DO
      */
@@ -62,15 +75,15 @@ public interface RiskCheckResultMapper {
     @Results(id = "RiskCheckResultDO", value = {
             @Result(column = "key", property = "key"),
             @Result(column = "type", property = "type", javaType = RiskCheckResultType.class, typeHandler = cn.pasteme.common.mapper.handler.ValueEnumTypeHandler.class),
-            @Result(column = "result", property = "result", javaType = JSON.class, typeHandler = cn.pasteme.common.mapper.handler.JsonTypeHandler.class)
+            @Result(column = "result", property = "result", javaType = java.lang.String.class)
     })
     RiskCheckResultDO getResultByKeyAndType(Long key, RiskCheckResultType type);
 
     /**
      * 分页查询某类结果集
      *
-     * @param type 类型
-     * @param limit 一页的大小
+     * @param type   类型
+     * @param limit  一页的大小
      * @param offset 偏移
      * @return DO List
      */

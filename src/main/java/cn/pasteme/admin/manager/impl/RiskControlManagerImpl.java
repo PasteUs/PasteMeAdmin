@@ -1,12 +1,14 @@
 package cn.pasteme.admin.manager.impl;
 
-import cn.pasteme.admin.dto.RiskCheckResultDTO;
-import cn.pasteme.admin.entity.RiskCheckDO;
+import cn.pasteme.admin.dto.AbstractRiskCheckResultDTO;
+import cn.pasteme.admin.dto.IntegerRiskCheckResultDTO;
+import cn.pasteme.admin.dto.PairListRiskCheckResultDTO;
+import cn.pasteme.admin.entity.RiskCheckStateDO;
 import cn.pasteme.admin.entity.RiskCheckResultDO;
 import cn.pasteme.admin.entity.RiskDictionaryDO;
 import cn.pasteme.admin.enumeration.RiskCheckResultType;
 import cn.pasteme.admin.enumeration.RiskDictionaryType;
-import cn.pasteme.admin.enumeration.RiskStateDoState;
+import cn.pasteme.admin.enumeration.RiskCheckStateTypeEnum;
 import cn.pasteme.admin.manager.RiskControlManager;
 import cn.pasteme.admin.mapper.RiskCheckResultMapper;
 import cn.pasteme.admin.mapper.RiskDictionaryMapper;
@@ -26,7 +28,6 @@ import cn.pasteme.common.utils.result.Response;
 import cn.pasteme.common.utils.result.ResponseCode;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -118,30 +119,22 @@ public class RiskControlManagerImpl implements RiskControlManager {
         }
     }
 
-    private Response<Void> insertOrUpdateCheckResult(RiskCheckDO riskCheckDO, RiskCheckResultDO riskCheckResultDO) {
+    private Response<Void> insertOrUpdateCheckResult(
+            @NotNull RiskCheckStateDO riskCheckStateDO,
+            @NotNull RiskCheckResultDO riskCheckResultDO) throws Exception {
 
-        Long key = riskCheckDO.getKey();
+        Long key = riskCheckStateDO.getKey();
 
-        if (riskStateMapper.countByKey(key) > 0) {
-            if (!riskStateMapper.updateDO(riskCheckDO)) {
-                log.error("error = 'riskStateMapper.updateDO() failed'");
-                return Response.error(ResponseCode.SERVER_ERROR);
-            }
+        if (!riskStateMapper.insertOrUpdate(riskCheckStateDO)) {
+            String errorMessage = "riskStateMapper.insertOrUpdate() failed";
+            log.error(errorMessage);
+            throw new Exception(errorMessage);
+        }
 
-            if (!riskCheckResultMapper.updateResult(riskCheckResultDO)) {
-                log.error("error = 'riskCheckResultMapper.updateResult() failed'");
-                return Response.error(ResponseCode.SERVER_ERROR);
-            }
-        } else {
-            if (!riskStateMapper.insertDO(riskCheckDO)) {
-                log.error("error = 'riskStateMapper.insertDO() failed'");
-                return Response.error(ResponseCode.SERVER_ERROR);
-            }
-
-            if (!riskCheckResultMapper.createDO(riskCheckResultDO)) {
-                log.error("error = 'riskCheckResultMapper.createDO() failed'");
-                return Response.error(ResponseCode.SERVER_ERROR);
-            }
+        if (!riskCheckResultMapper.insertOrUpdate(riskCheckResultDO)) {
+            String errorMessage = "riskCheckResultMapper.insertOrUpdate() failed";
+            log.error(errorMessage);
+            throw new Exception(errorMessage);
         }
 
         return Response.success(null);
@@ -157,14 +150,15 @@ public class RiskControlManagerImpl implements RiskControlManager {
             List<Pair<String, Long>> result = ahoCorasick.countMatch(response.getData().getContent());
             log.info("key = {}, result = {}", key, result);
 
-            RiskCheckDO riskCheckDO = new RiskCheckDO(key);
+            RiskCheckStateDO riskCheckStateDO = new RiskCheckStateDO(key);
 
-            RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
-            riskCheckResultDO.setKey(key);
-            riskCheckResultDO.setType(RiskCheckResultType.KEYWORD_COUNT);
-            riskCheckResultDO.setResult(result);
+            PairListRiskCheckResultDTO riskCheckResultDTO = new PairListRiskCheckResultDTO(
+                    key,
+                    RiskCheckResultType.KEYWORD_COUNT,
+                    result
+            );
 
-            return insertOrUpdateCheckResult(riskCheckDO, riskCheckResultDO);
+            return insertOrUpdateCheckResult(riskCheckStateDO, riskCheckResultDTO.toDO());
         } catch (Exception e) {
             log.error("key = {}, error = ", key, e);
             return Response.error(ResponseCode.SERVER_ERROR);
@@ -218,12 +212,13 @@ public class RiskControlManagerImpl implements RiskControlManager {
             }
             List<Pair<String, Long>> result = nlp.countToken(response.getData().getContent());
 
-            RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
-            riskCheckResultDO.setKey(key);
-            riskCheckResultDO.setType(RiskCheckResultType.TOKEN_COUNT);
-            riskCheckResultDO.setResult(result);
+            PairListRiskCheckResultDTO riskCheckResultDTO = new PairListRiskCheckResultDTO(
+                    key,
+                    RiskCheckResultType.TOKEN_COUNT,
+                    result
+            );
 
-            riskCheckResultMapper.createDO(riskCheckResultDO);
+            riskCheckResultMapper.createDO(riskCheckResultDTO.toDO());
             return Response.success();
         } catch (Exception e) {
             log.error("key = {}, error = ", key, e);
@@ -232,9 +227,9 @@ public class RiskControlManagerImpl implements RiskControlManager {
     }
 
     @Override
-    public Response<List<RiskCheckResultDTO>> getCheckResult(@NotNull Long pageIndex,
-                                                             @NotNull Long pageSize,
-                                                             @NotNull RiskCheckResultType type) {
+    public Response<List<AbstractRiskCheckResultDTO>> getPairListCheckResult(@NotNull Long pageIndex,
+                                                                             @NotNull Long pageSize,
+                                                                             @NotNull RiskCheckResultType type) {
         try {
             Long count = riskCheckResultMapper.getCountByType(type);
 
@@ -248,11 +243,9 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
             List<RiskCheckResultDO> riskCheckResultDoList = riskCheckResultMapper.getResultsByType(type,
                     pageSize, (pageIndex - 1) * pageSize);
-            RiskCheckResultDTO buffer = new RiskCheckResultDTO();
-            return Response.success(riskCheckResultDoList.stream().map(each -> {
-                BeanUtils.copyProperties(each, buffer);
-                return buffer;
-            }).collect(Collectors.toList()));
+            return Response.success(
+                    riskCheckResultDoList.stream().map(PairListRiskCheckResultDTO::new).collect(Collectors.toList())
+            );
         } catch (Exception e) {
             log.error("pageIndex = {}, pageSize = {}, type = {}, error = ", pageIndex, pageSize, type, e);
             return Response.error(ResponseCode.SERVER_ERROR);
@@ -282,25 +275,28 @@ public class RiskControlManagerImpl implements RiskControlManager {
             int classifyResult = textRiskClassification.inference(content);
 
             // 风险检测的状态
-            RiskCheckDO riskCheckDO = new RiskCheckDO(key);
+            RiskCheckStateDO riskCheckStateDO = new RiskCheckStateDO(key);
 
             if (classifyResult == 1) {
-                riskCheckDO.setState(RiskStateDoState.REQUEST_REVIEW);
+                riskCheckStateDO.setState(RiskCheckStateTypeEnum.REQUEST_REVIEW);
             }
 
             // 风险检测的结果
-            RiskCheckResultDO riskCheckResultDO = new RiskCheckResultDO();
-            riskCheckResultDO.setKey(key);
-            riskCheckResultDO.setType(RiskCheckResultType.TEXT_CLASSIFICATION);
-            riskCheckResultDO.setIntegerResult(classifyResult);
+            IntegerRiskCheckResultDTO riskCheckResultDTO = new IntegerRiskCheckResultDTO(
+                    key,
+                    RiskCheckResultType.TEXT_CLASSIFICATION,
+                    classifyResult
+            );
 
-            Response<Void> insertOrUpdateCheckResult = insertOrUpdateCheckResult(riskCheckDO, riskCheckResultDO);
+            RiskCheckResultDO riskCheckResultDO = riskCheckResultDTO.toDO();
+            Response<Void> insertOrUpdateCheckResult = insertOrUpdateCheckResult(riskCheckStateDO, riskCheckResultDO);
 
             if (insertOrUpdateCheckResult.isSuccess()) {
                 return Response.success(classifyResult);
             }
             return Response.error(insertOrUpdateCheckResult);
         } catch (Exception e) {
+            log.error("error = {}", e.getMessage());
             return Response.error(ResponseCode.SERVER_ERROR);
         }
     }

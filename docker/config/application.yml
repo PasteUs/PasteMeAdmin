@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   datasource:
     hikari:
@@ -15,7 +18,7 @@ spring:
     check-template-location: true
     suffix: .html
     encoding: UTF-8
-    mode: HTML5
+    mode: HTML
     servlet:
       content-type: text/html
 
@@ -25,12 +28,12 @@ logging:
 
   level:
     root: WARN
-    org.springfromwork.web: INFO
+    org.springfromwork.web: WARN
     cn.pasteme:
-      admin: TRACE
-      backend: TRACE
-      common: TRACE
-      algorithm: TRACE
+      admin: INFO
+      backend: INFO
+      common: INFO
+      algorithm: INFO
 
 pasteme:
   algorithm:

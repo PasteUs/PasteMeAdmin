@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AnnounceResultDTO extends AnnouncementDTO {
+public class AnnounceResultDTO extends AbstractAnnouncementDTO {
 
     /**
      * id 主键
