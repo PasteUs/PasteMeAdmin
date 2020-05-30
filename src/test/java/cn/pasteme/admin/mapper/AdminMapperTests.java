@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +67,7 @@ public class AdminMapperTests {
     }
 
     @Test
+    @Transactional
     public void riskStateMapperTest() {
         pasteAdminTestMapper.delete("pasteme_admin_risk_state", 100L);
 
@@ -87,17 +89,20 @@ public class AdminMapperTests {
     }
 
     @Test
+    @Transactional
     public void riskDictionaryMapperTest() {
         updateAndCheck(Arrays.asList("词典", "测试"));
     }
 
     @Test
+    @Transactional
     public void accessCountMapperTest() {
         pasteAdminTestMapper.delete("pasteme_admin_access_count", 100L);
         assertTrue(accessCountMapper.createRecord(100L, new Date(), "0.0.0.0"));
     }
 
     @Test
+    @Transactional
     public void riskCheckResultMapperTest() {
         pasteAdminTestMapper.delete("pasteme_admin_risk_check_result", 100L);
 
@@ -131,6 +136,7 @@ public class AdminMapperTests {
     }
 
     @Test
+    @Transactional
     public void announceMapperTest() {
         AnnounceDO announceDO = new AnnounceDO();
 

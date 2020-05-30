@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -39,6 +40,7 @@ public class AdminControllerTests {
     }
 
     @Test
+    @Transactional
     public void main() throws Exception {
         pasteAdminTestMapper.delete("pasteme_admin_access_count", 101L);
 

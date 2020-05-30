@@ -49,12 +49,15 @@ public class RiskCheckResultDOTest {
         list.add(new Pair<>("Hello", 1L));
         list.add(new Pair<>("World!", 2L));
 
-        AbstractRiskCheckResultDTO abstractRiskCheckResultDTO = new PairListRiskCheckResultDTO(
+
+        PairListRiskCheckResultDTO pairListRiskCheckResultDTO = new PairListRiskCheckResultDTO(
                 100L,
                 RiskCheckResultType.KEYWORD_COUNT,
                 list
         );
 
-        System.out.println(JSON.toJSONString(abstractRiskCheckResultDTO));
+        AbstractRiskCheckResultDTO abstractRiskCheckResultDTO = pairListRiskCheckResultDTO;
+
+        assertEquals(JSON.toJSONString(pairListRiskCheckResultDTO), JSON.toJSONString(abstractRiskCheckResultDTO));
     }
 }
