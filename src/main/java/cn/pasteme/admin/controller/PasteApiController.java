@@ -32,9 +32,9 @@ import java.util.List;
 @RequestMapping(path = "/api/paste")
 public class PasteApiController {
 
-    private PasteAdminManager pasteAdminManager;
+    private final PasteAdminManager pasteAdminManager;
 
-    private PermanentManager permanentManager;
+    private final PermanentManager permanentManager;
 
     public PasteApiController(PasteAdminManager pasteAdminManager,
                               PermanentManager permanentManager) {
