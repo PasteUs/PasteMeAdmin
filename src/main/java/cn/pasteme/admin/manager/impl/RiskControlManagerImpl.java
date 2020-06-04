@@ -272,7 +272,11 @@ public class RiskControlManagerImpl implements RiskControlManager {
 
             String content = response.getData().getContent();
 
+            log.debug("Get content = {} with key = {}", content, key);
+
             int classifyResult = textRiskClassification.inference(content);
+
+            log.debug("Get classifyResult = {}", classifyResult);
 
             // 风险检测的状态
             RiskCheckStateDO riskCheckStateDO = new RiskCheckStateDO(key);
